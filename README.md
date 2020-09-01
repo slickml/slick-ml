@@ -3,7 +3,7 @@
 **SlickML** is a machine learning library for Python. With SlickML, you can save more time on ML-Automation and ML-Tuning. Machine learing consists of many importants tricks that can only be learned in industry while dealing with production and deployment. Thus, the main philosophy of SlickML is to bring simplicity to produce more effective models with a minimal amount of code.
 
 ## Examples
-
+![slickml viz1](https://github.com/amirhessam88/slick-ml/blob/master/assets/images/metrics2.png)
 ## Contribution
 
 
