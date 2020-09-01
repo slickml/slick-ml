@@ -1,0 +1,21 @@
+os:
+- linux
+language: python
+python:
+- 3.6
+install:
+- pip install -r requirements-dev.txt
+
+jobs:
+  include:
+    - stage: tests
+
+      script:
+      - pytest --cov=slickml --cov-config=.coveragerc
+      name: pytestq
+
+    - script: python -m black slickml --line-length=80
+      name: pep8
+
+    - script: flake8
+      name: flake8
