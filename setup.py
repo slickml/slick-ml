@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="slickml",
-    version="0.0.2",
+    version="0.0.3",
     author="Amirhessam Tahmassebi, Trace Smith",
     author_email="amir.benny@gmail.com, tsmith5151@gmail.com",
     description="slickml is a machine learning library for Python",
