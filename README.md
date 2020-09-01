@@ -29,7 +29,7 @@ example = BinaryClassificationMetrics(y_test, y_pred_proba)
 example.plot_thresholds()
 
 ```
-![slickml viz1](https://github.com/amirhessam88/slick-ml/blob/master/assets/images/metrics2.png?raw=true)
+![slickml viz1](https://raw.githubusercontent.com/slickml/slick-ml/master/assets/images/metrics2.png)
 
 ## Contributing
 
