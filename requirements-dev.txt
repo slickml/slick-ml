@@ -1,0 +1,4 @@
+black
+ipython
+flake8
+pytest
