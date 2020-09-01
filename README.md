@@ -2,7 +2,22 @@
 
 **SlickML** is a machine learning library for Python. With SlickML, you can save more time on ML-Automation and ML-Tuning. Machine learing consists of many importants tricks that can only be learned in industry while dealing with production and deployment. Thus, the main philosophy of SlickML is to bring simplicity to produce more effective models with a minimal amount of code.
 
-## Examples
+## Example
+Here is an example using SlickML to quickly visualize the binary classification metrics based on multiple calculated thresholds:
+
+```python
+# train a classifier using loaded train/test data
+from sklearn.ensemble import RandomForestClassifier
+clf = RandomForestClassifier()
+clf.fit(X_train, y_train)
+y_pred_proba = clf.predict_proba(X_test)[:, 1]
+
+# import slickml
+from slickml.metrics import BinaryClassificationMetrics
+example = BinaryClassificationMetrics(y_test, y_pred_proba)
+example.plot_thresholds()
+
+```
 ![slickml viz1](https://github.com/amirhessam88/slick-ml/blob/master/assets/images/metrics2.png)
 ## Contribution
 
