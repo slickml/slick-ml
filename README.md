@@ -10,7 +10,7 @@ First, install Python 3.6 from https://www.python.org, and then run:
 pip install slickml
 ```
 
-Note: in order to avoid any potential conflicts with other Python packages it's recommended to use a virtual environment, e.g. `python3 virtualenv` (see python3 virtualenv documentation) or conda environments for further documentaiton.
+Note: in order to avoid any potential conflicts with other Python packages it's recommended to use a virtual environment, e.g. [Python3 virtualenv](https://docs.python.org/3/library/venv.html) or [Conda environments](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html) for further documentaiton.
 
 
 ## Quick Start
