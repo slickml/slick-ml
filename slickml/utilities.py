@@ -2,7 +2,7 @@ def join_dictionaries(dict1, dict2):
     """
     Join Two Dictionaries
     Function to join two input dictionaries. For the pairs
-    with the same keys, the values will be stored in a list.
+    with the same keys, the set of values will be stored in a list.
     --------------------------
     Parameters:
                - dict1: dictionary or key-value pairs
