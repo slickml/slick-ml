@@ -25,9 +25,14 @@ mpl.rcParams["lines.linewidth"] = 2
 warnings.filterwarnings("ignore")
 display(HTML("<style>.container { width:95% !important; }</style>"))
 
+# from slickml.plotting import plot_binary_classification_metrics
+
 
 class BinaryClassificationMetrics:
-    """Binary Classification Metrics --------------------------
+    """
+    Binary Classification Metrics
+    
+    --------------------------
     Parameters:
                - y_true: list[int] List of ground truth binary values [0, 1]
                - y_pred_proba: list[float] List of predicted probability for
@@ -40,8 +45,6 @@ class BinaryClassificationMetrics:
                "micro", "macro", "weighted", "binary"
                - precision_digits: int, optional (default=3) The number of
                precision digits to display scores in final dataframe
-               - figsize: tuple, optional (default=(12,12)) Figure size for
-               scores vs thresholds plots
                - display_df: boolean, optional (default=True) Flag to display
                metrics DataFrame with CSS formatting
 
@@ -54,7 +57,6 @@ class BinaryClassificationMetrics:
         threshold=0.5,
         average_method="binary",
         precision_digits=3,
-        figsize=(12, 12),
         display_df=True,
     ):
         """
@@ -74,7 +76,7 @@ class BinaryClassificationMetrics:
         else:
             self.average_method = average_method
         self.precision_digits = precision_digits
-        self.figsize = figsize
+#         self.figsize = figsize
         self.display_df = display_df
         self.y_pred = (self.y_pred_proba > self.threshold).astype(int)
         self.accuracy = self._accuracy()
@@ -104,6 +106,8 @@ class BinaryClassificationMetrics:
             self.prec_rec_threshold,
         ) = self._threshold_prec_rec()
         self.thresholds_dict = self._thresholds_dict()
+        self.plotting_dict = self._plotting_dict()
+        self.average_methods = self._average_methods()
 
     def _accuracy(self):
         """
@@ -379,193 +383,39 @@ class BinaryClassificationMetrics:
         }
 
         return thresholds_dict
-
-    def _plot_thresholds(self):
+    
+    def _plotting_dict(self):
         """
-        Function to plot all the calculated thresholds
+        Function to return the plotting properties as a dictionary
         """
-
-        # prepare thresholds for plotting
-        thr_set1 = np.arange(
-            min(self.roc_thresholds), max(self.roc_thresholds), 0.01
-        )
-        thr_set2 = np.arange(
-            min(self.pr_thresholds), max(self.pr_thresholds), 0.01
-        )
-        f1_list = [
-            2
-            * (self.precision_list[i] * self.recall_list[i])
-            / (self.precision_list[i] + self.recall_list[i])
-            for i in range(len(self.precision_list))
-        ]
-        queue_rate_list = [
-            (self.y_pred_proba >= thr).mean() for thr in thr_set2
-        ]
-        accuracy_list = [
-            accuracy_score(self.y_true, (self.y_pred_proba >= thr).astype(int))
-            for thr in thr_set1
-        ]
-
-        # subplot 1: roc curve
-        plt.figure(figsize=self.figsize)
-        plt.subplot(2, 2, 1)
-        plt.plot(
-            self.fpr_list,
-            self.tpr_list,
-            color="red",
-            label=f"AUC = {self.auc_roc:.3f}",
-        )
-        plt.plot(
-            self.fpr_list[self.youden_index],
-            self.tpr_list[self.youden_index],
-            marker="o",
-            color="navy",
-            ms=10,
-        )
-        plt.xlim([-0.01, 1.01])
-        plt.ylim([-0.01, 1.01])
-        plt.xlabel("1 - Specificity", fontsize=12)
-        plt.ylabel("Sensitivity", fontsize=12)
-        plt.tick_params(axis="both", which="major", labelsize=12)
-        plt.legend(prop={"size": 12}, loc=0)
-        plt.title("ROC Curve", fontsize=12)
-        plt.annotate(
-            f"Threshold = {self.youden_threshold:.3f}",
-            xy=(
-                self.fpr_list[self.youden_index],
-                self.tpr_list[self.youden_index],
-            ),
-            xycoords="data",
-            xytext=(
-                self.fpr_list[self.youden_index] + 0.4,
-                self.tpr_list[self.youden_index] - 0.4,
-            ),
-            arrowprops=dict(facecolor="black", shrink=0.05),
-            horizontalalignment="right",
-            verticalalignment="bottom",
-        )
-
-        # subplot 2: preferred scores vs thresholds
-        plt.subplot(2, 2, 2)
-        plt.plot(self.roc_thresholds, 1 - self.fpr_list, label="Specificity")
-        plt.plot(self.roc_thresholds, self.tpr_list, label="Sensitivity")
-        plt.plot(thr_set1, accuracy_list, label="Accuracy")
-        plt.xlabel("Threshold", fontsize=12)
-        plt.ylabel("Score", fontsize=12)
-        plt.tick_params(axis="both", which="major", labelsize=12)
-        plt.legend(bbox_to_anchor=(1.2, 0.5), loc="center", ncol=1)
-        plt.axvline(self.sens_spec_threshold, color="k", ls="--")
-        plt.title(f"Threshold = {self.sens_spec_threshold:.3f}", fontsize=12)
-        plt.title("Preferred Scores vs Thresholds", fontsize=12)
-        plt.xlim([-0.01, 1.01])
-        plt.ylim([-0.01, 1.01])
-        if self.sens_spec_threshold <= 0.5:
-            plt.annotate(
-                f"Threshold = {self.sens_spec_threshold:.3f}",
-                xy=(self.sens_spec_threshold, 0.05),
-                xycoords="data",
-                xytext=(self.sens_spec_threshold + 0.1, 0.05),
-                arrowprops=dict(facecolor="black", shrink=0.05),
-                horizontalalignment="left",
-                verticalalignment="bottom",
-            )
-        else:
-            plt.annotate(
-                f"Threshold = {self.sens_spec_threshold:.3f}",
-                xy=(self.sens_spec_threshold, 0.05),
-                xycoords="data",
-                xytext=(self.sens_spec_threshold - 0.4, 0.05),
-                arrowprops=dict(facecolor="black", shrink=0.05),
-                horizontalalignment="left",
-                verticalalignment="bottom",
-            )
-
-        # subplot 3: precision-recall curve
-        plt.subplot(2, 2, 3)
-        plt.plot(
-            self.recall_list,
-            self.precision_list,
-            color="red",
-            label=f"PR AUC ={self.auc_pr:.3f}",
-        )
-        plt.plot(
-            self.recall_list[self.prec_rec_index],
-            self.precision_list[self.prec_rec_index],
-            marker="o",
-            color="navy",
-            ms=10,
-        )
-        plt.axvline(
-            x=self.recall_list[self.prec_rec_index],
-            ymin=self.recall_list[self.prec_rec_index],
-            ymax=self.precision_list[self.prec_rec_index],
-            color="navy",
-            ls="--",
-        )
-        plt.xlim([-0.01, 1.01])
-        plt.ylim([-0.01, 1.01])
-        plt.xlabel("Recall", fontsize=12)
-        plt.ylabel("Precision", fontsize=12)
-        plt.tick_params(axis="both", which="major", labelsize=12)
-        plt.legend(prop={"size": 12}, loc=0)
-        plt.title("Precision-Recall Curve", fontsize=12)
-        plt.annotate(
-            f"Threshold = {self.prec_rec_threshold:.3f}",
-            xy=(
-                self.recall_list[self.prec_rec_index],
-                self.precision_list[self.prec_rec_index],
-            ),
-            xycoords="data",
-            xytext=(
-                self.recall_list[self.prec_rec_index] - 0.4,
-                self.precision_list[self.prec_rec_index] - 0.4,
-            ),
-            arrowprops=dict(facecolor="black", shrink=0.05),
-            horizontalalignment="left",
-            verticalalignment="bottom",
-        )
-
-        # subplot 4: preferred Scores vs Thresholds
-        plt.subplot(2, 2, 4)
-        plt.plot(
-            self.pr_thresholds, self.precision_list[1:], label="Precision"
-        )
-        plt.plot(self.pr_thresholds, self.recall_list[1:], label="Recall")
-        plt.plot(self.pr_thresholds, f1_list[1:], label="F1-Score")
-        plt.plot(thr_set2, queue_rate_list, label="Queue Rate")
-        plt.xlabel("Threshold", fontsize=12)
-        plt.ylabel("Score", fontsize=12)
-        plt.tick_params(axis="both", which="major", labelsize=12)
-        plt.axvline(self.prec_rec_threshold, color="k", ls="--")
-        plt.title("Preferred Scores vs Thresholds", fontsize=12)
-        plt.xlim([-0.01, 1.01])
-        plt.ylim([-0.01, 1.01])
-        plt.legend(bbox_to_anchor=(1.2, 0.5), loc="center", ncol=1)
-        if self.prec_rec_threshold <= 0.5:
-            plt.annotate(
-                f"Threshold = {self.prec_rec_threshold:.3f}",
-                xy=(self.prec_rec_threshold, 0.03),
-                xycoords="data",
-                xytext=(self.prec_rec_threshold + 0.1, 0.03),
-                arrowprops=dict(facecolor="black", shrink=0.05),
-                horizontalalignment="left",
-                verticalalignment="bottom",
-            )
-        else:
-            plt.annotate(
-                f"Threshold = {self.prec_rec_threshold:.3f}",
-                xy=(self.prec_rec_threshold, 0.03),
-                xycoords="data",
-                xytext=(self.prec_rec_threshold - 0.4, 0.03),
-                arrowprops=dict(facecolor="black", shrink=0.05),
-                horizontalalignment="left",
-                verticalalignment="bottom",
-            )
-
-        plt.show()
-
-    @staticmethod
-    def _average_methods():
+        plotting_dict = {"roc_thresholds" : self.roc_thresholds,
+                         "pr_thresholds" : self.pr_thresholds,
+                         "precision_list" : self.precision_list,
+                         "recall_list" : self.recall_list,
+                         "y_pred_proba" : self.y_pred_proba,
+                         "y_true" : self.y_true,
+                         "fpr_list" : self.fpr_list,
+                         "tpr_list" : self.tpr_list,
+                         "auc_roc" : self.auc_roc,
+                         "youden_index" : self.youden_index,
+                         "youden_threshold" : self.youden_threshold,
+                         "sens_spec_threshold" : self.sens_spec_threshold,
+                         "prec_rec_threshold" : self.prec_rec_threshold,
+                         "auc_pr" : self.auc_pr,
+                         "prec_rec_index" : self.prec_rec_index}
+        
+        return plotting_dict
+    
+    def plot(self, figsize=None):
+        """
+        Function to call the plot_binary_classificaiton_metrics function
+        from metrics.
+        """
+        from slickml.plotting import plot_binary_classification_metrics
+        
+        plot_binary_classification_metrics(figsize, **self.plotting_dict) 
+        
+    def _average_methods(self):
         """
         Function to return average methods as a list
         """

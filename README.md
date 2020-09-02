@@ -26,7 +26,7 @@ y_pred_proba = clf.predict_proba(X_test)[:, 1]
 # import slickml
 from slickml.metrics import BinaryClassificationMetrics
 example = BinaryClassificationMetrics(y_test, y_pred_proba)
-example.plot_thresholds()
+example.plot()
 
 ```
 ![slickml viz1](https://raw.githubusercontent.com/slickml/slick-ml/master/assets/images/metrics2.png)
