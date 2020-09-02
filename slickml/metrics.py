@@ -104,7 +104,7 @@ class BinaryClassificationMetrics:
             self.prec_rec_threshold,
         ) = self._threshold_prec_rec()
         self.thresholds_dict = self._thresholds_dict()
-        self.plot_thresholds(self) = self._plot_thresholds(self)
+        self.plot_thresholds = self._plot_thresholds(self)
 
     def _accuracy(self):
         """
