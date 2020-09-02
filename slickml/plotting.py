@@ -30,7 +30,7 @@ def plot_binary_classification_metrics(figsize=None, **kwargs):
     """
     Function to plot all the calculated thresholds for binary
     classification metrics. This function is helper function
-    based on the plotting_dict of BinaryClassificationMetrics class.
+    based on the plotting_dict object of BinaryClassificationMetrics class.
     --------------------------
     Parameters:
                - figsize: tuple, optional, figure size (default=(12, 12))
