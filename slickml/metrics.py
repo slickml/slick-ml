@@ -45,8 +45,6 @@ class BinaryClassificationMetrics:
                "micro", "macro", "weighted", "binary"
                - precision_digits: int, optional (default=3) The number of
                precision digits to display scores in final dataframe
-               - figsize: tuple, optional (default=(12,12)) Figure size for
-               scores vs thresholds plots
                - display_df: boolean, optional (default=True) Flag to display
                metrics DataFrame with CSS formatting
 
@@ -413,6 +411,7 @@ class BinaryClassificationMetrics:
         from metrics.
         """
         from slickml.plotting import plot_binary_classification_metrics
+        
         plot_binary_classification_metrics(figsize, **self.plotting_dict) 
         
     @staticmethod
