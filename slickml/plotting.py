@@ -36,7 +36,7 @@ def plot_binary_classification_metrics(figsize=None, **kwargs):
                - figsize: tuple, optional, figure size (default=(12, 12))
 
     """
-    import numpy as np
+    
     # initializing figsize
     if figsize is None:
         figsize = (12, 12)

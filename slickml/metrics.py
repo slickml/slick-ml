@@ -107,6 +107,7 @@ class BinaryClassificationMetrics:
         ) = self._threshold_prec_rec()
         self.thresholds_dict = self._thresholds_dict()
         self.plotting_dict = self._plotting_dict()
+        self.average_methods = self._average_methods()
 
     def _accuracy(self):
         """
@@ -414,8 +415,7 @@ class BinaryClassificationMetrics:
         
         plot_binary_classification_metrics(figsize, **self.plotting_dict) 
         
-    @staticmethod
-    def _average_methods():
+    def _average_methods(self):
         """
         Function to return average methods as a list
         """
