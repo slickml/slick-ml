@@ -11,7 +11,7 @@ def join_dictionaries(dict1, dict2):
     """
     if not (isinstance(dict1, dict) and isinstance(dict2, dict)):
         raise TypeError("The Type for dict1 and dict2 should be dict!")
-        
+
     dictionary = {}
     d1Keys = list(dict1.keys())
     d2Keys = list(dict2.keys())
@@ -24,12 +24,12 @@ def join_dictionaries(dict1, dict2):
             d1Vals = dict1[key]
             if isinstance(d1Vals, (int, float, str)):
                 d1Vals = [d1Vals]
-            
+
         if key in d2Keys:
             d2Vals = dict2[key]
             if isinstance(d2Vals, (int, float, str)):
                 d2Vals = [d2Vals]
-        
+
         dictionary[key] = list(set(d1Vals + d2Vals))
-        
-    return dictionary    
+
+    return dictionary
