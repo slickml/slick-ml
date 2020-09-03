@@ -73,3 +73,6 @@ Untitled*.ipynb
 
 # VSCode
 .vscode
+
+# Black
+.pre-commit-config.yaml
