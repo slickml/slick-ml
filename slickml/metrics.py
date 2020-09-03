@@ -464,6 +464,12 @@ class BinaryClassificationMetrics:
 
         return plotting_dict
 
+    def _average_methods(self):
+        """
+        Function to return average methods as a list
+        """
+        return ["binary", "weighted", "macro", "micro"]
+    
     def plot(self, figsize=None):
         """
         Function to call the plot_binary_classificaiton_metrics function
@@ -471,9 +477,3 @@ class BinaryClassificationMetrics:
         """
 
         plot_binary_classification_metrics(figsize, **self.plotting_dict)
-
-    def _average_methods(self):
-        """
-        Function to return average methods as a list
-        """
-        return ["binary", "weighted", "macro", "micro"]
