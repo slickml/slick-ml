@@ -1,13 +1,14 @@
+import numpy as np
+import pandas as pd
+
 def join_dictionaries(dict1, dict2):
-    """
-    Join Two Dictionaries
+    """Join Two Dictionaries
     Function to join two input dictionaries. For the pairs
     with the same keys, the set of values will be stored in a list.
-    --------------------------
-    Parameters:
-               - dict1: dictionary or key-value pairs
-               - dict2: dictionary or key-value pairs
-
+    Parameters
+    ----------
+    dict1: dictionary or key-value pairs
+    dict2: dictionary or key-value pairs
     """
     if not (isinstance(dict1, dict) and isinstance(dict2, dict)):
         raise TypeError("The Type for dict1 and dict2 should be dict!")
