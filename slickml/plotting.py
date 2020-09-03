@@ -62,31 +62,36 @@ def plot_binary_classification_metrics(figsize=None, **kwargs):
         accuracy_score(kwargs["y_true"], (kwargs["y_pred_proba"] >= thr).astype(int))
         for thr in thr_set1
     ]
+    
+    fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2,2, figsize=figsize)
 
     # subplot 1: roc curve
-    plt.figure(figsize=figsize)
-    plt.subplot(2, 2, 1)
-    plt.plot(
+    ax1.plot(
         kwargs["fpr_list"],
         kwargs["tpr_list"],
         color="red",
         label=f"AUC = {kwargs['auc_roc']:.3f}",
     )
-    plt.plot(
+    ax1.plot(
         kwargs["fpr_list"][kwargs["youden_index"]],
         kwargs["tpr_list"][kwargs["youden_index"]],
         marker="o",
         color="navy",
         ms=10,
     )
-    plt.xlim([-0.01, 1.01])
-    plt.ylim([-0.01, 1.01])
-    plt.xlabel("1 - Specificity", fontsize=12)
-    plt.ylabel("Sensitivity", fontsize=12)
-    plt.tick_params(axis="both", which="major", labelsize=12)
-    plt.legend(prop={"size": 12}, loc=0)
-    plt.title("ROC Curve", fontsize=12)
-    plt.annotate(
+    ax1.set(
+        xlim = [-0.01, 1.01],
+        ylim = [-0.01, 1.01],
+        xlabel = "1 - Specificity",
+        ylabel = "Sensitivity",
+        title = "ROC Curve",
+    )
+    
+    # TODO: adjust all font sizes
+    
+    ax1.tick_params(axis="both", which="major", labelsize=12)
+    ax1.legend(prop={"size": 12}, loc=0)
+    ax1.annotate(
         f"Threshold = {kwargs['youden_threshold']:.3f}",
         xy=(
             kwargs["fpr_list"][kwargs["youden_index"]],
@@ -103,21 +108,24 @@ def plot_binary_classification_metrics(figsize=None, **kwargs):
     )
 
     # subplot 2: preferred scores vs thresholds
-    plt.subplot(2, 2, 2)
-    plt.plot(kwargs["roc_thresholds"], 1 - kwargs["fpr_list"], label="Specificity")
-    plt.plot(kwargs["roc_thresholds"], kwargs["tpr_list"], label="Sensitivity")
-    plt.plot(thr_set1, accuracy_list, label="Accuracy")
-    plt.xlabel("Threshold", fontsize=12)
-    plt.ylabel("Score", fontsize=12)
-    plt.tick_params(axis="both", which="major", labelsize=12)
-    plt.legend(bbox_to_anchor=(1.2, 0.5), loc="center", ncol=1)
-    plt.axvline(kwargs["sens_spec_threshold"], color="k", ls="--")
-    plt.title(f"Threshold = {kwargs['sens_spec_threshold']:.3f}", fontsize=12)
-    plt.title("Preferred Scores vs Thresholds", fontsize=12)
-    plt.xlim([-0.01, 1.01])
-    plt.ylim([-0.01, 1.01])
+    ax2.plot(kwargs["roc_thresholds"], 1 - kwargs["fpr_list"], label="Specificity")
+    ax2.plot(kwargs["roc_thresholds"], kwargs["tpr_list"], label="Sensitivity")
+    ax2.plot(thr_set1, accuracy_list, label="Accuracy")
+    
+    ax2.set(
+        xlim=[-0.01, 1.01], 
+        ylim=[-0.01, 1.01],
+        xlabel="Threshold",
+        ylabel="Score",
+        title="Preferred Scores vs Thresholds",
+    )
+    
+    ax2.tick_params(axis="both", which="major", labelsize=12)
+    
+    ax2.legend(bbox_to_anchor=(1.2, 0.5), loc="center", ncol=1)
+    ax2.axvline(kwargs["sens_spec_threshold"], color="k", ls="--")
     if kwargs["sens_spec_threshold"] <= 0.5:
-        plt.annotate(
+        ax2.annotate(
             f"Threshold = {kwargs['sens_spec_threshold']:.3f}",
             xy=(kwargs["sens_spec_threshold"], 0.05),
             xycoords="data",
@@ -127,7 +135,7 @@ def plot_binary_classification_metrics(figsize=None, **kwargs):
             verticalalignment="bottom",
         )
     else:
-        plt.annotate(
+        ax2.annotate(
             f"Threshold = {kwargs['sens_spec_threshold']:.3f}",
             xy=(kwargs["sens_spec_threshold"], 0.05),
             xycoords="data",
@@ -138,35 +146,37 @@ def plot_binary_classification_metrics(figsize=None, **kwargs):
         )
 
     # subplot 3: precision-recall curve
-    plt.subplot(2, 2, 3)
-    plt.plot(
+    ax3.plot(
         kwargs["recall_list"],
         kwargs["precision_list"],
         color="red",
         label=f"PR AUC ={kwargs['auc_pr']:.3f}",
     )
-    plt.plot(
+    ax3.plot(
         kwargs["recall_list"][kwargs["prec_rec_index"]],
         kwargs["precision_list"][kwargs["prec_rec_index"]],
         marker="o",
         color="navy",
         ms=10,
     )
-    plt.axvline(
+    ax3.axvline(
         x=kwargs["recall_list"][kwargs["prec_rec_index"]],
         ymin=kwargs["recall_list"][kwargs["prec_rec_index"]],
         ymax=kwargs["precision_list"][kwargs["prec_rec_index"]],
         color="navy",
         ls="--",
     )
-    plt.xlim([-0.01, 1.01])
-    plt.ylim([-0.01, 1.01])
-    plt.xlabel("Recall", fontsize=12)
-    plt.ylabel("Precision", fontsize=12)
-    plt.tick_params(axis="both", which="major", labelsize=12)
-    plt.legend(prop={"size": 12}, loc=0)
-    plt.title("Precision-Recall Curve", fontsize=12)
-    plt.annotate(
+    ax3.set(
+        xlim=[-0.01, 1.01],
+        ylim=[-0.01, 1.01],
+        xlabel="Recall",
+        ylabel="Precision",
+        title="Precision-Recall Curve"
+    )
+    
+    ax3.legend(prop={"size": 12}, loc=0)
+    ax3.tick_params(axis="both", which="major", labelsize=12)
+    ax3.annotate(
         f"Threshold = {kwargs['prec_rec_threshold']:.3f}",
         xy=(
             kwargs["recall_list"][kwargs["prec_rec_index"]],
@@ -183,21 +193,25 @@ def plot_binary_classification_metrics(figsize=None, **kwargs):
     )
 
     # subplot 4: preferred Scores vs Thresholds
-    plt.subplot(2, 2, 4)
-    plt.plot(kwargs["pr_thresholds"], kwargs["precision_list"][1:], label="Precision")
-    plt.plot(kwargs["pr_thresholds"], kwargs["recall_list"][1:], label="Recall")
-    plt.plot(kwargs["pr_thresholds"], f1_list[1:], label="F1-Score")
-    plt.plot(thr_set2, queue_rate_list, label="Queue Rate")
-    plt.xlabel("Threshold", fontsize=12)
-    plt.ylabel("Score", fontsize=12)
-    plt.tick_params(axis="both", which="major", labelsize=12)
-    plt.axvline(kwargs["prec_rec_threshold"], color="k", ls="--")
-    plt.title("Preferred Scores vs Thresholds", fontsize=12)
-    plt.xlim([-0.01, 1.01])
-    plt.ylim([-0.01, 1.01])
-    plt.legend(bbox_to_anchor=(1.2, 0.5), loc="center", ncol=1)
+    ax4.plot(kwargs["pr_thresholds"], kwargs["precision_list"][1:], label="Precision")
+    ax4.plot(kwargs["pr_thresholds"], kwargs["recall_list"][1:], label="Recall")
+    ax4.plot(kwargs["pr_thresholds"], f1_list[1:], label="F1-Score")
+    ax4.plot(thr_set2, queue_rate_list, label="Queue Rate")
+    
+    ax4.set(
+        xlim=[-0.01, 1.01],
+        ylim=[-0.01, 1.01],
+        xlabel="Threshold",
+        ylabel="Score",
+        title="Preferred Scores vs Thresholds",
+    )
+    
+    ax4.tick_params(axis="both", which="major", labelsize=12)
+    ax4.legend(bbox_to_anchor=(1.2, 0.5), loc="center", ncol=1)
+    ax4.axvline(kwargs["prec_rec_threshold"], color="k", ls="--")
+    
     if kwargs["prec_rec_threshold"] <= 0.5:
-        plt.annotate(
+        ax4.annotate(
             f"Threshold = {kwargs['prec_rec_threshold']:.3f}",
             xy=(kwargs["prec_rec_threshold"], 0.03),
             xycoords="data",
@@ -207,7 +221,7 @@ def plot_binary_classification_metrics(figsize=None, **kwargs):
             verticalalignment="bottom",
         )
     else:
-        plt.annotate(
+        ax4.annotate(
             f"Threshold = {kwargs['prec_rec_threshold']:.3f}",
             xy=(kwargs["prec_rec_threshold"], 0.03),
             xycoords="data",
