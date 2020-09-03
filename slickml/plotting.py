@@ -27,16 +27,15 @@ display(HTML("<style>.container { width:95% !important; }</style>"))
 
 
 def plot_binary_classification_metrics(figsize=None, **kwargs):
+    """Function to plot binary classification metrics.
+    This function is a helper function based on the plotting_dict
+    attribute of the BinaryClassificationMetrics class.
+    Parameters
+    ----------
+    figsize: tuple, optional, (default=(12, 12))
+        Figure size
     """
-    Function to plot all the calculated thresholds for binary
-    classification metrics. This function is helper function
-    based on the plotting_dict object of BinaryClassificationMetrics class.
-    --------------------------
-    Parameters:
-               - figsize: tuple, optional, figure size (default=(12, 12))
 
-    """
-    
     # initializing figsize
     if figsize is None:
         figsize = (12, 12)
@@ -44,7 +43,7 @@ def plot_binary_classification_metrics(figsize=None, **kwargs):
         figsize = figsize
     else:
         raise TypeError("Only tuple and list types are allowed for figsize!")
-        
+
     # prepare thresholds for plotting
     thr_set1 = np.arange(
         min(kwargs["roc_thresholds"]), max(kwargs["roc_thresholds"]), 0.01
@@ -58,9 +57,7 @@ def plot_binary_classification_metrics(figsize=None, **kwargs):
         / (kwargs["precision_list"][i] + kwargs["recall_list"][i])
         for i in range(len(kwargs["precision_list"]))
     ]
-    queue_rate_list = [
-        (kwargs["y_pred_proba"] >= thr).mean() for thr in thr_set2
-    ]
+    queue_rate_list = [(kwargs["y_pred_proba"] >= thr).mean() for thr in thr_set2]
     accuracy_list = [
         accuracy_score(kwargs["y_true"], (kwargs["y_pred_proba"] >= thr).astype(int))
         for thr in thr_set1
@@ -122,9 +119,9 @@ def plot_binary_classification_metrics(figsize=None, **kwargs):
     if kwargs["sens_spec_threshold"] <= 0.5:
         plt.annotate(
             f"Threshold = {kwargs['sens_spec_threshold']:.3f}",
-            xy=(kwargs['sens_spec_threshold'], 0.05),
+            xy=(kwargs["sens_spec_threshold"], 0.05),
             xycoords="data",
-            xytext=(kwargs['sens_spec_threshold'] + 0.1, 0.05),
+            xytext=(kwargs["sens_spec_threshold"] + 0.1, 0.05),
             arrowprops=dict(facecolor="black", shrink=0.05),
             horizontalalignment="left",
             verticalalignment="bottom",
@@ -187,9 +184,7 @@ def plot_binary_classification_metrics(figsize=None, **kwargs):
 
     # subplot 4: preferred Scores vs Thresholds
     plt.subplot(2, 2, 4)
-    plt.plot(
-        kwargs["pr_thresholds"], kwargs["precision_list"][1:], label="Precision"
-    )
+    plt.plot(kwargs["pr_thresholds"], kwargs["precision_list"][1:], label="Precision")
     plt.plot(kwargs["pr_thresholds"], kwargs["recall_list"][1:], label="Recall")
     plt.plot(kwargs["pr_thresholds"], f1_list[1:], label="F1-Score")
     plt.plot(thr_set2, queue_rate_list, label="Queue Rate")

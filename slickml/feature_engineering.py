@@ -45,39 +45,3 @@ def noisy_features(X, random_state=None, prefix=None):
     merged_df = pd.concat([df, noisy_df.reset_index(drop=True)], axis=1)
 
     return merged_df
-
-def memory_use_csr(csr):
-    """Memory use in bytes by sparse matrix in csr format.
-    Parameters
-    ----------
-    csr: sparse matric in csr format 
-    """
-    return csr.data.nbytes + csr.indptr.nbytes + csr.indices.nbytes
-
-def df_to_csr(df, fillna = 0., verbose = False):
-    """Convert Pandas DataFrame to a sparse csr matrix.
-    Parameters
-    ----------
-    df: Pandas DataFrame
-    fillna: Value to fill null values, (default=0.0)
-        Note: csr matrices assume the values have float dtype.
-    verbose: Flag to show the memory usage of csr matrix, (default=False)
-    """
-    df_ = df.copy()
-    csr = (
-        df_.astype("float")\
-           .fillna(fillna)\
-           .to_sparse(fill_value=fillna)\
-           .to_coo()\
-           .tocsr()
-    )
-    if verbose:
-        df_.info(memory_usage="deep")
-        print(F"CSR Memory Usage: {memory_use_csr(csr)/2**20:.3} MB")
-        
-    return csr
-
-
-
-
-

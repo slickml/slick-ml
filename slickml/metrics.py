@@ -13,7 +13,7 @@ from sklearn.metrics import (
     roc_auc_score,
     average_precision_score,
     confusion_matrix,
-    roc_curve
+    roc_curve,
 )
 
 from IPython.core.display import display, HTML
@@ -53,7 +53,7 @@ class BinaryClassificationMetrics:
     accuracy: float value between 0. and 1.
         Classification accuracy based on threshold value
     balanced_accuracy: float value between 0. and 1.
-        Balanced classification accuracy based on threshold value 
+        Balanced classification accuracy based on threshold value
         considering the prevalence of the classes
     fpr_list: numpy.array[float] or list[float]
         List of calculated false-positive-rates based on roc_thresholds.
@@ -92,7 +92,7 @@ class BinaryClassificationMetrics:
     fp: integer
         False positive counts based on threshold value
     fn: integer
-        False negative counts based on threshold value        
+        False negative counts based on threshold value
     tp: integer
         True positive counts based on threshold value
     threat_score: float value between 0. and 1.
@@ -102,7 +102,7 @@ class BinaryClassificationMetrics:
     sens_spec_threshold: float value between 0. and 1.
         Threshold calculated based on maximized sensitivity-specificity
     prec_rec_threshold: float value between 0. and 1.
-        Threshold calculated based on maximized precision-recall       
+        Threshold calculated based on maximized precision-recall
     thresholds_dict: dict()
         Dictionary of all calculated thresholds
     metrics_dict: dict()
@@ -114,7 +114,7 @@ class BinaryClassificationMetrics:
     plotting_dict: dict()
         Plotting object as a dictionary consists of all
         calculated metrics which was used to plot the thresholds
-    """    
+    """
 
     def __init__(
         self,
@@ -305,14 +305,14 @@ class BinaryClassificationMetrics:
             w = self.tp + self.tn
             wp = self.tp / w
             wn = self.tn / w
-            threat_score = wp * (
-                self.tp / (self.tp + self.fp + self.fn)
-            ) + wn * (self.tn / (self.tn + self.fn + self.fp))
+            threat_score = wp * (self.tp / (self.tp + self.fp + self.fn)) + wn * (
+                self.tn / (self.tn + self.fn + self.fp)
+            )
 
         elif self.average_method == "macro":
-            threat_score = 0.5 * (
-                self.tp / (self.tp + self.fp + self.fn)
-            ) + 0.5 * (self.tn / (self.tn + self.fn + self.fp))
+            threat_score = 0.5 * (self.tp / (self.tp + self.fp + self.fn)) + 0.5 * (
+                self.tn / (self.tn + self.fn + self.fp)
+            )
 
         else:
             threat_score = self.tp / (self.tp + self.fp + self.fn)
@@ -325,9 +325,7 @@ class BinaryClassificationMetrics:
         precision digits and average method"""
         metrics_dict = {
             "Accuracy": round(self.accuracy, self.precision_digits),
-            "Balanced Accuracy": round(
-                self.balanced_accuracy, self.precision_digits
-            ),
+            "Balanced Accuracy": round(self.balanced_accuracy, self.precision_digits),
             "ROC AUC": round(self.auc_roc, self.precision_digits),
             "PR AUC": round(self.auc_pr, self.precision_digits),
             "Precision": round(self.precision, self.precision_digits),
@@ -336,9 +334,7 @@ class BinaryClassificationMetrics:
             "F-2 Score": round(self.f2, self.precision_digits),
             "F-0.50 Score": round(self.f05, self.precision_digits),
             "Threat Score": round(self.threat_score, self.precision_digits),
-            "Average Precision": round(
-                self.average_precision, self.precision_digits
-            ),
+            "Average Precision": round(self.average_precision, self.precision_digits),
             "TP": self.tp,
             "TN": self.tn,
             "FP": self.fp,
@@ -400,9 +396,7 @@ class BinaryClassificationMetrics:
 
         if self.display_df:
             display(
-                metrics_df.style.background_gradient(cmap=cm).set_table_styles(
-                    styles
-                )
+                metrics_df.style.background_gradient(cmap=cm).set_table_styles(styles)
             )
 
         return metrics_df
@@ -445,37 +439,39 @@ class BinaryClassificationMetrics:
         }
 
         return thresholds_dict
-    
+
     def _plotting_dict(self):
         """
         Function to return the plotting properties as a dictionary
         """
-        plotting_dict = {"roc_thresholds" : self.roc_thresholds,
-                         "pr_thresholds" : self.pr_thresholds,
-                         "precision_list" : self.precision_list,
-                         "recall_list" : self.recall_list,
-                         "y_pred_proba" : self.y_pred_proba,
-                         "y_true" : self.y_true,
-                         "fpr_list" : self.fpr_list,
-                         "tpr_list" : self.tpr_list,
-                         "auc_roc" : self.auc_roc,
-                         "youden_index" : self.youden_index,
-                         "youden_threshold" : self.youden_threshold,
-                         "sens_spec_threshold" : self.sens_spec_threshold,
-                         "prec_rec_threshold" : self.prec_rec_threshold,
-                         "auc_pr" : self.auc_pr,
-                         "prec_rec_index" : self.prec_rec_index}
-        
+        plotting_dict = {
+            "roc_thresholds": self.roc_thresholds,
+            "pr_thresholds": self.pr_thresholds,
+            "precision_list": self.precision_list,
+            "recall_list": self.recall_list,
+            "y_pred_proba": self.y_pred_proba,
+            "y_true": self.y_true,
+            "fpr_list": self.fpr_list,
+            "tpr_list": self.tpr_list,
+            "auc_roc": self.auc_roc,
+            "youden_index": self.youden_index,
+            "youden_threshold": self.youden_threshold,
+            "sens_spec_threshold": self.sens_spec_threshold,
+            "prec_rec_threshold": self.prec_rec_threshold,
+            "auc_pr": self.auc_pr,
+            "prec_rec_index": self.prec_rec_index,
+        }
+
         return plotting_dict
-    
+
     def plot(self, figsize=None):
         """
         Function to call the plot_binary_classificaiton_metrics function
         from metrics.
         """
-        
-        plot_binary_classification_metrics(figsize, **self.plotting_dict) 
-        
+
+        plot_binary_classification_metrics(figsize, **self.plotting_dict)
+
     def _average_methods(self):
         """
         Function to return average methods as a list
