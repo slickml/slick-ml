@@ -1,13 +1,15 @@
+import numpy as np
+import pandas as pd
+
+
 def join_dictionaries(dict1, dict2):
-    """
-    Join Two Dictionaries
+    """Join two dictionaries.
     Function to join two input dictionaries. For the pairs
     with the same keys, the set of values will be stored in a list.
-    --------------------------
-    Parameters:
-               - dict1: dictionary or key-value pairs
-               - dict2: dictionary or key-value pairs
-
+    Parameters
+    ----------
+    dict1: dictionary or key-value pairs
+    dict2: dictionary or key-value pairs
     """
     if not (isinstance(dict1, dict) and isinstance(dict2, dict)):
         raise TypeError("The Type for dict1 and dict2 should be dict!")
@@ -33,3 +35,54 @@ def join_dictionaries(dict1, dict2):
         dictionary[key] = list(set(d1Vals + d2Vals))
 
     return dictionary
+
+def memory_use_csr(csr):
+    """Memory use in bytes by sparse matrix in csr format.
+    Parameters
+    ----------
+    csr: sparse matric in csr format
+    """
+    return csr.data.nbytes + csr.indptr.nbytes + csr.indices.nbytes
+
+
+def df_to_csr(df, fillna=0.0, verbose=False):
+    """Convert Pandas DataFrame to a sparse csr matrix.
+    Parameters
+    ----------
+    df: Pandas DataFrame
+    fillna: Value to fill null values, (default=0.0)
+        Note: csr matrices assume the values have float dtype.
+    verbose: Flag to show the memory usage of csr matrix, (default=False)
+    """
+    df_ = df.copy()
+    csr = (
+        df_.astype("float").fillna(fillna).to_sparse(fill_value=fillna).to_coo().tocsr()
+    )
+    if verbose:
+        df_.info(memory_usage="deep")
+        print(f"CSR Memory Usage: {memory_use_csr(csr)/2**20:.3} MB")
+
+    return csr
+
+
+def pd_explode(df, column):
+    """Function to explodes a column into columnar format.
+    Parameters
+    ----------
+    df: Pandas DataFrame
+    column: str, name of column wanting to explode
+    """
+    if not isinstance(df, pd.DataFrame):
+        raise TypeError("Input df must have Pandas DataFrame dtype")
+    if not isinstance(column, str):
+        raise TypeError("Input column name must have str dtype")
+
+    df_ = df.copy()
+    vals = df_[column].values.tolist()
+    rs = [len(r) for r in vals]
+    a = np.repeat(
+        df_[[col for col in df_.columns.tolist() if col != column]].values, rs, axis=0
+    )
+    return pd.DataFrame(np.column_stack((a, np.concatenate(vals))), columns=df_.columns)
+
+

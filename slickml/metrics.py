@@ -1,8 +1,8 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-import matplotlib as mpl
 import seaborn as sns
+
 from sklearn.metrics import (
     auc,
     precision_recall_curve,
@@ -17,37 +17,103 @@ from sklearn.metrics import (
 )
 
 from IPython.core.display import display, HTML
-import warnings
 
-sns.set_style("ticks")
-mpl.rcParams["axes.linewidth"] = 2
-mpl.rcParams["lines.linewidth"] = 2
-warnings.filterwarnings("ignore")
-display(HTML("<style>.container { width:95% !important; }</style>"))
-
-# from slickml.plotting import plot_binary_classification_metrics
+from slickml.plotting import plot_binary_classification_metrics
 
 
 class BinaryClassificationMetrics:
-    """
-    Binary Classification Metrics
-    
-    --------------------------
-    Parameters:
-               - y_true: list[int] List of ground truth binary values [0, 1]
-               - y_pred_proba: list[float] List of predicted probability for
-               the positive class (class=1 or y_pred_proba[:, 1] in
-               scikit-learn)
-               - threshold: float, optional (default=0.5) Threshold value for
-               mapping y_pred_prob to y_pred (> is used not >=)
-               - average_method: string, optional (default="binary") Method to
-               calculate the average of the metric. Possible values are
-               "micro", "macro", "weighted", "binary"
-               - precision_digits: int, optional (default=3) The number of
-               precision digits to display scores in final dataframe
-               - display_df: boolean, optional (default=True) Flag to display
-               metrics DataFrame with CSS formatting
-
+    """Binary Classification Metrics.
+    This is wrapper to calculate all the binary classification
+    metrics with both arbitrary and three computed methods for
+    calculating the thresholds. Threshold computations including:
+    1) Youden Index: (https://en.wikipedia.org/wiki/Youden%27s_J_statistic).
+    2) Maximizing Precision-Recall.
+    3) Maximizing Sensitivity-Specificity.
+    Parameters
+    ----------
+    y_true: numpy.array[int] or list[int]
+        List of ground truth binary values [0, 1]
+    y_pred_proba: numpy.array[float] or list[float]
+        List of predicted probability for the positive class
+        (class=1 or y_pred_proba[:, 1] in scikit-learn)
+    threshold: float, optional (default=0.5)
+        Threshold value for mapping y_pred_prob to y_pred
+        Note that for threshold ">" is used instead of  ">="
+    average_method: string, optional (default="binary")
+        Method to calculate the average of the metric. Possible values are
+        "micro", "macro", "weighted", "binary"
+    precision_digits: int, optional (default=3)
+        The number of precision digits to format the scores' dataframe
+    display_df: boolean, optional (default=True)
+        Flag to display the formatted scores' dataframe
+    Attributes
+    ----------
+    y_true: numpy.array[int] or list[int]
+        List of predicted class with binary values [0, 1]
+    accuracy: float value between 0. and 1.
+        Classification accuracy based on threshold value
+    balanced_accuracy: float value between 0. and 1.
+        Balanced classification accuracy based on threshold value
+        considering the prevalence of the classes
+    fpr_list: numpy.array[float] or list[float]
+        List of calculated false-positive-rates based on roc_thresholds.
+        This can be used for ROC curve plotting
+    tpr_list: numpy.array[float] or list[float]
+        List of calculated true-positive-rates based on roc_thresholds
+        This can be used for ROC curve plotting
+    roc_thresholds: numpy.array[float] or list[float]
+        List of thresholds value to calculate fpr_list and tpr_list
+    auc_roc: float value between 0. and 1.
+        Area under ROC curve
+    precision_list: numpy.array[float] or list[float]
+        List of calculated precision based on pr_thresholds
+        This can be used for ROC curve plotting
+    recall_list: numpy.array[float] or list[float]
+        List of calculated recall based on pr_thresholds
+        This can be used for ROC curve plotting
+    pr_thresholds: numpy.array[float] or list[float]
+        List of thresholds value to calculate precision_list and recall_list
+    auc_pr: float value between 0. and 1.
+        Area under Precision-Recall curve
+    precision: float value between 0. and 1.
+        Precision based on threshold value
+    recall: float value between 0. and 1.
+        Recall based on threshold value
+    f1: float value between 0. and 1.
+        F1-score based on threshold value (beta=1.0)
+    f2: float value between 0. and 1.
+        F2-score based on threshold value (beta=2.0)
+    f05: float value between 0. and 1.
+        F(1/2)-score based on threshold value (beta=0.5)
+    average_precision: float value between 0. and 1.
+        Avearge precision based on threshold value and class prevalence
+    tn: integer
+        True negative counts based on threshold value
+    fp: integer
+        False positive counts based on threshold value
+    fn: integer
+        False negative counts based on threshold value
+    tp: integer
+        True positive counts based on threshold value
+    threat_score: float value between 0. and 1.
+        Threat score based on threshold value
+    youden_threshold: float value between 0. and 1.
+        Threshold calculated based on Youden Index
+    sens_spec_threshold: float value between 0. and 1.
+        Threshold calculated based on maximized sensitivity-specificity
+    prec_rec_threshold: float value between 0. and 1.
+        Threshold calculated based on maximized precision-recall
+    thresholds_dict: dict()
+        Dictionary of all calculated thresholds
+    metrics_dict: dict()
+        Dictionary of all calculated metrics
+    metrics_df: Pandas DataFrame()
+        Pandas DataFrame of all calculated metrics with threshold as index
+    average_methods: list[str]
+        List of all possible average methods
+    plotting_dict: dict()
+        Plotting object as a dictionary consists of all
+        calculated metrics which was used to plot the thresholds
     """
 
     def __init__(
@@ -59,9 +125,6 @@ class BinaryClassificationMetrics:
         precision_digits=3,
         display_df=True,
     ):
-        """
-        Default constructor
-        """
         if not isinstance(y_true, np.ndarray):
             self.y_true = np.array(y_true)
         else:
@@ -76,7 +139,6 @@ class BinaryClassificationMetrics:
         else:
             self.average_method = average_method
         self.precision_digits = precision_digits
-#         self.figsize = figsize
         self.display_df = display_df
         self.y_pred = (self.y_pred_proba > self.threshold).astype(int)
         self.accuracy = self._accuracy()
@@ -243,14 +305,14 @@ class BinaryClassificationMetrics:
             w = self.tp + self.tn
             wp = self.tp / w
             wn = self.tn / w
-            threat_score = wp * (
-                self.tp / (self.tp + self.fp + self.fn)
-            ) + wn * (self.tn / (self.tn + self.fn + self.fp))
+            threat_score = wp * (self.tp / (self.tp + self.fp + self.fn)) + wn * (
+                self.tn / (self.tn + self.fn + self.fp)
+            )
 
         elif self.average_method == "macro":
-            threat_score = 0.5 * (
-                self.tp / (self.tp + self.fp + self.fn)
-            ) + 0.5 * (self.tn / (self.tn + self.fn + self.fp))
+            threat_score = 0.5 * (self.tp / (self.tp + self.fp + self.fn)) + 0.5 * (
+                self.tn / (self.tn + self.fn + self.fp)
+            )
 
         else:
             threat_score = self.tp / (self.tp + self.fp + self.fn)
@@ -263,9 +325,7 @@ class BinaryClassificationMetrics:
         precision digits and average method"""
         metrics_dict = {
             "Accuracy": round(self.accuracy, self.precision_digits),
-            "Balanced Accuracy": round(
-                self.balanced_accuracy, self.precision_digits
-            ),
+            "Balanced Accuracy": round(self.balanced_accuracy, self.precision_digits),
             "ROC AUC": round(self.auc_roc, self.precision_digits),
             "PR AUC": round(self.auc_pr, self.precision_digits),
             "Precision": round(self.precision, self.precision_digits),
@@ -274,9 +334,7 @@ class BinaryClassificationMetrics:
             "F-2 Score": round(self.f2, self.precision_digits),
             "F-0.50 Score": round(self.f05, self.precision_digits),
             "Threat Score": round(self.threat_score, self.precision_digits),
-            "Average Precision": round(
-                self.average_precision, self.precision_digits
-            ),
+            "Average Precision": round(self.average_precision, self.precision_digits),
             "TP": self.tp,
             "TN": self.tn,
             "FP": self.fp,
@@ -338,9 +396,7 @@ class BinaryClassificationMetrics:
 
         if self.display_df:
             display(
-                metrics_df.style.background_gradient(cmap=cm).set_table_styles(
-                    styles
-                )
+                metrics_df.style.background_gradient(cmap=cm).set_table_styles(styles)
             )
 
         return metrics_df
@@ -383,38 +439,39 @@ class BinaryClassificationMetrics:
         }
 
         return thresholds_dict
-    
+
     def _plotting_dict(self):
         """
         Function to return the plotting properties as a dictionary
         """
-        plotting_dict = {"roc_thresholds" : self.roc_thresholds,
-                         "pr_thresholds" : self.pr_thresholds,
-                         "precision_list" : self.precision_list,
-                         "recall_list" : self.recall_list,
-                         "y_pred_proba" : self.y_pred_proba,
-                         "y_true" : self.y_true,
-                         "fpr_list" : self.fpr_list,
-                         "tpr_list" : self.tpr_list,
-                         "auc_roc" : self.auc_roc,
-                         "youden_index" : self.youden_index,
-                         "youden_threshold" : self.youden_threshold,
-                         "sens_spec_threshold" : self.sens_spec_threshold,
-                         "prec_rec_threshold" : self.prec_rec_threshold,
-                         "auc_pr" : self.auc_pr,
-                         "prec_rec_index" : self.prec_rec_index}
-        
+        plotting_dict = {
+            "roc_thresholds": self.roc_thresholds,
+            "pr_thresholds": self.pr_thresholds,
+            "precision_list": self.precision_list,
+            "recall_list": self.recall_list,
+            "y_pred_proba": self.y_pred_proba,
+            "y_true": self.y_true,
+            "fpr_list": self.fpr_list,
+            "tpr_list": self.tpr_list,
+            "auc_roc": self.auc_roc,
+            "youden_index": self.youden_index,
+            "youden_threshold": self.youden_threshold,
+            "sens_spec_threshold": self.sens_spec_threshold,
+            "prec_rec_threshold": self.prec_rec_threshold,
+            "auc_pr": self.auc_pr,
+            "prec_rec_index": self.prec_rec_index,
+        }
+
         return plotting_dict
-    
+
     def plot(self, figsize=None):
         """
         Function to call the plot_binary_classificaiton_metrics function
         from metrics.
         """
-        from slickml.plotting import plot_binary_classification_metrics
-        
-        plot_binary_classification_metrics(figsize, **self.plotting_dict) 
-        
+
+        plot_binary_classification_metrics(figsize, **self.plotting_dict)
+
     def _average_methods(self):
         """
         Function to return average methods as a list
