@@ -120,9 +120,9 @@ class BinaryClassificationMetrics:
         self,
         y_true,
         y_pred_proba,
-        threshold=0.5,
-        average_method="binary",
-        precision_digits=3,
+        threshold=None,
+        average_method=None,
+        precision_digits=None,
         display_df=True,
     ):
         if not isinstance(y_true, np.ndarray):
@@ -133,12 +133,18 @@ class BinaryClassificationMetrics:
             self.y_pred_proba = np.array(y_pred_proba)
         else:
             self.y_pred_proba = y_pred_proba
-        self.threshold = threshold
-        if average_method == "binary":
+        if threshold is None:
+            self.threshold = 0.5
+        else:
+            self.threshold = threshold
+        if average_method == "binary" or average_method is None:
             self.average_method = None
         else:
             self.average_method = average_method
-        self.precision_digits = precision_digits
+        if precision_digits is None:
+            self.precision_digits = 3
+        else:
+            self.precision_digits = precision_digits
         self.display_df = display_df
         self.y_pred = (self.y_pred_proba > self.threshold).astype(int)
         self.accuracy = self._accuracy()
