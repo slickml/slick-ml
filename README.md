@@ -52,7 +52,7 @@ let others know that you are working on it.
 
 Whether the contributions consists of adding new features,  optimizing code, or
 assisting with the documentation, we welcome new contributors of all experience
-levels. The SlickML community goals are to be helpful and effective
+levels. The SlickML community goals are to be helpful and effective.
 
 ## Citing SlickML
 If you use SlickML in academic work, please consider citing
