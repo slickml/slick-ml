@@ -39,7 +39,7 @@ class BinaryClassificationMetrics:
     threshold: float, optional (default=0.5)
         Threshold value for mapping y_pred_prob to y_pred
         Note that for threshold ">" is used instead of  ">="
-    average_method: string, optional (default="binary")
+    average_method: str, optional (default="binary")
         Method to calculate the average of the metric. Possible values are
         "micro", "macro", "weighted", "binary"
     precision_digits: int, optional (default=3)
@@ -120,9 +120,9 @@ class BinaryClassificationMetrics:
         self,
         y_true,
         y_pred_proba,
-        threshold=0.5,
-        average_method="binary",
-        precision_digits=3,
+        threshold=None,
+        average_method=None,
+        precision_digits=None,
         display_df=True,
     ):
         if not isinstance(y_true, np.ndarray):
@@ -133,12 +133,18 @@ class BinaryClassificationMetrics:
             self.y_pred_proba = np.array(y_pred_proba)
         else:
             self.y_pred_proba = y_pred_proba
-        self.threshold = threshold
-        if average_method == "binary":
+        if threshold is None:
+            self.threshold = 0.5
+        else:
+            self.threshold = threshold
+        if average_method == "binary" or average_method is None:
             self.average_method = None
         else:
             self.average_method = average_method
-        self.precision_digits = precision_digits
+        if precision_digits is None:
+            self.precision_digits = 3
+        else:
+            self.precision_digits = precision_digits
         self.display_df = display_df
         self.y_pred = (self.y_pred_proba > self.threshold).astype(int)
         self.accuracy = self._accuracy()
@@ -464,6 +470,12 @@ class BinaryClassificationMetrics:
 
         return plotting_dict
 
+    def _average_methods(self):
+        """
+        Function to return average methods as a list
+        """
+        return ["binary", "weighted", "macro", "micro"]
+
     def plot(self, figsize=None):
         """
         Function to call the plot_binary_classificaiton_metrics function
@@ -471,9 +483,3 @@ class BinaryClassificationMetrics:
         """
 
         plot_binary_classification_metrics(figsize, **self.plotting_dict)
-
-    def _average_methods(self):
-        """
-        Function to return average methods as a list
-        """
-        return ["binary", "weighted", "macro", "micro"]
