@@ -51,7 +51,7 @@ clf = XGBClassifier()
 clf.fit(X_train, y_train)
 y_pred_proba = clf.predict_proba(X_test)[:, 1]
 
-# import slickml
+# plot binary metrics 
 from slickml.metrics import BinaryClassificationMetrics
 metrics = BinaryClassificationMetrics(y_test, y_pred_proba)
 metrics.plot()
