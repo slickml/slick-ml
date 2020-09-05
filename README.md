@@ -46,8 +46,8 @@ metrics based on multiple calculated thresholds:
 
 ```python
 # train a classifier using loaded train/test data
-from sklearn.ensemble import RandomForestClassifier
-clf = RandomForestClassifier()
+from xgboost import XGBClassifier
+clf = XGBClassifier()
 clf.fit(X_train, y_train)
 y_pred_proba = clf.predict_proba(X_test)[:, 1]
 
