@@ -475,7 +475,7 @@ class BinaryClassificationMetrics:
         Function to return average methods as a list
         """
         return ["binary", "weighted", "macro", "micro"]
-    
+
     def plot(self, figsize=None):
         """
         Function to call the plot_binary_classificaiton_metrics function
