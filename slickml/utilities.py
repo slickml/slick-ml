@@ -36,6 +36,7 @@ def join_dictionaries(dict1, dict2):
 
     return dictionary
 
+
 def memory_use_csr(csr):
     """Memory use in bytes by sparse matrix in csr format.
     Parameters
@@ -84,5 +85,3 @@ def pd_explode(df, column):
         df_[[col for col in df_.columns.tolist() if col != column]].values, rs, axis=0
     )
     return pd.DataFrame(np.column_stack((a, np.concatenate(vals))), columns=df_.columns)
-
-

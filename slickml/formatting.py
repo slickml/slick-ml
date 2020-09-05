@@ -1,6 +1,6 @@
 class Color:
     """Colors for foreground and background."""
-    
+
     # Foreground
     F_Default = "\x1b[39m"
     F_Black = "\x1b[30m"
@@ -19,7 +19,7 @@ class Color:
     F_LightMagenta = "\x1b[95m"
     F_LightCyan = "\x1b[96m"
     F_White = "\x1b[97m"
-    
+
     # Background
     B_Default = "\x1b[49m"
     B_Black = "\x1b[40m"
@@ -38,15 +38,15 @@ class Color:
     B_LightMagenta = "\x1b[105m"
     B_LightCyan = "\x1b[106m"
     B_White = "\x1b[107m"
-    
+
     # Generic
-    PURPLE = '\033[95m'
-    CYAN = '\033[96m'
-    DARKCYAN = '\033[36m'
-    BLUE = '\033[94m'
-    GREEN = '\033[92m'
-    YELLOW = '\033[93m'
-    RED = '\033[91m'
-    BOLD = '\033[1m'
-    UNDERLINE = '\033[4m'
-    END = '\033[0m'    
+    PURPLE = "\033[95m"
+    CYAN = "\033[96m"
+    DARKCYAN = "\033[36m"
+    BLUE = "\033[94m"
+    GREEN = "\033[92m"
+    YELLOW = "\033[93m"
+    RED = "\033[91m"
+    BOLD = "\033[1m"
+    UNDERLINE = "\033[4m"
+    END = "\033[0m"
