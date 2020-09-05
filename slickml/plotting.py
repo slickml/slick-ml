@@ -42,7 +42,7 @@ def plot_binary_classification_metrics(figsize=None, **kwargs):
     elif isinstance(figsize, list) or isinstance(figsize, tuple):
         figsize = figsize
     else:
-        raise TypeError("Only tuple and list types are allowed for figsize!")
+        raise TypeError("Only tuple and list types are allowed for figsize.")
 
     # prepare thresholds for plotting
     thr_set1 = np.arange(
@@ -231,4 +231,135 @@ def plot_binary_classification_metrics(figsize=None, **kwargs):
             verticalalignment="bottom",
         )
 
+    plt.show()
+
+
+def plot_xfs_feature_frequency(
+    freq,
+    figsize=None,
+    freq_pct=True,
+    color=None,
+    marker=None,
+    markersize=None,
+    markeredgecolor=None,
+    markerfacecolor=None,
+    markeredgewidth=None,
+    fontsize=None,
+):
+    """Function to plot selected features frequency.
+    This function is a helper function based on the features_frequency
+    attribute of the XGBoostFeatureSelector class.
+    Parameters
+    ----------
+    freq: Pandas DataFrame
+        Feature frequency
+    figsize: tuple, optional, (default=(8, 8))
+        Figure size
+    freq_pct: bool, optional, (default=True)
+        Flag to show the features frequency in percent
+    color: str, optional, (default="#87CEEB")
+        Color of the vertical lines of lollipops
+    marker: str, optional, (default="o")
+        Market style of the lollipops. Complete valid
+        marker styke can be found at:
+        (https://matplotlib.org/2.1.1/api/markers_api.html#module-matplotlib.markers)
+    markersize: int or float, optional, (default=10)
+        Markersize
+    markeredgecolor: str, optional, (default="1F77B4")
+        Marker edge color
+    markerfacecolor: str, optional, (default="1F77B4")
+        Marker face color
+    markeredgewidth: int or float, optional, (default=1)
+        Marker edge width
+    fontsize: int or float, optional, (default=12)
+        Fontsize for xlabel and ylabel, and ticks parameters
+    """
+    # reindex freq
+    freq = freq.reindex(index=[idx for idx in range(len(freq) - 1, -1, -1)])
+
+    # initializing figsize
+    if figsize is None:
+        figsize = (8, 4)
+    elif isinstance(figsize, list) or isinstance(figsize, tuple):
+        figsize = figsize
+    else:
+        raise TypeError("Only tuple and list types are allowed for figsize.")
+
+    # # initializing column to plot
+    if freq_pct:
+        col = "Frequency (%)"
+    else:
+        col = "Frequency"
+
+    # initializing color
+    if color is None:
+        color = "#87CEEB"
+    elif isinstance(color, str):
+        color = color
+    else:
+        raise TypeError("Only str type is allowed for color.")
+
+    # initializing marker
+    if marker is None:
+        marker = "o"
+    elif isinstance(marker, str):
+        marker = marker
+    else:
+        raise TypeError("Only str type is allowed for marker.")
+
+    # initializing markersize
+    if markersize is None:
+        markersize = 10
+    elif isinstance(markersize, float) or isinstance(markersize, int):
+        markersize = markersize
+    else:
+        raise TypeError("Only int and float types are allowed for markersize.")
+
+    # initializing markeredgecolor
+    if markeredgecolor is None:
+        markeredgecolor = "#1F77B4"
+    elif isinstance(markeredgecolor, str):
+        markeredgecolor = markeredgecolor
+    else:
+        raise TypeError("Only str type is allowed for markeredgecolor.")
+
+    # initializing markerfacecolor
+    if markerfacecolor is None:
+        markerfacecolor = "#1F77B4"
+    elif isinstance(markerfacecolor, str):
+        markerfacecolor = markerfacecolor
+    else:
+        raise TypeError("Only str type is allowed for markerfacecolor.")
+
+    # initializing markeredgewidth
+    if markeredgewidth is None:
+        markeredgewidth = 1
+    elif isinstance(markeredgewidth, int) or isinstance(markeredgewidth, float):
+        markeredgecolor = markeredgecolor
+    else:
+        raise TypeError("Only int and float types are allowed for markeredgewidth.")
+
+    # initializing fontsize
+    if fontsize is None:
+        fontsize = 12
+    elif isinstance(fontsize, float) or isinstance(fontsize, int):
+        fontsize = fontsize
+    else:
+        raise TypeError("Only int and float types are allowed for fontsize.")
+
+    fig, ax = plt.subplots(figsize=figsize)
+    ax.hlines(y=freq["Feature"], xmin=0, xmax=freq[col], color=color)
+    ax.plot(
+        freq[col],
+        freq["Feature"].values,
+        marker,
+        markersize=markersize,
+        markeredgecolor=markeredgecolor,
+        markerfacecolor=markerfacecolor,
+        markeredgewidth=markeredgewidth,
+    )
+
+    ax.set_xlabel(f"{col}", fontsize=fontsize)
+    ax.set_ylabel("Feature", fontsize=fontsize)
+    ax.tick_params(axis="both", which="major", labelsize=fontsize)
     plt.show()
