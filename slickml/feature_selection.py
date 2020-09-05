@@ -329,7 +329,7 @@ class XGBoostFeatureSelector:
         Function to return both internal and external
         cross-validation results.
         """
-        return self.cv_results_
+        return pd.DataFrame(self.cv_results_)
 
     def run(self):
         """
