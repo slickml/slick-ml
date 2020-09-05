@@ -39,7 +39,7 @@ class BinaryClassificationMetrics:
     threshold: float, optional (default=0.5)
         Threshold value for mapping y_pred_prob to y_pred
         Note that for threshold ">" is used instead of  ">="
-    average_method: string, optional (default="binary")
+    average_method: str, optional (default="binary")
         Method to calculate the average of the metric. Possible values are
         "micro", "macro", "weighted", "binary"
     precision_digits: int, optional (default=3)
