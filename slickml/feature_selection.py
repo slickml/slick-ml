@@ -418,6 +418,7 @@ class XGBoostFeatureSelector:
                     callbacks=self.callbacks,
                 )
 
+                # appending cv results
                 int_cv_train.append(cv_results.iloc[-1][0])
                 int_cv_test.append(cv_results.iloc[-1][2])
                 int_cv_train2.append(cv_results.iloc[-1][0])
@@ -454,7 +455,7 @@ class XGBoostFeatureSelector:
                 for c in gain_subset:
                     pruned_features.append(c)
 
-                # appending outputs
+                # appending eval results
                 ext_cv_train.append(
                     evals_result["train"][self.params["eval_metric"]][-1]
                 )
@@ -474,11 +475,15 @@ class XGBoostFeatureSelector:
                     + Color.F_Black
                     + " -- "
                     + Color.F_Red
-                    + f"Train {self.params['eval_metric'].upper()} = {evals_result['train'][self.params['eval_metric']][-1]:.3f}"
+                    + f"Train {self.params['eval_metric'].upper()}"
+                    + " = "
+                    + f"{evals_result['train'][self.params['eval_metric']][-1]:.3f}"
                     + Color.F_Black
                     + " -- "
                     + Color.F_Blue
-                    + f"Test {self.params['eval_metric'].upper()} = {evals_result['eval'][self.params['eval_metric']][-1]:.3f}"
+                    + f"Test {self.params['eval_metric'].upper()}"
+                    + " = "
+                    + f"{evals_result['eval'][self.params['eval_metric']][-1]:.3f}"
                     + Color.END
                     + Color.BOLD
                     + " *-*-*-*-*-*-*-*-*-*-*-*"
@@ -511,12 +516,20 @@ class XGBoostFeatureSelector:
                 + Color.BOLD
                 + " -*-*- "
                 + Color.F_Red
-                + f"Train {self.params['eval_metric'].upper()} = {np.mean(int_cv_train2):.3f} +/- {np.std(int_cv_train2):.3f}"
+                + f"Train {self.params['eval_metric'].upper()}"
+                + " = "
+                + f"{np.mean(int_cv_train2):.3f}"
+                + " +/- "
+                + f"{np.std(int_cv_train2):.3f}"
                 + Color.END
                 + Color.BOLD
                 + " -*-*- "
                 + Color.F_Blue
-                + f"Test {self.params['eval_metric'].upper()} = {np.mean(int_cv_test2):.3f} +/- {np.std(int_cv_test2):.3f}"
+                + f"Test {self.params['eval_metric'].upper()}"
+                + " = "
+                + f"{np.mean(int_cv_test2):.3f}"
+                + " +/- "
+                + f"{np.std(int_cv_test2):.3f}"
                 + Color.END
                 + Color.BOLD
                 + " *-*-*"
@@ -531,12 +544,20 @@ class XGBoostFeatureSelector:
                 + Color.BOLD
                 + " -*-*- "
                 + Color.F_Red
-                + f"Train {self.params['eval_metric'].upper()} = {np.mean(ext_cv_train2):.3f} +/- {np.std(ext_cv_train2):.3f}"
+                + f"Train {self.params['eval_metric'].upper()}"
+                + " = "
+                + f"{np.mean(ext_cv_train2):.3f}"
+                + " +/- "
+                + f"{np.std(ext_cv_train2):.3f}"
                 + Color.END
                 + Color.BOLD
                 + " -*-*- "
                 + Color.F_Blue
-                + f"Test {self.params['eval_metric'].upper()} = {np.mean(ext_cv_test2):.3f} +/- {np.std(ext_cv_test2):.3f}"
+                + f"Test {self.params['eval_metric'].upper()}"
+                + " = "
+                + f"{np.mean(ext_cv_test2):.3f}"
+                + " +/- "
+                + f"{np.std(ext_cv_test2):.3f}"
                 + Color.END
                 + Color.BOLD
                 + " *-*-*\n"
