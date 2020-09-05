@@ -24,6 +24,23 @@ for further documentation.
 
 
 ## Quick Start
+Here is an exmple using SlickML to quickly run a feature selection pipeline: 
+```python
+# run feature selection using loaded data
+from slickml.feautre_selection import XGBoostFeatureSelector
+xfs = XGBoostFeatureSelector(X, y, n_iter=3)
+xfs.run()
+```
+![selection](https://raw.githubusercontent.com/slickml/slick-ml/master/assets/images/feature_selection.png)
+
+```python
+# feature frequncy after feature selection
+xfs.get_feature_frequency()
+```
+![frequency](https://raw.githubusercontent.com/slickml/slick-ml/master/assets/images/feature_frequency.png)
+
+
+
 Here is an example using SlickML to quickly visualize the binary classification
 metrics based on multiple calculated thresholds:
 
@@ -36,11 +53,11 @@ y_pred_proba = clf.predict_proba(X_test)[:, 1]
 
 # import slickml
 from slickml.metrics import BinaryClassificationMetrics
-example = BinaryClassificationMetrics(y_test, y_pred_proba)
-example.plot()
+metrics = BinaryClassificationMetrics(y_test, y_pred_proba)
+metrics.plot()
 
 ```
-![slickml viz1](https://raw.githubusercontent.com/slickml/slick-ml/master/assets/images/metrics2.png)
+![metrics](https://raw.githubusercontent.com/slickml/slick-ml/master/assets/images/metrics.png)
 
 ## Contributing
 
