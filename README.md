@@ -73,7 +73,7 @@ levels. The SlickML community goals are to be helpful and effective.
 
 ## Citing SlickML
 If you use SlickML in academic work, please consider citing
-https://doi.org/10.1117/12.2304418
+https://doi.org/10.1117/12.2304418 .
 
 ### Bibtex Entry:
 ```bib
