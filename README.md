@@ -34,14 +34,14 @@ xfs.run()
 ![selection](https://raw.githubusercontent.com/slickml/slick-ml/master/assets/images/feature_selection.png)
 
 ```python
-# cross-validation results
+# plot cross-validation results
 xfs.plot_cv_results()
 ```
 ![cv](https://raw.githubusercontent.com/slickml/slick-ml/master/assets/images/cv_results.png)
 
 ```python
-# feature frequncy after feature selection
-xfs.get_feature_frequency()
+# plot feature frequncy after feature selection
+xfs.plot_frequency()
 ```
 ![frequency](https://raw.githubusercontent.com/slickml/slick-ml/master/assets/images/feature_frequency.png)
 
