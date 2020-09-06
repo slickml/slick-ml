@@ -90,6 +90,8 @@ def pd_explode(df, column):
 def pd_struct_explode(df, column):
     
     """Function to explodes a column into columnar format.
+    This is useful function when you load data from SQL or Spark
+    with "struct" dtype into Pandas DataFrame().
     Parameters
     ----------
     df: Pandas DataFrame
