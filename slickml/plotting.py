@@ -362,6 +362,7 @@ def plot_xfs_feature_frequency(
 
     ax.set_xlabel(f"{col}", fontsize=fontsize)
     ax.set_ylabel("Feature", fontsize=fontsize)
+    ax.set_title("Important Features Frequency", fontsize=fontsize)
     ax.tick_params(axis="both", which="major", labelsize=fontsize)
     plt.show()
 
