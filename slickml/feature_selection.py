@@ -101,6 +101,10 @@ class XGBoostFeatureSelector:
     cv_results_: dict()
         Return a dict() of the total internal/external
         cross-validation results
+    plotting_cv_: dict()
+        Returns a dict() of the required variables
+        to plot the histograms of total internal/external
+        cross-validation results
     get_xgb_params(): class method
         Returns params dict
     get_bst_feature_importance(): class method
@@ -289,6 +293,7 @@ class XGBoostFeatureSelector:
         """
         Function to build convert feature importance to df.
         """
+
         data = {"feature": [], f"{self.importance_type}": []}
         cols = []
         importance = []
@@ -309,6 +314,7 @@ class XGBoostFeatureSelector:
         """
         Function to return the train parameters for XGBoost.
         """
+
         return self.params
 
     def get_bst_feature_importance(self):
@@ -316,6 +322,7 @@ class XGBoostFeatureSelector:
         Function to return the feature importance of the bst model
         at each fold of each iteration of feature selection.
         """
+
         return self.feature_importance_
 
     def get_feature_frequency(self):
@@ -323,13 +330,15 @@ class XGBoostFeatureSelector:
         Function to return the total feature frequency of the bst model
         at each fold of each iteration of feature selection.
         """
+
         return self.feature_frequency_
 
     def get_cv_results(self):
         """
         Function to return both internal and external
-        cross-validation results.
+        cross-validation results as Pandas DataFrame().
         """
+
         return pd.DataFrame(self.cv_results_)
 
     def get_plotting_cv(self):
@@ -337,6 +346,7 @@ class XGBoostFeatureSelector:
         Function to return the plotting dict()
         for cross-validation results.
         """
+
         self.plotting_cv_ = {}
         self.plotting_cv_["metric"] = self.metrics.upper()
         self.plotting_cv_["eval_metric"] = self.params["eval_metric"].upper()
@@ -389,6 +399,7 @@ class XGBoostFeatureSelector:
         fontsize: int or float, optional, (default=12)
             Fontsize for xlabel and ylabel, and ticks parameters
         """
+
         plot_xfs_feature_frequency(
             self.feature_frequency_,
             figsize,
@@ -429,6 +440,7 @@ class XGBoostFeatureSelector:
         kwargs: dict
             Plotting object plotting_cv_
         """
+
         plot_xfs_cv_results(
             figsize, int_color, ext_color, sharex, sharey, **self.plotting_cv_
         )
@@ -437,6 +449,7 @@ class XGBoostFeatureSelector:
         """
         Function to run the main feature selection algorithm.
         """
+
         # final results
         int_cv_train = []
         int_cv_test = []

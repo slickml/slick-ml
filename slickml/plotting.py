@@ -274,6 +274,7 @@ def plot_xfs_feature_frequency(
     fontsize: int or float, optional, (default=12)
         Fontsize for xlabel and ylabel, and ticks parameters
     """
+
     # reindex freq
     freq = freq.reindex(index=[idx for idx in range(len(freq) - 1, -1, -1)])
 
