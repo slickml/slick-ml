@@ -478,8 +478,13 @@ class BinaryClassificationMetrics:
 
     def plot(self, figsize=None):
         """
-        Function to call the plot_binary_classificaiton_metrics function
-        from metrics.
+        Function to plot binary classification metrics.
+        This function is a helper function based on the plotting_dict
+        attribute of the BinaryClassificationMetrics class.
+        Parameters
+        ----------
+        figsize: tuple, optional, (default=(12, 12))
+            Figure size
         """
 
         plot_binary_classification_metrics(figsize, **self.plotting_dict)

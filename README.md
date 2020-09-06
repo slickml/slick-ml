@@ -34,8 +34,14 @@ xfs.run()
 ![selection](https://raw.githubusercontent.com/slickml/slick-ml/master/assets/images/feature_selection.png)
 
 ```python
-# feature frequncy after feature selection
-xfs.get_feature_frequency()
+# plot cross-validation results
+xfs.plot_cv_results()
+```
+![cv](https://raw.githubusercontent.com/slickml/slick-ml/master/assets/images/cv_results.png)
+
+```python
+# plot feature frequncy after feature selection
+xfs.plot_frequency()
 ```
 ![frequency](https://raw.githubusercontent.com/slickml/slick-ml/master/assets/images/feature_frequency.png)
 
@@ -46,12 +52,12 @@ metrics based on multiple calculated thresholds:
 
 ```python
 # train a classifier using loaded train/test data
-from sklearn.ensemble import RandomForestClassifier
-clf = RandomForestClassifier()
+from xgboost import XGBClassifier
+clf = XGBClassifier()
 clf.fit(X_train, y_train)
 y_pred_proba = clf.predict_proba(X_test)[:, 1]
 
-# import slickml
+# plot binary metrics 
 from slickml.metrics import BinaryClassificationMetrics
 metrics = BinaryClassificationMetrics(y_test, y_pred_proba)
 metrics.plot()
@@ -73,7 +79,7 @@ levels. The SlickML community goals are to be helpful and effective.
 
 ## Citing SlickML
 If you use SlickML in academic work, please consider citing
-https://doi.org/10.1117/12.2304418
+https://doi.org/10.1117/12.2304418 .
 
 ### Bibtex Entry:
 ```bib
