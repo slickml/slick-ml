@@ -253,7 +253,7 @@ def plot_xfs_feature_frequency(
     ----------
     freq: Pandas DataFrame
         Feature frequency
-    figsize: tuple, optional, (default=(8, 8))
+    figsize: tuple, optional, (default=(8, 4))
         Figure size
     freq_pct: bool, optional, (default=True)
         Flag to show the features frequency in percent
@@ -362,4 +362,74 @@ def plot_xfs_feature_frequency(
     ax.set_xlabel(f"{col}", fontsize=fontsize)
     ax.set_ylabel("Feature", fontsize=fontsize)
     ax.tick_params(axis="both", which="major", labelsize=fontsize)
+    plt.show()
+
+
+def plot_xfs_cv_results(
+    figsize=None, int_color=None, ext_color=None, sharex=False, sharey=False, **kwargs
+):
+    """
+    Function to plot the cross-validation results of
+    XGBoostFeatureSelector. It visualizes the internal
+    and external performance during the selection process.
+    Internal refers to the performance of train/test folds
+    during the xgboost.cv() using "metrics" rounds to help
+    the best number of boosting round. External refers to
+    the performance of xgboost.train() on watchlist using
+    eval_metric.
+    Parameters
+    ----------
+    figsize: tuple, optional, (default=(8, 4))
+        Figure size
+    int_color: str, optional, (default="#4169E1")
+        Color of the histograms for internal cv results
+    ext_color: str, optional, (default="#8A2BE2")
+        Color of the histograms for external cv results
+    sharex: bool, optional, (default=False)
+        Flag to share "X" axis for each column of subplots
+    sharey: bool, optional, (default=False)
+        Flag to share "Y" axis for each row of subplots
+    kwargs: dict
+        Plotting object plotting_cv_
+    """
+
+    # initializing figsize
+    if figsize is None:
+        figsize = (10, 8)
+    elif isinstance(figsize, list) or isinstance(figsize, tuple):
+        figsize = figsize
+    else:
+        raise TypeError("Only tuple and list types are allowed for figsize.")
+
+    # initializing internal color
+    if int_color is None:
+        int_color = "#4169E1"
+    elif isinstance(int_color, str):
+        int_color = int_color
+    else:
+        raise TypeError("Only str type is allowed for int_color.")
+
+    # initializing external color
+    if ext_color is None:
+        ext_color = "#8A2BE2"
+    elif isinstance(ext_color, str):
+        ext_color = ext_color
+    else:
+        raise TypeError("Only str type is allowed for ext_color.")
+
+    fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(
+        2, 2, figsize=figsize, sharex=sharex, sharey=sharey
+    )
+    sns.distplot(kwargs["int_cv_train"], color=int_color, ax=ax1, axlabel="")
+    sns.distplot(kwargs["int_cv_test"], color=int_color, ax=ax2, axlabel="")
+    sns.distplot(kwargs["ext_cv_train"], color=ext_color, ax=ax3, axlabel="")
+    sns.distplot(kwargs["ext_cv_test"], color=ext_color, ax=ax4, axlabel="")
+    ax1.set(title=f"Internal {kwargs['n_splits']}-Folds CV {kwargs['metric']} - Train")
+    ax2.set(title=f"Internal {kwargs['n_splits']}-Folds CV {kwargs['metric']} - Test")
+    ax3.set(
+        title=f"External {kwargs['n_splits']}-Folds CV {kwargs['eval_metric']} - Train"
+    )
+    ax4.set(
+        title=f"External {kwargs['n_splits']}-Folds CV {kwargs['eval_metric']} - Test"
+    )
     plt.show()
