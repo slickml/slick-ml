@@ -52,10 +52,10 @@ metrics based on multiple calculated thresholds:
 
 ```python
 # train a classifier using loaded train/test data
-from xgboost import XGBClassifier
-clf = XGBClassifier()
+from slickml.classification import XGBoostCVClassifier
+clf = XGBoostCVClassifier()
 clf.fit(X_train, y_train)
-y_pred_proba = clf.predict_proba(X_test)[:, 1]
+y_pred_proba = clf.predict_proba(X_test, y_test)
 
 # plot binary metrics 
 from slickml.metrics import BinaryClassificationMetrics
