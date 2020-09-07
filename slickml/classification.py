@@ -34,7 +34,7 @@ class XGBoostCVClassifier:
         Metric used for evaluation at cross-validation
         using xgboost.cv(). Please note that this is different
         than eval_metric that needs to be passed to params dict.
-        Possible values are "auc", "aucpr"
+        Possible values are "auc", "aucpr", "error", "logloss"
     early_stopping_rounds: int, optional (default=20)
         The criterion to early abort the xgboost.cv() phase
         if the test metric is not improved
@@ -459,21 +459,21 @@ class XGBoostCVClassifier:
                 + Color.END
                 + Color.BOLD
                 + " -*- "
-                + Color.F_Magenta
+                + Color.F_Red
                 + f"{self.n_splits}-Folds CV {self.metrics.upper()}: "
                 + Color.END
                 + Color.BOLD
-                + Color.B_Red
-                + f"Train = {self.cv_results_.iloc[-1][0]:.3}"
+                + Color.B_Blue
+                + f"Train = {self.cv_results_.iloc[-1][0]:.3f}"
                 + " +/- "
-                + f"{self.cv_results_.iloc[-1][1]:.1}"
+                + f"{self.cv_results_.iloc[-1][1]:.3f}"
                 + Color.END
                 + Color.BOLD
                 + " -*- "
-                + Color.B_Blue
-                + f"Test = {self.cv_results_.iloc[-1][2]:.3}"
+                + Color.B_Magenta
+                + f"Test = {self.cv_results_.iloc[-1][2]:.3f}"
                 + " +/- "
-                + f"{self.cv_results_.iloc[-1][3]:.1}"
+                + f"{self.cv_results_.iloc[-1][3]:.3f}"
                 + Color.END
                 + Color.BOLD
                 + " *-*"
