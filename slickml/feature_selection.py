@@ -292,6 +292,9 @@ class XGBoostFeatureSelector:
     def _xgb_imp_to_df(self, bst):
         """
         Function to build convert feature importance to df.
+        Parameters
+        ----------
+        bst: Best XGBoost trained model
         """
 
         data = {"feature": [], f"{self.importance_type}": []}
