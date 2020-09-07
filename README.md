@@ -45,9 +45,7 @@ xfs.plot_frequency()
 ```
 ![frequency](https://raw.githubusercontent.com/slickml/slick-ml/master/assets/images/feature_frequency.png)
 
-Here is an example using SlickML to quickly visualize the binary classification
-metrics based on multiple calculated thresholds:
-
+Here is an example using SlickML how to train/validate a XGBoostCV classifier:
 ```python
 # train a classifier using loaded train/test data
 from slickml.classification import XGBoostCVClassifier
@@ -59,6 +57,8 @@ clf.plot_cv_results()
 ```
 ![clfcv](https://raw.githubusercontent.com/slickml/slick-ml/master/assets/images/clf_cv_results.png)
 
+Here is an example using SlickML to quickly visualize the binary classification 
+metrics based on multiple calculated thresholds:
 ```python
 # plot binary metrics
 from slickml.metrics import BinaryClassificationMetrics
