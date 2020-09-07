@@ -442,7 +442,7 @@ class XGBoostCVClassifier:
     def fit(self, X_train, y_train):
         """
         Function to run xgboost.cv() method first to find the best number of boosting round
-        and train a model based on that and returns it.
+        and train a model based on that on (X_train, y_train) set and returns it.
         """
         # creating dtrain
         self.dtrain_ = self._dtrain(X_train, y_train)
