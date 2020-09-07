@@ -37,7 +37,7 @@ xfs.run()
 # plot cross-validation results
 xfs.plot_cv_results()
 ```
-![cv](https://raw.githubusercontent.com/slickml/slick-ml/master/assets/images/cv_results.png)
+![xfscv](https://raw.githubusercontent.com/slickml/slick-ml/master/assets/images/xfs_cv_results.png)
 
 ```python
 # plot feature frequncy after feature selection
@@ -53,10 +53,16 @@ metrics based on multiple calculated thresholds:
 from slickml.classification import XGBoostCVClassifier
 clf = XGBoostCVClassifier()
 clf.fit(X_train, y_train)
-y_pred_proba = clf.predict_proba(X_test, y_test)
 
-# plot binary metrics 
+# plot cross-validation results
+clf.plot_cv_results()
+```
+![clfcv](https://raw.githubusercontent.com/slickml/slick-ml/master/assets/images/clf_cv_results.png)
+
+```python
+# plot binary metrics
 from slickml.metrics import BinaryClassificationMetrics
+y_pred_proba = clf.predict_proba(X_test, y_test)
 metrics = BinaryClassificationMetrics(y_test, y_pred_proba)
 metrics.plot()
 
