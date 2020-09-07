@@ -45,8 +45,6 @@ xfs.plot_frequency()
 ```
 ![frequency](https://raw.githubusercontent.com/slickml/slick-ml/master/assets/images/feature_frequency.png)
 
-
-
 Here is an example using SlickML to quickly visualize the binary classification
 metrics based on multiple calculated thresholds:
 
