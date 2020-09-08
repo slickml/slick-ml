@@ -52,10 +52,12 @@ from slickml.classification import XGBoostCVClassifier
 clf = XGBoostCVClassifier()
 clf.fit(X_train, y_train)
 
-# plot cross-validation results
+# plot cross-validation and feature importance results
 clf.plot_cv_results()
+clf.plot_feature_importance()
 ```
 ![clfcv](https://raw.githubusercontent.com/slickml/slick-ml/master/assets/images/clf_cv_results.png)
+![clfimp](https://raw.githubusercontent.com/slickml/slick-ml/master/assets/images/clf_feature_importance.png)
 
 Here is an example using SlickML to quickly visualize the binary classification 
 metrics based on multiple calculated thresholds:
