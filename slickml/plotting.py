@@ -275,9 +275,6 @@ def plot_xfs_feature_frequency(
         Fontsize for xlabel and ylabel, and ticks parameters
     """
 
-    # reindex freq
-    freq = freq.reindex(index=[idx for idx in range(len(freq) - 1, -1, -1)])
-
     # initializing figsize
     if figsize is None:
         figsize = (8, 4)
@@ -347,6 +344,9 @@ def plot_xfs_feature_frequency(
         fontsize = fontsize
     else:
         raise TypeError("Only int and float types are allowed for fontsize.")
+
+    # reindex freq
+    freq = freq.reindex(index=[idx for idx in range(len(freq) - 1, -1, -1)])
 
     fig, ax = plt.subplots(figsize=figsize)
     ax.hlines(y=freq["Feature"], xmin=0, xmax=freq[col], color=color)
@@ -434,4 +434,272 @@ def plot_xfs_cv_results(
     ax4.set(
         title=f"External {kwargs['n_splits']}-Folds CV {kwargs['eval_metric']} - Test"
     )
+    plt.show()
+
+
+def plot_xgb_cv_results(
+    cv_results,
+    figsize=None,
+    linestyle=None,
+    train_label=None,
+    test_label=None,
+    train_color=None,
+    train_std_color=None,
+    test_color=None,
+    test_std_color=None,
+):
+    """
+    Function to plot cv results of XGBoostCVClassifier.
+    Parameters
+    ----------
+    cv_results: Pandas DataFrame()
+        Cross-validation results in DataFrame() format
+    figsize: tuple, optional, (default=(8, 5))
+        Figure size
+    linestyle: str, optional, (default="--")
+        Style of lines. Complete options are available at
+        (https://matplotlib.org/3.1.0/gallery/lines_bars_and_markers/linestyles.html)
+    train_label: str, optional (default="Train")
+        Label in the figure legend for the training line
+    test_label: str, optional (default="Test")
+        Label in the figure legend for the training line
+    train_color: str, optional, (default="navy")
+        Color of the training line
+    train_std_color: str, optional, (default="#B3C3F3")
+        Color of the edge color of the training std bars
+    test_color: str, optional, (default="purple")
+        Color of the testing line
+    test_std_color: str, optional, (default="#D0AAF3")
+        Color of the edge color of the testing std bars
+    """
+
+    if figsize is None:
+        figsize = (8, 5)
+    elif isinstance(figsize, list) or isinstance(figsize, tuple):
+        figsize = figsize
+    else:
+        raise TypeError("Only tuple and list types are allowed for figsize.")
+
+    if linestyle is None:
+        linestyle = "--"
+    elif isinstance(linestyle, str):
+        linestyle = linestyle
+    else:
+        raise TypeError("Only str type is valid for linestyle.")
+
+    if train_label is None:
+        train_label = "Train"
+    elif isinstance(train_label, str):
+        train_label = train_label
+    else:
+        raise TypeError("Only str type is valid for train_label.")
+
+    if test_label is None:
+        test_label = "Test"
+    elif isinstance(test_label, str):
+        test_label = test_label
+    else:
+        raise TypeError("Only str type is valid for test_label.")
+
+    if train_color is None:
+        train_color = "navy"
+    elif isinstance(train_color, str):
+        train_color = train_color
+    else:
+        raise TypeError("Only str type is valid for train_color.")
+
+    if train_std_color is None:
+        train_std_color = "#B3C3F3"
+    elif isinstance(train_std_color, str):
+        train_std_color = train_std_color
+    else:
+        raise TypeError("Only str type is valid for train_std_color.")
+
+    if test_color is None:
+        test_color = "purple"
+    elif isinstance(test_color, str):
+        test_color = test_color
+    else:
+        raise TypeError("Only str type is valid for test_color.")
+
+    if test_std_color is None:
+        test_std_color = "#D0AAF3"
+    elif isinstance(test_std_color, str):
+        test_std_color = test_std_color
+    else:
+        raise TypeError("Only str type is valid for test_std_color.")
+
+    # update metrics capitalizations for title/labels
+    metric = cv_results.columns.tolist()[0].split("-")[1]
+    metrics = ["AUC", "AUCPR", "Error", "LogLoss"]
+    for m in metrics:
+        if m.lower() == metric:
+            metric = m
+
+    # plotting
+    fig, ax = plt.subplots(figsize=figsize)
+    ax.errorbar(
+        range(cv_results.shape[0]),
+        cv_results.iloc[:, 0],
+        yerr=cv_results.iloc[:, 1],
+        fmt=linestyle,
+        ecolor=train_std_color,
+        c=train_color,
+        label=train_label,
+    )
+
+    ax.errorbar(
+        range(cv_results.shape[0]),
+        cv_results.iloc[:, 2],
+        yerr=cv_results.iloc[:, 3],
+        fmt=linestyle,
+        ecolor=test_std_color,
+        c=test_color,
+        label=train_label,
+    )
+
+    ax.set_xlabel("# of Boosting Rounds", fontsize=12)
+    ax.set_ylabel(f"""{metric}""", fontsize=12)
+    ax.set_title(f"""{metric} Evolution vs Boosting Rounds""", fontsize=12)
+    ax.tick_params(axis="both", which="major", labelsize=12)
+    ax.legend(loc=0, prop={"size": 12}, framealpha=0.0)
+
+    plt.show()
+
+
+def plot_xgb_feature_importance(
+    feature_importance,
+    figsize=None,
+    color=None,
+    marker=None,
+    markersize=None,
+    markeredgecolor=None,
+    markerfacecolor=None,
+    markeredgewidth=None,
+    fontsize=None,
+):
+    """Function to plot XGBoost feature importance.
+    This function is a helper function based on the feature_importance_
+    attribute of the XGBoostCVClassifier class.
+    Parameters
+    ----------
+    feature importance: Pandas DataFrame
+        Feature frequency
+    figsize: tuple, optional, (default=(8, 5))
+        Figure size
+    color: str, optional, (default="#87CEEB")
+        Color of the vertical lines of lollipops
+    marker: str, optional, (default="o")
+        Market style of the lollipops. Complete valid
+        marker styke can be found at:
+        (https://matplotlib.org/2.1.1/api/markers_api.html#module-matplotlib.markers)
+    markersize: int or float, optional, (default=10)
+        Markersize
+    markeredgecolor: str, optional, (default="1F77B4")
+        Marker edge color
+    markerfacecolor: str, optional, (default="1F77B4")
+        Marker face color
+    markeredgewidth: int or float, optional, (default=1)
+        Marker edge width
+    fontsize: int or float, optional, (default=12)
+        Fontsize for xlabel and ylabel, and ticks parameters
+    """
+
+    # initializing figsize
+    if figsize is None:
+        figsize = (8, 5)
+    elif isinstance(figsize, list) or isinstance(figsize, tuple):
+        figsize = figsize
+    else:
+        raise TypeError("Only tuple and list types are allowed for figsize.")
+
+    # initializing color
+    if color is None:
+        color = "#87CEEB"
+    elif isinstance(color, str):
+        color = color
+    else:
+        raise TypeError("Only str type is allowed for color.")
+
+    # initializing marker
+    if marker is None:
+        marker = "o"
+    elif isinstance(marker, str):
+        marker = marker
+    else:
+        raise TypeError("Only str type is allowed for marker.")
+
+    # initializing markersize
+    if markersize is None:
+        markersize = 10
+    elif isinstance(markersize, float) or isinstance(markersize, int):
+        markersize = markersize
+    else:
+        raise TypeError("Only int and float types are allowed for markersize.")
+
+    # initializing markeredgecolor
+    if markeredgecolor is None:
+        markeredgecolor = "#1F77B4"
+    elif isinstance(markeredgecolor, str):
+        markeredgecolor = markeredgecolor
+    else:
+        raise TypeError("Only str type is allowed for markeredgecolor.")
+
+    # initializing markerfacecolor
+    if markerfacecolor is None:
+        markerfacecolor = "#1F77B4"
+    elif isinstance(markerfacecolor, str):
+        markerfacecolor = markerfacecolor
+    else:
+        raise TypeError("Only str type is allowed for markerfacecolor.")
+
+    # initializing markeredgewidth
+    if markeredgewidth is None:
+        markeredgewidth = 1
+    elif isinstance(markeredgewidth, int) or isinstance(markeredgewidth, float):
+        markeredgecolor = markeredgecolor
+    else:
+        raise TypeError("Only int and float types are allowed for markeredgewidth.")
+
+    # initializing fontsize
+    if fontsize is None:
+        fontsize = 12
+    elif isinstance(fontsize, float) or isinstance(fontsize, int):
+        fontsize = fontsize
+    else:
+        raise TypeError("Only int and float types are allowed for fontsize.")
+
+    # define column names
+    cols = feature_importance.columns.tolist()
+    coly = cols[0]
+    colx = cols[1]
+
+    # reindex feature importance
+    feature_importance = feature_importance.reindex(
+        index=[idx for idx in range(len(feature_importance) - 1, -1, -1)]
+    )
+
+    fig, ax = plt.subplots(figsize=figsize)
+    ax.hlines(
+        y=feature_importance[coly], xmin=0, xmax=feature_importance[colx], color=color
+    )
+    ax.plot(
+        feature_importance[colx],
+        feature_importance[coly].values,
+        marker,
+        markersize=markersize,
+        markeredgecolor=markeredgecolor,
+        markerfacecolor=markerfacecolor,
+        markeredgewidth=markeredgewidth,
+    )
+
+    # put importance values on the plot
+    for index, value in enumerate(feature_importance[colx]):
+        ax.text(value + 10, index * 1.01, f"{value:.2f}")
+
+    ax.set_xlabel(f"{' '.join(colx.split('_')).title()}", fontsize=fontsize)
+    ax.set_ylabel(f"{coly.title()}", fontsize=fontsize)
+    ax.set_title("Feature Importance", fontsize=fontsize)
+    ax.set(xlim=[None, feature_importance[colx].max() * 1.13])
+    ax.tick_params(axis="both", which="major", labelsize=fontsize)
     plt.show()
