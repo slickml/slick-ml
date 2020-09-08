@@ -85,3 +85,32 @@ def pd_explode(df, column):
         df_[[col for col in df_.columns.tolist() if col != column]].values, rs, axis=0
     )
     return pd.DataFrame(np.column_stack((a, np.concatenate(vals))), columns=df_.columns)
+
+
+def pd_struct_explode(df, column):
+
+    """Function to explodes a column into columnar format.
+    This is useful function when you load data from SQL or Spark
+    with "struct" dtype into Pandas DataFrame().
+    Parameters
+    ----------
+    df: Pandas DataFrame
+    column: str, name of column wanting to explode
+    """
+    if not isinstance(df, pd.DataFrame):
+        raise TypeError("Input df must have Pandas DataFrame dtype")
+    if not isinstance(column, str):
+        raise TypeError("Input column name must have str dtype")
+
+    df_ = df.copy()
+    dicts = [val.asDict() for val in df_[column].values.tolist()]
+    keys = dicts[0].keys()
+    column_names = (
+        str(list(df_.columns))
+        .replace(f"{column}", f"{str(list(keys)).replace('[','').replace(']','')}")
+        .replace("''", "'")
+    )
+    rs = [[d[key] for key in keys] for d in dicts]
+    return pd.concat(
+        [pd.DataFrame(rs, columns=keys), df_.drop([column], axis=1)], axis=1
+    ).loc[:, eval(column_names)]

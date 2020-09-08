@@ -292,6 +292,9 @@ class XGBoostFeatureSelector:
     def _xgb_imp_to_df(self, bst):
         """
         Function to build convert feature importance to df.
+        Parameters
+        ----------
+        bst: Best XGBoost trained model
         """
 
         data = {"feature": [], f"{self.importance_type}": []}
@@ -309,6 +312,66 @@ class XGBoostFeatureSelector:
         )
 
         return df
+
+    def _cv(self):
+        """
+        Function to return XGBoost cv_results to find
+        the best number of boosting rounds.
+        """
+        cvr = xgb.cv(
+            params=self.params,
+            dtrain=self.dtrain,
+            num_boost_round=self.num_boost_round,
+            nfold=self.n_splits,
+            stratified=self.stratified,
+            metrics=self.metrics,
+            early_stopping_rounds=self.early_stopping_rounds,
+            seed=self.random_state_,
+            verbose_eval=self.verbose_eval,
+            shuffle=self.shuffle,
+            callbacks=self.callbacks,
+        )
+
+        return cvr
+
+    def _bst(self):
+        """
+        Function to train XGBoost model based on
+        the best number of boosting round.
+        """
+        bst = xgb.train(
+            params=self.params,
+            dtrain=self.dtrain,
+            num_boost_round=len(self.cvr) - 1,
+            evals=self.watchlist,
+            evals_result=self.evals_result,
+            verbose_eval=self.verbose_eval,
+        )
+
+        return bst
+
+    def _freq(self):
+        """
+        Function to calculate feature frequency
+        based on final pruned features.
+        """
+
+        unique_elements, counts_elements = np.unique(
+            self.pruned_features, return_counts=True
+        )
+        counts_elements = [float(i) for i in list(counts_elements)]
+        feature_frequency = pd.DataFrame(
+            data={"Feature": list(unique_elements), "Frequency": counts_elements}
+        )
+        feature_frequency["Frequency (%)"] = round(
+            (feature_frequency["Frequency"] / float(self.n_splits * self.n_iter) * 100),
+            ndigits=2,
+        )
+        feature_frequency_ = feature_frequency.sort_values(
+            by=["Frequency", "Frequency (%)"], ascending=[False, False]
+        ).reset_index(drop=True)
+
+        return feature_frequency_
 
     def get_xgb_params(self):
         """
@@ -450,12 +513,13 @@ class XGBoostFeatureSelector:
         Function to run the main feature selection algorithm.
         """
 
-        # final results
-        int_cv_train = []
-        int_cv_test = []
-        ext_cv_train = []
-        ext_cv_test = []
-        pruned_features = []
+        # final results dict + list
+        self.cv_results_ = {}
+        self.cv_results_["int_cv_train"] = []
+        self.cv_results_["int_cv_test"] = []
+        self.cv_results_["ext_cv_train"] = []
+        self.cv_results_["ext_cv_test"] = []
+        self.pruned_features = []
         self.feature_importance_ = {}
 
         # main loop
@@ -477,16 +541,18 @@ class XGBoostFeatureSelector:
             ext_cv_test2 = []
 
             # update random state
-            random_state_ = self.random_state * iteration
+            self.random_state_ = self.random_state * iteration
 
             # adding noise to data
-            X_permuted = noisy_features(X=self.X, random_state=random_state_)
+            X_permuted = noisy_features(X=self.X, random_state=self.random_state_)
             cols = X_permuted.columns.tolist()
             Xval = X_permuted.values
 
             # building DMatrix for training/testing + kfolds cv
             cv = StratifiedKFold(
-                n_splits=self.n_splits, shuffle=self.shuffle, random_state=random_state_
+                n_splits=self.n_splits,
+                shuffle=self.shuffle,
+                random_state=self.random_state_,
             )
 
             # set a counter for nfolds cv
@@ -498,57 +564,41 @@ class XGBoostFeatureSelector:
                 Y_test = self.y[test_index]
 
                 if not self.sparse_matrix:
-                    dtrain = xgb.DMatrix(data=X_train, label=Y_train)
-                    dtest = xgb.DMatrix(data=X_test, label=Y_test)
+                    self.dtrain = xgb.DMatrix(data=X_train, label=Y_train)
+                    self.dtest = xgb.DMatrix(data=X_test, label=Y_test)
                 else:
-                    dtrain = xgb.DMatrix(
+                    self.dtrain = xgb.DMatrix(
                         data=df_to_csr(X_train, fillna=0.0, verbose=False),
                         label=Y_train,
                         feature_names=X_train.columns.tolist(),
                     )
-                    dtest = xgb.DMatrix(
+                    self.dtest = xgb.DMatrix(
                         data=df_to_csr(X_test, fillna=0.0, verbose=False),
                         label=Y_test,
                         feature_names=X_test.columns.tolist(),
                     )
 
                 # watchlist during final training
-                watchlist = [(dtrain, "train"), (dtest, "eval")]
+                self.watchlist = [(self.dtrain, "train"), (self.dtest, "eval")]
 
                 # dict to store training results
-                evals_result = {}
+                self.evals_result = {}
 
-                # xgb cv
-                cv_results = xgb.cv(
-                    params=self.params,
-                    dtrain=dtrain,
-                    num_boost_round=self.num_boost_round,
-                    nfold=self.n_splits,
-                    stratified=self.stratified,
-                    metrics=self.metrics,
-                    early_stopping_rounds=self.early_stopping_rounds,
-                    seed=random_state_,
-                    verbose_eval=self.verbose_eval,
-                    shuffle=self.shuffle,
-                    callbacks=self.callbacks,
-                )
+                # calling xgb cv
+                self.cvr = self._cv()
 
                 # appending cv results
-                int_cv_train.append(cv_results.iloc[-1][0])
-                int_cv_test.append(cv_results.iloc[-1][2])
-                int_cv_train2.append(cv_results.iloc[-1][0])
-                int_cv_test2.append(cv_results.iloc[-1][2])
+                self.cv_results_["int_cv_train"] += [self.cvr.iloc[-1][0]]
+                self.cv_results_["int_cv_test"] += [self.cvr.iloc[-1][2]]
 
-                # xgb train
-                bst = xgb.train(
-                    params=self.params,
-                    dtrain=dtrain,
-                    num_boost_round=len(cv_results) - 1,
-                    evals=watchlist,
-                    evals_result=evals_result,
-                    verbose_eval=self.verbose_eval,
-                )
+                # appending temp cv results
+                int_cv_train2.append(self.cvr.iloc[-1][0])
+                int_cv_test2.append(self.cvr.iloc[-1][2])
 
+                # xgb train best model
+                bst = self._bst()
+
+                # feature gain
                 feature_gain = self._xgb_imp_to_df(bst)
                 self.feature_importance_[
                     f"bst_iter{iteration+1}_fold{ijk}"
@@ -568,18 +618,22 @@ class XGBoostFeatureSelector:
                     feature_gain[self.importance_type] > gain_threshold, "feature"
                 ].values.tolist()
                 for c in gain_subset:
-                    pruned_features.append(c)
+                    self.pruned_features.append(c)
 
-                # appending eval results
-                ext_cv_train.append(
-                    evals_result["train"][self.params["eval_metric"]][-1]
-                )
-                ext_cv_test.append(evals_result["eval"][self.params["eval_metric"]][-1])
+                # appending final eval results
+                self.cv_results_["ext_cv_train"] += [
+                    self.evals_result["train"][self.params["eval_metric"]][-1]
+                ]
+                self.cv_results_["ext_cv_test"] += [
+                    self.evals_result["eval"][self.params["eval_metric"]][-1]
+                ]
+
+                # appending temp eval results
                 ext_cv_train2.append(
-                    evals_result["train"][self.params["eval_metric"]][-1]
+                    self.evals_result["train"][self.params["eval_metric"]][-1]
                 )
                 ext_cv_test2.append(
-                    evals_result["eval"][self.params["eval_metric"]][-1]
+                    self.evals_result["eval"][self.params["eval_metric"]][-1]
                 )
 
                 print(
@@ -592,13 +646,13 @@ class XGBoostFeatureSelector:
                     + Color.F_Red
                     + f"Train {self.params['eval_metric'].upper()}"
                     + " = "
-                    + f"{evals_result['train'][self.params['eval_metric']][-1]:.3f}"
+                    + f"{self.evals_result['train'][self.params['eval_metric']][-1]:.3f}"
                     + Color.F_Black
                     + " -- "
                     + Color.F_Blue
                     + f"Test {self.params['eval_metric'].upper()}"
                     + " = "
-                    + f"{evals_result['eval'][self.params['eval_metric']][-1]:.3f}"
+                    + f"{self.evals_result['eval'][self.params['eval_metric']][-1]:.3f}"
                     + Color.END
                     + Color.BOLD
                     + " *-*-*-*-*-*-*-*-*-*-*-*"
@@ -608,15 +662,15 @@ class XGBoostFeatureSelector:
                     gain_subset,
                     feature_gain,
                     bst,
-                    watchlist,
+                    self.watchlist,
                     Y_train,
                     Y_test,
-                    cv_results,
-                    evals_result,
+                    self.cvr,
+                    self.evals_result,
                     X_train,
                     X_test,
-                    dtrain,
-                    dtest,
+                    self.dtrain,
+                    self.dtest,
                 )
 
                 ijk += 1
@@ -693,30 +747,10 @@ class XGBoostFeatureSelector:
             )
             gc.collect()
 
-        # putting together the outputs in one dict
-        self.cv_results_ = {}
-        self.cv_results_["int_cv_train"] = int_cv_train
-        self.cv_results_["int_cv_test"] = int_cv_test
-        self.cv_results_["ext_cv_train"] = ext_cv_train
-        self.cv_results_["ext_cv_test"] = ext_cv_test
-
         # calling function to get plotting cv results attribute
         self.plotting_cv_ = self.get_plotting_cv()
 
         # pruned features freq
-        unique_elements, counts_elements = np.unique(
-            pruned_features, return_counts=True
-        )
-        counts_elements = [float(i) for i in list(counts_elements)]
-        feature_frequency = pd.DataFrame(
-            data={"Feature": list(unique_elements), "Frequency": counts_elements}
-        )
-        feature_frequency["Frequency (%)"] = round(
-            (feature_frequency["Frequency"] / float(self.n_splits * self.n_iter) * 100),
-            ndigits=2,
-        )
-        self.feature_frequency_ = feature_frequency.sort_values(
-            by=["Frequency", "Frequency (%)"], ascending=[False, False]
-        ).reset_index(drop=True)
+        self.feature_frequency_ = self._freq()
 
         return None
