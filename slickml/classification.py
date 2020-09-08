@@ -11,6 +11,7 @@ from sklearn.preprocessing import StandardScaler
 
 from slickml.formatting import Color
 from slickml.utilities import df_to_csr, memory_use_csr
+from slickml.plotting import plot_xgb_cv_results, plot_xgb_feature_importance
 
 
 class XGBoostCVClassifier:
@@ -130,6 +131,12 @@ class XGBoostCVClassifier:
     get_cv_results(): class method
         Return a Pandas DataFrame() of the mean value of the metrics
         in n-folds cross-validation for each boosting round
+    plot_cv_results(): class method
+        Plot cross-validation results
+    plot_feature_importance(): class method
+        Plots feature importance
+    plot_shap_summary(): class method
+        Plot shap values summary
     """
 
     def __init__(
@@ -528,6 +535,107 @@ class XGBoostCVClassifier:
 
         return self.predict_proba_
 
+    # TODO: PLOTTING
+    def plot_cv_results(
+        self,
+        figsize=None,
+        linestyle=None,
+        train_label=None,
+        test_label=None,
+        train_color=None,
+        train_std_color=None,
+        test_color=None,
+        test_std_color=None,
+    ):
+        """
+        Function to plot the results of xgboost.cv() process and evolution
+        of metrics through number of boosting rounds.
+        Parameters
+        ----------
+        cv_results: Pandas DataFrame()
+            Cross-validation results in DataFrame() format
+        figsize: tuple, optional, (default=(8, 5))
+            Figure size
+        linestyle: str, optional, (default="--")
+            Style of lines. Complete options are available at
+            (https://matplotlib.org/3.1.0/gallery/lines_bars_and_markers/linestyles.html)
+        train_label: str, optional (default="Train")
+            Label in the figure legend for the training line
+        test_label: str, optional (default="Test")
+            Label in the figure legend for the training line
+        train_color: str, optional, (default="navy")
+            Color of the training line
+        train_std_color: str, optional, (default="#B3C3F3")
+            Color of the edge color of the training std bars
+        test_color: str, optional, (default="purple")
+            Color of the testing line
+        test_std_color: str, optional, (default="#D0AAF3")
+            Color of the edge color of the testing std bars
+        """
+
+        plot_xgb_cv_results(
+            self.cv_results_,
+            figsize,
+            linestyle,
+            train_label,
+            test_label,
+            train_color,
+            train_std_color,
+            test_color,
+            test_std_color,
+        )
+
+    def plot_feature_importance(
+        self,
+        figsize=None,
+        color=None,
+        marker=None,
+        markersize=None,
+        markeredgecolor=None,
+        markerfacecolor=None,
+        markeredgewidth=None,
+        fontsize=None,
+    ):
+
+        """Function to plot XGBoost feature importance.
+        This function is a helper function based on the feature_importance_
+        attribute of the XGBoostCVClassifier class.
+        Parameters
+        ----------
+        feature importance: Pandas DataFrame
+            Feature frequency
+        figsize: tuple, optional, (default=(8, 5))
+            Figure size
+        color: str, optional, (default="#87CEEB")
+            Color of the vertical lines of lollipops
+        marker: str, optional, (default="o")
+            Market style of the lollipops. Complete valid
+            marker styke can be found at:
+            (https://matplotlib.org/2.1.1/api/markers_api.html#module-matplotlib.markers)
+        markersize: int or float, optional, (default=10)
+            Markersize
+        markeredgecolor: str, optional, (default="1F77B4")
+            Marker edge color
+        markerfacecolor: str, optional, (default="1F77B4")
+            Marker face color
+        markeredgewidth: int or float, optional, (default=1)
+            Marker edge width
+        fontsize: int or float, optional, (default=12)
+            Fontsize for xlabel and ylabel, and ticks parameters
+        """
+
+        plot_xgb_feature_importance(
+            self.feature_importance_,
+            figsize,
+            color,
+            marker,
+            markersize,
+            markeredgecolor,
+            markerfacecolor,
+            markeredgewidth,
+            fontsize,
+        )
+
     def plot_shap_summary(self):
         """
         Function to plot shap summary plot
@@ -542,17 +650,5 @@ class XGBoostCVClassifier:
         exp = shap.TreeExplainer(self.best_model_)
         exp_vals = exp.shap_values(self.X_test_)
         shap.summary_plot(exp_vals, self.X_test_, plot_type="bar")
-
-        pass
-
-    def plot_cv_results(self):
-        """
-        Function to plot the results of xgboost.cv() process and evolution
-        of metrics through number of boosting rounds.
-        """
-
-        pass
-
-    def plot_feature_importance(self):
 
         pass
