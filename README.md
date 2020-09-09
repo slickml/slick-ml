@@ -1,4 +1,4 @@
-# SlickML <a href="https://www.slickml.com/"><img align="right" src=""https://raw.githubusercontent.com/slickml/slick-ml/master/assets/design/logo.png") height="50"></img></a>
+# SlickML <a href="https://www.slickml.com/"><img align="right" src="https://raw.githubusercontent.com/slickml/slick-ml/master/assets/design/logo.png") height="50"></img></a>
 
 # SlickML: Slick Machine Learning in Python
 
