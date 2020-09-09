@@ -29,7 +29,7 @@ Here is an exmple using SlickML to quickly run a feature selection pipeline:
 # run feature selection using loaded data
 from slickml.feautre_selection import XGBoostFeatureSelector
 xfs = XGBoostFeatureSelector()
-xfs.fit()
+xfs.fit(X, y)
 ```
 ![selection](https://raw.githubusercontent.com/slickml/slick-ml/master/assets/images/feature_selection.png)
 
