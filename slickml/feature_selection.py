@@ -96,11 +96,17 @@ class XGBoostFeatureSelector:
         each feature during the selection process
     cv_results_: dict()
         Return a dict() of the total internal/external
+        cross-validation results        
+    cv_results_: dict()
+        Return a dict() of the total internal/external
         cross-validation results
     plotting_cv_: dict()
         Returns a dict() of the required variables
         to plot the histograms of total internal/external
         cross-validation results
+    fit(): class method
+        This is the main method to run the feature selection process and
+        receives two arguments (X, y)
     get_xgb_params(): class method
         Returns params dict
     get_bst_feature_importance(): class method
