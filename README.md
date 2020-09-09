@@ -1,4 +1,5 @@
-# SlickML: Slick Machine Learning in Python
+# SlickML: Slick Machine Learning in Python <a href="https://www.slickml.com/"><img align="right" src="https://raw.githubusercontent.com/slickml/slick-ml/master/assets/design/logo.png" height="50"></img></a>
+
 
 **SlickML** is an open-source machine learning library written in Python aimed
 at accelerating the experimentation time for a ML application. Data Scientist
