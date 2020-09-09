@@ -90,7 +90,7 @@ def plot_binary_classification_metrics(figsize=None, **kwargs):
     # TODO: adjust all font sizes
 
     ax1.tick_params(axis="both", which="major", labelsize=12)
-    ax1.legend(prop={"size": 12}, loc=0)
+    ax1.legend(prop={"size": 12}, loc=0, framealpha=0.0)
     ax1.annotate(
         f"Threshold = {kwargs['youden_threshold']:.3f}",
         xy=(
@@ -122,7 +122,7 @@ def plot_binary_classification_metrics(figsize=None, **kwargs):
 
     ax2.tick_params(axis="both", which="major", labelsize=12)
 
-    ax2.legend(bbox_to_anchor=(1.2, 0.5), loc="center", ncol=1)
+    ax2.legend(bbox_to_anchor=(1.2, 0.5), loc="center", ncol=1, framealpha=0.0)
     ax2.axvline(kwargs["sens_spec_threshold"], color="k", ls="--")
     if kwargs["sens_spec_threshold"] <= 0.5:
         ax2.annotate(
@@ -174,7 +174,7 @@ def plot_binary_classification_metrics(figsize=None, **kwargs):
         title="Precision-Recall Curve",
     )
 
-    ax3.legend(prop={"size": 12}, loc=0)
+    ax3.legend(prop={"size": 12}, loc=0, framealpha=0.0)
     ax3.tick_params(axis="both", which="major", labelsize=12)
     ax3.annotate(
         f"Threshold = {kwargs['prec_rec_threshold']:.3f}",
@@ -207,7 +207,7 @@ def plot_binary_classification_metrics(figsize=None, **kwargs):
     )
 
     ax4.tick_params(axis="both", which="major", labelsize=12)
-    ax4.legend(bbox_to_anchor=(1.2, 0.5), loc="center", ncol=1)
+    ax4.legend(bbox_to_anchor=(1.2, 0.5), loc="center", ncol=1, framealpha=0.0)
     ax4.axvline(kwargs["prec_rec_threshold"], color="k", ls="--")
 
     if kwargs["prec_rec_threshold"] <= 0.5:

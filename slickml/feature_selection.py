@@ -25,10 +25,6 @@ class XGBoostFeatureSelector:
     (https://xgboost.readthedocs.io/en/latest/python/python_api.html)
     Parameters
     ----------
-    X: numpy.array or Pandas DataFrame
-        Features data
-    y: numpy.array[int] or list[int]
-        List of ground truth binary values [0, 1]
     n_iter: int, optional (default=3)
         Number of iteration for feature selection
     num_boost_round: int, optional (default=100)
@@ -100,11 +96,17 @@ class XGBoostFeatureSelector:
         each feature during the selection process
     cv_results_: dict()
         Return a dict() of the total internal/external
+        cross-validation results        
+    cv_results_: dict()
+        Return a dict() of the total internal/external
         cross-validation results
     plotting_cv_: dict()
         Returns a dict() of the required variables
         to plot the histograms of total internal/external
         cross-validation results
+    fit(): class method
+        This is the main method to run the feature selection process and
+        receives two arguments (X, y)
     get_xgb_params(): class method
         Returns params dict
     get_bst_feature_importance(): class method
@@ -119,8 +121,6 @@ class XGBoostFeatureSelector:
 
     def __init__(
         self,
-        X,
-        y,
         n_iter=None,
         num_boost_round=None,
         n_splits=None,
@@ -137,19 +137,6 @@ class XGBoostFeatureSelector:
         verbose_eval=False,
         callbacks=False,
     ):
-
-        if isinstance(X, np.ndarray):
-            self.X = pd.DataFrame(X, columns=[f"F_{i}" for i in range(X.shape[1])])
-        elif isinstance(X, pd.DataFrame):
-            self.X = X
-        else:
-            raise TypeError("The input X must be numpy array or pandas DataFrame.")
-
-        if isinstance(y, np.ndarray) or isinstance(y, list):
-            self.y = y
-        else:
-            raise TypeError("The input y must be numpy array or list.")
-        self.y = y
 
         if n_iter is None:
             self.n_iter = 3
@@ -508,10 +495,30 @@ class XGBoostFeatureSelector:
             figsize, int_color, ext_color, sharex, sharey, **self.plotting_cv_
         )
 
-    def run(self):
+    def fit(self, X, y):
         """
-        Function to run the main feature selection algorithm.
+        Function to fit the main feature selection algorith, 
+        and run the selection process.
+        Parameters
+        ----------
+        X: numpy.array or Pandas DataFrame
+            Features data
+        y: numpy.array[int] or list[int]
+            List of ground truth binary values [0, 1]        
         """
+        
+        if isinstance(X, np.ndarray):
+            self.X = pd.DataFrame(X, columns=[f"F_{i}" for i in range(X.shape[1])])
+        elif isinstance(X, pd.DataFrame):
+            self.X = X
+        else:
+            raise TypeError("The input X must be numpy array or pandas DataFrame.")
+
+        if isinstance(y, np.ndarray) or isinstance(y, list):
+            self.y = y
+        else:
+            raise TypeError("The input y must be numpy array or list.")
+        self.y = y        
 
         # final results dict + list
         self.cv_results_ = {}
