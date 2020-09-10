@@ -2,3 +2,4 @@ black
 ipython
 flake8
 pytest
+pytest-cov

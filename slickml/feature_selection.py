@@ -1,16 +1,12 @@
-import os, sys, gc
+import gc
 import numpy as np
 import pandas as pd
-import pickle
-import matplotlib.pyplot as plt
-import xgboost as xgb
-from sklearn.model_selection import cross_val_score, train_test_split, StratifiedKFold
-from IPython.display import display
-import seaborn as sns
+import xgboost
+from sklearn.model_selection import StratifiedKFold
 import xgboost as xgb
 
 from slickml.feature_engineering import noisy_features
-from slickml.utilities import df_to_csr, memory_use_csr
+from slickml.utilities import df_to_csr
 from slickml.plotting import plot_xfs_feature_frequency, plot_xfs_cv_results
 from slickml.formatting import Color
 
@@ -96,7 +92,7 @@ class XGBoostFeatureSelector:
         each feature during the selection process
     cv_results_: dict()
         Return a dict() of the total internal/external
-        cross-validation results        
+        cross-validation results
     cv_results_: dict()
         Return a dict() of the total internal/external
         cross-validation results
@@ -285,8 +281,6 @@ class XGBoostFeatureSelector:
         """
 
         data = {"feature": [], f"{self.importance_type}": []}
-        cols = []
-        importance = []
         features_gain = bst.get_score(importance_type=self.importance_type)
         for key, val in features_gain.items():
             data["feature"].append(key)
@@ -497,16 +491,16 @@ class XGBoostFeatureSelector:
 
     def fit(self, X, y):
         """
-        Function to fit the main feature selection algorith, 
+        Function to fit the main feature selection algorith,
         and run the selection process.
         Parameters
         ----------
         X: numpy.array or Pandas DataFrame
             Features data
         y: numpy.array[int] or list[int]
-            List of ground truth binary values [0, 1]        
+            List of ground truth binary values [0, 1]
         """
-        
+
         if isinstance(X, np.ndarray):
             self.X = pd.DataFrame(X, columns=[f"F_{i}" for i in range(X.shape[1])])
         elif isinstance(X, pd.DataFrame):
@@ -518,7 +512,7 @@ class XGBoostFeatureSelector:
             self.y = y
         else:
             raise TypeError("The input y must be numpy array or list.")
-        self.y = y        
+        self.y = y
 
         # final results dict + list
         self.cv_results_ = {}
@@ -614,7 +608,7 @@ class XGBoostFeatureSelector:
                 # check wheather noisy feature is selected
                 if feature_gain["feature"].str.contains("noisy").sum() != 0:
                     gain_threshold = feature_gain.loc[
-                        feature_gain["feature"].str.contains("noisy") == True,
+                        feature_gain["feature"].str.contains("noisy"),
                         self.importance_type,
                     ].values.tolist()[self.nth_noise_threshold - 1]
                 else:
