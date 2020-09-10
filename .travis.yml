@@ -14,7 +14,7 @@ jobs:
       - pytest --cov=slickml --cov-config=.coveragerc
       name: pytestq
 
-    - script: python -m black slickml --line-length=80
+    - script: python -m black slickml --line-length=88
       name: pep8
 
     - script: flake8
