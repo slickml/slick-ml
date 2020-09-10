@@ -1,3 +1,6 @@
+[![build status](https://travis-ci.com/slickml/slick-ml.svg?branch=master)](https://travis-ci.com/github/slickml/slick-ml)
+[![PyPI - Downloads](https://img.shields.io/pypi/dm/slickml)](https://pypi.org/project/slickml/)
+
 <p align="center">
 <a href="https://www.slickml.com/">
   <img src="https://raw.githubusercontent.com/slickml/slick-ml/master/assets/design/logo.png" width="250"></img></a>
