@@ -608,7 +608,7 @@ class XGBoostFeatureSelector:
                 # check wheather noisy feature is selected
                 if feature_gain["feature"].str.contains("noisy").sum() != 0:
                     gain_threshold = feature_gain.loc[
-                        feature_gain["feature"].str.contains("noisy") == True,
+                        feature_gain["feature"].str.contains("noisy"),
                         self.importance_type,
                     ].values.tolist()[self.nth_noise_threshold - 1]
                 else:
