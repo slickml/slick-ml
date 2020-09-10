@@ -1,6 +1,5 @@
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
 import seaborn as sns
 
 from sklearn.metrics import (
@@ -16,8 +15,7 @@ from sklearn.metrics import (
     roc_curve,
 )
 
-from IPython.core.display import display, HTML
-
+from IPython.core.display import display
 from slickml.plotting import plot_binary_classification_metrics
 
 
