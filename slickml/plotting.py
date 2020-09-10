@@ -1,20 +1,9 @@
 import numpy as np
-import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 import seaborn as sns
-from sklearn.metrics import (
-    auc,
-    precision_recall_curve,
-    accuracy_score,
-    balanced_accuracy_score,
-    fbeta_score,
-    precision_recall_fscore_support,
-    roc_auc_score,
-    average_precision_score,
-    confusion_matrix,
-    roc_curve,
-)
+from sklearn.metrics import accuracy_score
+
 
 from IPython.core.display import display, HTML
 import warnings

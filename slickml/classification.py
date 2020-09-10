@@ -1,16 +1,11 @@
-import os, sys
-import pickle
 import numpy as np
 import pandas as pd
 import shap
 import xgboost as xgb
-import seaborn as sns
-import matplotlib.pyplot as plt
-from IPython.display import display
 from sklearn.preprocessing import StandardScaler
 
 from slickml.formatting import Color
-from slickml.utilities import df_to_csr, memory_use_csr
+from slickml.utilities import df_to_csr
 from slickml.plotting import plot_xgb_cv_results, plot_xgb_feature_importance
 
 
@@ -431,8 +426,6 @@ class XGBoostCVClassifier:
         """
 
         data = {"feature": [], f"{self.importance_type}": []}
-        cols = []
-        importance = []
         features_gain = self.best_model_.get_score(importance_type=self.importance_type)
         for key, val in features_gain.items():
             data["feature"].append(key)
