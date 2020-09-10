@@ -15,7 +15,7 @@ from sklearn.metrics import (
     roc_curve,
 )
 
-
+from IPython.core.display import display
 from slickml.plotting import plot_binary_classification_metrics
 
 
