@@ -57,7 +57,7 @@ def df_to_csr(df, fillna=0.0, verbose=False):
     """
     df_ = df.copy()
     csr = (
-        df_.astype("float").fillna(fillna).to_sparse(fill_value=fillna).to_coo().tocsr()
+        df_.astype(pd.SparseDtype("float", fillna)).sparse.to_coo().tocsr()
     )
     if verbose:
         df_.info(memory_usage="deep")
