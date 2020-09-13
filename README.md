@@ -73,12 +73,19 @@ clf.plot_feature_importance()
 ![clfcv](https://raw.githubusercontent.com/slickml/slick-ml/master/assets/images/clf_cv_results.png)
 ![clfimp](https://raw.githubusercontent.com/slickml/slick-ml/master/assets/images/clf_feature_importance.png)
 
+```python
+# prediction probabiliteis and plot SHAP summary plot
+y_pred_proba = clf.predict_proba(X_test, y_test)
+clf.plot_shap_summary(plot_type="vilolin")
+
+```
+![clfshap](https://raw.githubusercontent.com/slickml/slick-ml/master/assets/images/clf_shap_summary.png)
+
 Here is an example using SlickML to quickly visualize the binary classification 
 metrics based on multiple calculated thresholds:
 ```python
 # plot binary metrics
 from slickml.metrics import BinaryClassificationMetrics
-y_pred_proba = clf.predict_proba(X_test, y_test)
 metrics = BinaryClassificationMetrics(y_test, y_pred_proba)
 metrics.plot()
 
