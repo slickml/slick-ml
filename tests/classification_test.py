@@ -7,7 +7,7 @@ from collections import namedtuple
 from slickml.utilities import df_to_csr
 from slickml.classification import XGBoostCVClassifier
 
-ModelWithData = namedtuple("ModelWithData", ["model", "inference_data", "target_data"])
+ModelWithData = namedtuple("ModelWithData", ["model", "matrix", "features", "target"])
 
 
 def get_params():
@@ -30,19 +30,15 @@ def get_params():
     }
     return params
 
-
 @pytest.fixture(scope="session")
 def xgb_classifier():
-    data = pd.read_csv("../data/dummy_data.csv")
-    X = data.loc[:-1, :]
-    y = data.CLASS
-
-    dtrain = xgb.DMatrix(
-        data=df_to_csr(X, fillna=0.0, verbose=False),
-        label=y,
-        feature_names=X.columns.tolist(),
-    )
-
+    data = pd.read_csv("data/dummy_data.csv")
+    X = data.iloc[:,:-1]
+    y = data.CLASS.values
+    
+    dtrain = xgb.DMatrix(data=X, label=y)
+    
+    #cross-validation
     cvr = xgb.cv(
         params=get_params(),
         dtrain=dtrain,
@@ -55,13 +51,13 @@ def xgb_classifier():
         shuffle=True,
         callbacks=None,
     )
-
+  
     model = xgb.train(
         params=get_params(),
         dtrain=dtrain,
         num_boost_round=len(cvr) - 1,
     )
-    return ModelWithData(model=model, inference_data=X, target_data=y)
+    return ModelWithData(model=model, matrix=dtrain, features=X, target=y)
 
 
 @pytest.mark.model
@@ -69,17 +65,21 @@ def test_model(xgb_classifier) -> None:
     """ Test Classification Model"""
 
     # xgb model
-    output = xgb_classifier
-    xgb_model, X, y = output.model, output.inference_data, output.target_data
-
-    # test slickml -> xgb
+    model = xgb_classifier.model
+    dtrain = xgb_classifier.matrix
+    X = xgb_classifier.features
+    y = xgb_classifier.target
+   
+    # test slickml -> xgb classifier 
     xgb_sml = XGBoostCVClassifier(
         num_boost_round=500, n_splits=4, metrics=("logloss"), params=get_params()
     )
     xgb_sml.fit(X, y)
-
+    
     # Test predictions
     np.testing.assert_array_equal(
-        model.predict(X),
-        xgb_sml.predict(xgb_model.inference_data),
+        xgb_sml.predict_proba(X,y),
+        model.predict(dtrain),
+        err_msg='Predictions are not equal', 
+        verbose=True
     )
