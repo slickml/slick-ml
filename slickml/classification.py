@@ -700,6 +700,8 @@ class XGBoostCVClassifier:
         explainer = shap.TreeExplainer(self.best_model_)
         self.shap_values_test_ = explainer.shap_values(self.X_test_)
         self.shap_values_train_ = explainer.shap_values(self.X_train_)
+
+        # check the validation flag
         if validation:
             # define shap values for X_test
             shap_values = self.shap_values_test_
