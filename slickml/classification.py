@@ -6,7 +6,11 @@ from sklearn.preprocessing import StandardScaler
 
 from slickml.formatting import Color
 from slickml.utilities import df_to_csr
-from slickml.plotting import plot_xgb_cv_results, plot_xgb_feature_importance
+from slickml.plotting import (
+    plot_xgb_cv_results,
+    plot_xgb_feature_importance,
+    plot_shap_summary,
+)
 
 
 class XGBoostCVClassifier:
@@ -107,6 +111,10 @@ class XGBoostCVClassifier:
         Returns the xgboost.DMatrix(X_train_, y_train)
     d_test_: xgboost.DMatrix object
         Returns the xgboost.DMatrix(X_test_, y_test)
+    shap_values_train_: Numpy array
+        SHAP values from treeExplainer using X_train
+    shap_values_test_: Numpy array
+        SHAP values from treeExplainer using X_test
     fit(X_train, y_train): class method
         Returns None and applies the training process using
         the (X_train, y_train) set using xgboost.cv() and xgboost.train()
@@ -444,7 +452,7 @@ class XGBoostCVClassifier:
         Function to run xgboost.cv() method first to find the best number of boosting round
         and train a model based on that on (X_train, y_train) set and returns it.
         """
-        # creating dtrain
+        # creating dtrain, dtest (dtest here for the sake of plotting)
         self.dtrain_ = self._dtrain(X_train, y_train)
 
         # run cross-validation
@@ -629,19 +637,94 @@ class XGBoostCVClassifier:
             fontsize,
         )
 
-    def plot_shap_summary(self):
-        """
-        Function to plot shap summary plot
-        based on the best trained model using
-        (X_train, y_train) calculated off the
-        (X_test).
+    def plot_shap_summary(
+        self,
+        validation=True,
+        plot_type=None,
+        figsize=None,
+        color=None,
+        max_display=None,
+        feature_names=None,
+        title=None,
+        show=True,
+        sort=True,
+        color_bar=True,
+        layered_violin_max_num_bins=None,
+        class_names=None,
+        class_inds=None,
+        color_bar_label=None,
+    ):
+        """Function to plot shap summary plot.
+        This function is a helper function to plot the shap summary plot
+        based on all types of shap explainers including tree, linear, and dnn.
+        Please note that this function should be ran after the predict_proba to
+        make sure the X_test is being instansiated.
+        Parameters
+        ----------
+        validation: bool, optional, (default=True)
+            Flag to calculate SHAP values of X_test if it is True.
+            If validation=False, it calculates the SHAP values of
+            X_train and plots the summary plot.
+        plot_type: str, optional (single-output default="dot", multi-output default="bar")
+            The type of summar plot. Options are "bar", "dot", "violin", and "compact_dot"
+            which is recommended for SHAP interactions
+        figsize: tuple, optional, (default="auto")
+            Figure size
+        color: str, optional, (default="#D0AAF3")
+            Color of the vertical lines when plot_type="bar"
+        max_display: int, optional, (default=20)
+            Limit to show the number of features in the plot
+        feature_names: str, optional, (default=None)
+            List of feature names to pass. It should follow the order
+            of fatures
+        title: str, optional, (default=None)
+            Title of the plot
+        show: bool, optional, (default=True)
+            Flag to show the plot in inteactive environment
+        sort: bool, optional, (default=True)
+            Flag to plot sorted shap vlues in descending order
+        color_bar: bool, optional, (default=True)
+            Flag to show color_bar when plot_type is "dot" or "violin"
+        layered_violin_max_num_bins: int, optional, (default=20)
+            The number of bins for calculating the violin plots ranges
+            and outliers
+        class_names: list, optional, (default=None)
+            List of class names for multi-output problems
+        class_inds: list, optional, (default=True)
+            List of class indices for multi-output problems
+        color_bar_label: str, optional, (default="Feature Value")
+            Label for color bar
         """
 
-        # TODO complete all the attributes
-        # look at all possible shap calculations
-        # including comparisons of feat importance and shap values
-        exp = shap.TreeExplainer(self.best_model_)
-        exp_vals = exp.shap_values(self.X_test_)
-        shap.summary_plot(exp_vals, self.X_test_, plot_type="bar")
+        # define tree explainer
+        explainer = shap.TreeExplainer(self.best_model_)
+        self.shap_values_test_ = explainer.shap_values(self.X_test_)
+        self.shap_values_train_ = explainer.shap_values(self.X_train_)
 
-        pass
+        # check the validation flag
+        if validation:
+            # define shap values for X_test
+            shap_values = self.shap_values_test_
+            features = self.X_test_
+        else:
+            # define shap values for X_train
+            self.shap_values_ = self.shap_values_train_
+            features = self.X_train_
+
+        plot_shap_summary(
+            shap_values=shap_values,
+            features=features,
+            plot_type=plot_type,
+            figsize=figsize,
+            color=color,
+            max_display=max_display,
+            feature_names=feature_names,
+            title=title,
+            show=show,
+            sort=sort,
+            color_bar=color_bar,
+            layered_violin_max_num_bins=layered_violin_max_num_bins,
+            class_names=class_names,
+            class_inds=class_inds,
+            color_bar_label=color_bar_label,
+        )
