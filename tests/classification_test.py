@@ -4,7 +4,6 @@ import pandas as pd
 import xgboost as xgb
 from collections import namedtuple
 
-from slickml.utilities import df_to_csr
 from slickml.classification import XGBoostCVClassifier
 
 ModelWithData = namedtuple("ModelWithData", ["model", "matrix", "features", "target"])
@@ -30,15 +29,16 @@ def get_params():
     }
     return params
 
+
 @pytest.fixture(scope="session")
 def xgb_classifier():
     data = pd.read_csv("data/dummy_data.csv")
-    X = data.iloc[:,:-1]
+    X = data.iloc[:, :-1]
     y = data.CLASS.values
-    
+
     dtrain = xgb.DMatrix(data=X, label=y)
-    
-    #cross-validation
+
+    # cross-validation
     cvr = xgb.cv(
         params=get_params(),
         dtrain=dtrain,
@@ -46,12 +46,12 @@ def xgb_classifier():
         nfold=4,
         stratified=True,
         metrics="logloss",
-        early_stopping_rounds=None,
-        seed=None,
+        early_stopping_rounds=20,
+        seed=1367,
         shuffle=True,
         callbacks=None,
     )
-  
+
     model = xgb.train(
         params=get_params(),
         dtrain=dtrain,
@@ -69,17 +69,17 @@ def test_model(xgb_classifier) -> None:
     dtrain = xgb_classifier.matrix
     X = xgb_classifier.features
     y = xgb_classifier.target
-   
-    # test slickml -> xgb classifier 
+
+    # test slickml -> xgb classifier
     xgb_sml = XGBoostCVClassifier(
         num_boost_round=500, n_splits=4, metrics=("logloss"), params=get_params()
     )
     xgb_sml.fit(X, y)
-    
+
     # Test predictions
     np.testing.assert_array_equal(
-        xgb_sml.predict_proba(X,y),
-        model.predict(dtrain),
-        err_msg='Predictions are not equal', 
-        verbose=True
+        np.where(xgb_sml.predict_proba(X, y) >= 0.5, 1, 0),
+        np.where(model.predict(dtrain) >= 0.5, 1, 0),
+        err_msg="Predictions are not equal",
+        verbose=True,
     )
