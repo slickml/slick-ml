@@ -3,12 +3,11 @@ import numpy as np
 import pandas as pd
 import xgboost as xgb
 from collections import namedtuple
-import sklearn.datasets as datasets
 
 from slickml.utilities import df_to_csr
 from slickml.classification import XGBoostCVClassifier
 
-ModelWithData = namedtuple("ModelWithData", ["model", "inference_data"])
+ModelWithData = namedtuple("ModelWithData", ["model", "inference_data", "target_data"])
 
 
 def get_params():
@@ -34,9 +33,10 @@ def get_params():
 
 @pytest.fixture(scope="session")
 def xgb_classifier():
-    iris = datasets.load_iris()
-    X = pd.DataFrame(iris.data,columns=iris.feature_names)
-    y = pd.DataFrame(iris.target,columns=['CLASS'])
+    data = pd.read_csv("../data/dummy_data.csv")
+    X = data.loc[:-1, :]
+    y = data.CLASS
+
     dtrain = xgb.DMatrix(
         data=df_to_csr(X, fillna=0.0, verbose=False),
         label=y,
@@ -53,7 +53,7 @@ def xgb_classifier():
         early_stopping_rounds=None,
         seed=None,
         shuffle=True,
-        callbacks=False,
+        callbacks=None,
     )
 
     model = xgb.train(
@@ -69,8 +69,8 @@ def test_model(xgb_classifier) -> None:
     """ Test Classification Model"""
 
     # xgb model
-    model = xgb_classifier.model
-    X,y = model.inference_data,model.target_data
+    output = xgb_classifier
+    xgb_model, X, y = output.model, output.inference_data, output.target_data
 
     # test slickml -> xgb
     xgb_sml = XGBoostCVClassifier(
@@ -80,6 +80,6 @@ def test_model(xgb_classifier) -> None:
 
     # Test predictions
     np.testing.assert_array_equal(
-        model.predict(model.inference_data),
+        model.predict(X),
         xgb_sml.predict(xgb_model.inference_data),
     )
