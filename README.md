@@ -80,7 +80,7 @@ clf.plot_feature_importance()
 
 ```python
 # plot SHAP summary plot
-clf.plot_shap_summary(plot_type="vilolin")
+clf.plot_shap_summary(plot_type="violin")
 
 ```
 ![clfshap](https://raw.githubusercontent.com/slickml/slick-ml/master/assets/images/clf_shap_summary.png)
