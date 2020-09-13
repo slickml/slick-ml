@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 import seaborn as sns
+import shap
 from sklearn.metrics import accuracy_score
 
 
@@ -691,4 +692,116 @@ def plot_xgb_feature_importance(
     ax.set_title("Feature Importance", fontsize=fontsize)
     ax.set(xlim=[None, feature_importance[colx].max() * 1.13])
     ax.tick_params(axis="both", which="major", labelsize=fontsize)
+    plt.show()
+
+
+def plot_shap_summary(
+    shap_values,
+    features,
+    plot_type=None,
+    figsize=None,
+    color=None,
+    max_display=None,
+    feature_names=None,
+    title=None,
+    show=True,
+    sort=True,
+    color_bar=True,
+    layered_violin_max_num_bins=None,
+    class_names=None,
+    class_inds=None,
+    color_bar_label=None,
+):
+    """Function to plot shap summary plot.
+    This function is a helper function to plot the shap summary plot
+    based on all types of shap explainers including tree, linear, and dnn.
+    Parameters
+    ----------
+    shap_values: Numpy array or Pandas DataFrame
+        Calculated SHAP values. For single output explanations like
+        binary classificationthis this is a matrix of SHAP values (n_samples, n_features).
+        For multi-output explanations this is a list of such matrices of SHAP values
+    features: Numpy array or Pandas DataFrame
+        The feature matrix that was used to calculate the SHAP values. For the case
+        of Numpy array it is recommened to pass the feature_names list as well
+    plot_type: str, optional (single-output default="dot", multi-output default="bar")
+        The type of summar plot. Options are "bar", "dot", "violin", and "compact_dot"
+        which is recommended for SHAP interactions
+    figsize: tuple, optional, (default="auto")
+        Figure size
+    color: str, optional, (default="#D0AAF3")
+        Color of the vertical lines when plot_type="bar"
+    max_display: int, optional, (default=20)
+        Limit to show the number of features in the plot
+    feature_names: str, optional, (default=None)
+        List of feature names to pass. It should follow the order
+        of fatures
+    title: str, optional, (default=None)
+        Title of the plot
+    show: bool, optional, (default=True)
+        Flag to show the plot in inteactive environment
+    sort: bool, optional, (default=True)
+        Flag to plot sorted shap vlues in descending order
+    color_bar: bool, optional, (default=True)
+        Flag to show color_bar when plot_type is "dot" or "violin"
+    layered_violin_max_num_bins: int, optional, (default=20)
+        The number of bins for calculating the violin plots ranges
+        and outliers
+    class_names: list, optional, (default=None)
+        List of class names for multi-output problems
+    class_inds: list, optional, (default=True)
+        List of class indices for multi-output problems
+    color_bar_label: str, optional, (default="Feature Value")
+        Label for color bar
+    """
+
+    # initializing figsize
+    if figsize is None:
+        figsize = "auto"
+    elif isinstance(figsize, list) or isinstance(figsize, tuple):
+        figsize = figsize
+    else:
+        raise TypeError("Only tuple and list types are allowed for figsize.")
+
+    # initializing color
+    if color is None:
+        color = "#D0AAF3"
+    elif isinstance(color, str):
+        color = color
+    else:
+        raise TypeError("Only str type is allowed for color.")
+
+    # initializing layered_violin_max_num_bins
+    if layered_violin_max_num_bins is None:
+        layered_violin_max_num_bins = 20
+    elif isinstance(layered_violin_max_num_bins, int):
+        layered_violin_max_num_bins = layered_violin_max_num_bins
+    else:
+        raise TypeError("Only int type is allowed for layered_violin_max_num_bins.")
+
+    # initializing color_bar_label
+    if color_bar_label is None:
+        color_bar_label = "Feature Value"
+    elif isinstance(color_bar_label, int):
+        color_bar_label = color_bar_label
+    else:
+        raise TypeError("Only str type is allowed for color_bar_label.")
+
+    shap.summary_plot(
+        shap_values,
+        features,
+        plot_type=plot_type,
+        plot_size=figsize,
+        color=color,
+        max_display=max_display,
+        feature_names=feature_names,
+        title=title,
+        show=show,
+        sort=sort,
+        color_bar=color_bar,
+        layered_violin_max_num_bins=layered_violin_max_num_bins,
+        class_names=class_names,
+        class_inds=class_inds,
+        color_bar_label=color_bar_label,
+    )
     plt.show()
