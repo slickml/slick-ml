@@ -65,20 +65,16 @@ Here is an example using SlickML how to train/validate a XGBoostCV classifier:
 from slickml.classification import XGBoostCVClassifier
 clf = XGBoostCVClassifier()
 clf.fit(X_train, y_train)
+y_pred_proba = clf.predict_proba(X_test, y_test)
 
-# plot cross-validation and feature importance results
+# plot cross-validation, feature importanc, and SHAP summary
 clf.plot_cv_results()
 clf.plot_feature_importance()
+clf.plot_shap_summary(plot_type="vilolin")
 ```
 ![clfcv](https://raw.githubusercontent.com/slickml/slick-ml/master/assets/images/clf_cv_results.png)
 ![clfimp](https://raw.githubusercontent.com/slickml/slick-ml/master/assets/images/clf_feature_importance.png)
 
-```python
-# prediction probabiliteis and plot SHAP summary plot
-y_pred_proba = clf.predict_proba(X_test, y_test)
-clf.plot_shap_summary(plot_type="vilolin")
-
-```
 ![clfshap](https://raw.githubusercontent.com/slickml/slick-ml/master/assets/images/clf_shap_summary.png)
 
 Here is an example using SlickML to quickly visualize the binary classification 
