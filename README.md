@@ -1,6 +1,7 @@
 [![build status](https://travis-ci.com/slickml/slick-ml.svg?branch=master)](https://travis-ci.com/github/slickml/slick-ml)
 [![License](https://img.shields.io/github/license/slickml/slick-ml)](https://github.com/slickml/slick-ml/blob/master/LICENSE/)
 [![PyPI - Downloads](https://img.shields.io/pypi/dm/slickml)](https://pypi.org/project/slickml/)
+![PyPI Version](https://img.shields.io/pypi/v/slickml)
 [![Forks](https://img.shields.io/github/forks/slickml/slick-ml)](https://github.com/slickml/slick-ml/network/members/)
 [![Stars](https://img.shields.io/github/stars/slickml/slick-ml)](https://github.com/slickml/slick-ml/stargazers/)
 
