@@ -348,7 +348,7 @@ class XGBoostClassifier:
 
     def get_feature_importance(self):
         """
-        Function to return the feature importance of the bst model
+        Function to return the feature importance of the best model
         at each fold of each iteration of feature selection.
         """
 
@@ -747,17 +747,17 @@ class XGBoostCVClassifier(XGBoostClassifier):
 
         return cvr
 
-    def _bst(self):
+    def _model(self):
         """
         Function to train XGBoost model based on the best number
         of boosting round.
         """
-        bst = xgb.train(
+        model = xgb.train(
             params=self.params,
             dtrain=self.dtrain_,
             num_boost_round=len(self.cv_results_) - 1,
         )
-        return bst
+        return model
 
     def fit(self, X_train, y_train):
         """
@@ -800,7 +800,7 @@ class XGBoostCVClassifier(XGBoostClassifier):
             )
 
         # train best model
-        self.model_ = self._bst()
+        self.model_ = self._model()
 
         # feature importance
         self.feature_importance_ = self._xgb_imp_to_df()
