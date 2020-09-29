@@ -61,6 +61,7 @@ class XGBoostClassifier:
                   "silent" : True,
                   "nthread" : 4,
                   "scale_pos_weight" : 1})
+
     Attributes
     ----------
     feature_importance_: dict()
@@ -586,6 +587,7 @@ class XGBoostCVClassifier(XGBoostClassifier):
         This would help to track the early stopping criterion
     verbose: bool, optional (default=False)
         Flag to show the final results of xgboost.cv()
+
     Attributes
     ----------
     feature_importance_: dict()
