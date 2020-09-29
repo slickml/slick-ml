@@ -562,9 +562,6 @@ class XGBoostCVClassifier(XGBoostClassifier):
     scale_std: bool, optional (default=False)
         Flag to scale the data to unit variance
         (or equivalently, unit standard deviation)
-    show_stdv: bool, optional (default=False)
-        Flag to show standard deviations in callbacks for
-        xgboost.cv() results
     importance_type: str, optional (default="total_gain")
         Importance type of xgboost.train() with possible values
         "weight", "gain", "total_gain", "cover", "total_cover"
@@ -654,7 +651,6 @@ class XGBoostCVClassifier(XGBoostClassifier):
         sparse_matrix=False,
         scale_mean=False,
         scale_std=False,
-        show_stdv=False,
         importance_type=None,
         params=None,
         callbacks=False,
@@ -706,17 +702,12 @@ class XGBoostCVClassifier(XGBoostClassifier):
         else:
             self.shuffle = shuffle
 
-        if not isinstance(show_stdv, bool):
-            raise TypeError("The input show_stdv must have bool dtype.")
-        else:
-            self.show_stdv = show_stdv
-
         if not isinstance(callbacks, bool):
             raise TypeError("The input callbacks must have bool dtype.")
         else:
             if callbacks:
                 self.callbacks = [
-                    xgb.callback.print_evaluation(show_stdv=self.show_stdv),
+                    xgb.callback.print_evaluation(show_stdv=True),
                     xgb.callback.early_stop(self.early_stopping_rounds),
                 ]
             else:
