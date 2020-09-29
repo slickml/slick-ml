@@ -75,9 +75,6 @@ xbo.fit(X_train, y_train)
 best_params = xbo.get_best_params()
 
 best_params
-```
-
-```python
 {'colsample_bytree': 0.8213916662259918,
  'gamma': 1.0,
  'learning_rate': 0.23148232373451072,
