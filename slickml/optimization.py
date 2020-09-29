@@ -1,8 +1,6 @@
 from bayes_opt import BayesianOptimization
-import numpy as np
 import pandas as pd
 import xgboost as xgb
-from sklearn.preprocessing import StandardScaler
 from slickml.classification import XGBoostCVClassifier
 
 
@@ -332,7 +330,7 @@ class XGBoostClassifierBayesianOpt(XGBoostCVClassifier):
         return best_performance
 
     # TODO: Plotting
-    def get_optimization_results(self):
+    def plot_optimization_results(self):
         """
         Function to plot the optimization results.
         """
