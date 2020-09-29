@@ -105,11 +105,11 @@ class XGBoostFeatureSelector:
         receives two arguments (X, y)
     get_xgb_params(): class method
         Returns params dict
-    get_bst_feature_importance(): class method
+    get_feature_importance(): class method
         Returns feature importance based on importance_type
         at each fold of each iteration of the selection process
     get_feature_frequency(): class method
-        Returns the total feature frequency of the bst model
+        Returns the total feature frequency of the best model
         at each fold of each iteration of selection process
     get_cv_results(): class method
         Returns the total internal/external cross-validation results
@@ -272,16 +272,13 @@ class XGBoostFeatureSelector:
             else:
                 self.callbacks = None
 
-    def _xgb_imp_to_df(self, bst):
+    def _xgb_imp_to_df(self):
         """
         Function to build convert feature importance to df.
-        Parameters
-        ----------
-        bst: Best XGBoost trained model
         """
 
         data = {"feature": [], f"{self.importance_type}": []}
-        features_gain = bst.get_score(importance_type=self.importance_type)
+        features_gain = self.model_.get_score(importance_type=self.importance_type)
         for key, val in features_gain.items():
             data["feature"].append(key)
             data[f"{self.importance_type}"].append(val)
@@ -315,12 +312,12 @@ class XGBoostFeatureSelector:
 
         return cvr
 
-    def _bst(self):
+    def _model(self):
         """
         Function to train XGBoost model based on
         the best number of boosting round.
         """
-        bst = xgb.train(
+        model = xgb.train(
             params=self.params,
             dtrain=self.dtrain,
             num_boost_round=len(self.cvr) - 1,
@@ -329,7 +326,7 @@ class XGBoostFeatureSelector:
             verbose_eval=self.verbose_eval,
         )
 
-        return bst
+        return model
 
     def _freq(self):
         """
@@ -361,9 +358,9 @@ class XGBoostFeatureSelector:
 
         return self.params
 
-    def get_bst_feature_importance(self):
+    def get_feature_importance(self):
         """
-        Function to return the feature importance of the bst model
+        Function to return the feature importance of the best model
         at each fold of each iteration of feature selection.
         """
 
@@ -371,7 +368,7 @@ class XGBoostFeatureSelector:
 
     def get_feature_frequency(self):
         """
-        Function to return the total feature frequency of the bst model
+        Function to return the total feature frequency of the best model
         at each fold of each iteration of feature selection.
         """
 
@@ -597,12 +594,12 @@ class XGBoostFeatureSelector:
                 int_cv_test2.append(self.cvr.iloc[-1][2])
 
                 # xgb train best model
-                bst = self._bst()
+                self.model_ = self._model()
 
                 # feature gain
-                feature_gain = self._xgb_imp_to_df(bst)
+                feature_gain = self._xgb_imp_to_df()
                 self.feature_importance_[
-                    f"bst_iter{iteration+1}_fold{ijk}"
+                    f"model_iter{iteration+1}_fold{ijk}"
                 ] = feature_gain
 
                 # check wheather noisy feature is selected
@@ -662,7 +659,7 @@ class XGBoostFeatureSelector:
                 del (
                     gain_subset,
                     feature_gain,
-                    bst,
+                    self.model_,
                     self.watchlist,
                     Y_train,
                     Y_test,
