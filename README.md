@@ -60,6 +60,29 @@ xfs.plot_frequency()
 ```
 ![frequency](https://raw.githubusercontent.com/slickml/slick-ml/master/assets/images/feature_frequency.png)
 
+Here is an example using SlickML how to tune hyper-params with Bayesian Optimization:
+```python
+# apply BayesianOpt to tune parameters of classifier using loaded train/test data
+from slickml.optimization import XGBoostClassifierBayesianOpt
+xbo = XGBoostClassifierBayesianOpt()
+xbo.fit(X_train, y_train)
+```
+![clfbo](https://raw.githubusercontent.com/slickml/slick-ml/master/assets/images/clf_hyper_params.png)
+
+
+```python
+# best parameters
+best_params = xbo.get_best_params()
+{'colsample_bytree': 0.8213916662259918,
+ 'gamma': 1.0,
+ 'learning_rate': 0.23148232373451072,
+ 'max_depth': 4,
+ 'min_child_weight': 5.632602921054691,
+ 'reg_alpha': 1.0,
+ 'reg_lambda': 0.39468801734425263,
+ 'subsample': 1.0}
+```
+
 Here is an example using SlickML how to train/validate a XGBoostCV classifier:
 ```python
 # train a classifier using loaded train/test data
