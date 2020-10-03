@@ -462,6 +462,7 @@ class XGBoostClassifierHyperOpt(XGBoostClassifier):
             results = fmin(
                 fn, space=space, algo=algo, max_evals=max_evals, trials=trials
             )
+            results = pd.DataFrame(results,index=[0])
         except Exception as e:
             return {"status": STATUS_FAIL, "exception": str(e)}
         return results, trials
