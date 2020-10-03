@@ -3,6 +3,10 @@ import pandas as pd
 import xgboost as xgb
 from slickml.classification import XGBoostCVClassifier
 
+from hyperopt.pyll.stochastic import sample
+from slickml.classification import XGBoostClassifier
+from hyperopt import fmin, Trials, tpe, STATUS_OK, STATUS_FAIL
+
 
 class XGBoostClassifierBayesianOpt(XGBoostCVClassifier):
     """XGBoost Hyper-Parameters Tunning using Bayesian Optimization.
@@ -335,3 +339,199 @@ class XGBoostClassifierBayesianOpt(XGBoostCVClassifier):
         Function to plot the optimization results.
         """
         pass
+
+
+class XGBoostClassifierHyperOpt(XGBoostClassifier):
+    """XGBoost Classifier - Hyperparameter Optimization.
+    This class uses HyperOpt, a Python library for serial and parallel
+    optimization over search spaces, which may include real-valued, discrete,
+    and conditional dimensions to train a XGBoost model.Main reference is
+    HyperOpt GitHub: (https://github.com/hyperopt/hyperopt)
+    Parameters
+    ----------
+    num_boost_round: int, optional (default=200)
+        Number of boosting round at each fold of xgboost.cv()
+    metrics: str or tuple[str], optional (default=("auc"))
+        Metric used for evaluation at cross-validation
+        using xgboost.cv(). Please note that this is different
+        than eval_metric that needs to be passed to params dict.
+        Possible values are "auc", "aucpr", "error", "logloss"
+    n_splits: int, optional (default=4)
+        Number of folds for cross-validation
+    shuffle: bool, optional (default=True)
+        Flag to shuffle data to have the ability of building
+    early_stopping_rounds: int, optional (default=20)
+        The criterion to early abort the xgboost.cv() phase
+        if the test metric is not improved
+        early_stopping_rounds: int, optional (default=20)
+    func_name: str
+            function name for performing optimization
+    space: dict
+            The set of possible arguments to `fn` is the set of objects
+            that could be created with non-zero probability by drawing randomly
+            from this stochastic program involving involving hp
+    trials: object
+            Storage for completed, ongoing, and scheduled evaluation points.  If
+            None, then a temporary `base.Trials` instance will be created.  If
+            a trials object, then that trials object will be affected by
+            side-effect of this call
+    algo: object
+            provides logic for sequential search of the hyperparameter space
+    max_evals: int
+            Storage for completed, ongoing, and scheduled evaluation points.  If
+            None, then a temporary `base.Trials` instance will be created.  If
+            a trials object, then that trials object will be affected by
+            side-effect of this call
+    verbose: str, optional (default=False)
+        Print evaluation results from model
+
+    Attributes
+    ----------
+    fit: class method
+        Fits model for given set of hyperparameters
+    xgb_cv: class method
+        Optimization function for XGBoost utilizing cross-validation
+    get_optimization_results: class method
+        Returns pd.DataFrame for best parameters from all runs
+    get_optimization_trials: class method
+        Returns dict of best parameters for each individual trial run
+    """
+
+    def __init__(
+        self,
+        num_boost_rounds=200,
+        metrics="auc",
+        n_split=4,
+        shuffle=True,
+        early_stop=20,
+        func_name=None,
+        space=None,
+        trials=Trials(),
+        algo=tpe.suggest,
+        max_evals=100,
+        verbose=False,
+        **kwargs
+    ):
+
+        super(XGBoostClassifierHyperOpt, self).__init__(n_split, **kwargs)
+
+        if isinstance(metrics, str):
+            self.metrics = metrics
+        else:
+            raise TypeError("The input metrics must be a str")
+
+        if isinstance(num_boost_rounds, int):
+            self.num_boost_rounds = num_boost_rounds
+        else:
+            raise TypeError("The input num_boost_rouns must be a int")
+
+        if isinstance(n_split, int):
+            self.n_split = n_split
+        else:
+            raise TypeError("The input n_split must be a int")
+
+        if isinstance(shuffle, bool):
+            self.shuffle = shuffle
+        else:
+            raise TypeError("The input shuffle must be a boolean")
+
+        if isinstance(early_stop, int):
+            self.early_stop = early_stop
+        else:
+            raise TypeError("The input early_stop must be a int")
+
+        if isinstance(func_name, str):
+            self.fn = getattr(self, func_name)
+        else:
+            raise TypeError("The input must be a valid function name: 'xgb_cv'")
+
+        if isinstance(space, dict):
+            self.space = space
+        else:
+            raise TypeError("The input space must be a dict")
+
+        if isinstance(trials, object):
+            self.trials = trials
+        else:
+            raise TypeError("The input trials must be a hyperopt trials object")
+
+        if isinstance(algo, object):
+            self.algo = algo
+        else:
+            raise TypeError("The input algo must be a hyperopt object")
+
+        if isinstance(max_evals, int):
+            self.max_evals = max_evals
+        else:
+            raise TypeError("The input max_evals must be a int")
+
+        if isinstance(verbose, bool):
+            self.verbose = verbose
+        else:
+            raise TypeError("The input verbose must be a boolean")
+
+    def fit(self, X_train, Y_train):
+        """
+        Fit model for a given a hyperparameter space
+        according to a given algorithm, allowing up to a certain number of
+        function evaluations.
+        Parameters
+        ----------
+        X_train: numpy.array or Pandas DataFrame
+            Training features data
+        y_train: numpy.array[int] or list[int]
+            List of training ground truth binary values [0, 1]
+        """
+
+        self.X_train = X_train
+        self.y_train = Y_train
+        try:
+            self.results = fmin(
+                self.fn,
+                space=self.space,
+                algo=self.algo,
+                max_evals=self.max_evals,
+                trials=self.trials,
+            )
+        except Exception as e:
+            self.results = {"status": STATUS_FAIL, "exception": str(e)}
+
+    def xgb_cv(self, space):
+        """
+        Function to perform XGBoost Cross-Validation with stochastic parameters
+        for hyperparameter optimization
+        Parameters
+        ----------
+        space: dict
+            The set of possible arguments to `fn` is the set of objects
+            that could be created with non-zero probability by drawing randomly
+            from this stochastic program involving involving hp
+        """
+        # train matrix
+        dtrain = XGBoostClassifier()._dtrain(self.X_train, self.y_train)
+        history = xgb.cv(
+            sample(self.space),
+            dtrain,
+            num_boost_round=self.num_boost_round,
+            nfold=self.n_split,
+            metrics=self.metrics,
+            early_stopping_rounds=self.early_stop,
+            seed=1367,
+            shuffle=self.shuffle,
+            verbose_eval=self.verbose,
+        )
+        # loss
+        loss = history.iloc[-1:, 0]
+        return {"loss": loss, "status": STATUS_OK}
+
+    def get_optimization_results(self):
+        """
+        Function to return pd.DataFrame with best results
+        """
+        return pd.DataFrame(self.results, index=[0])
+
+    def get_optimization_trials(self):
+        """
+        Return dict results from all 'n' trials
+        """
+        return self.trials
