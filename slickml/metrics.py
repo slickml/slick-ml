@@ -136,7 +136,17 @@ class BinaryClassificationMetrics:
         if average_method == "binary" or average_method is None:
             self.average_method = None
         else:
-            self.average_method = average_method
+            if not isinstance(average_method, str):
+                raise TypeError("The input average_method must have str dtype.")
+            else:
+                if average_method in [
+                    "micro",
+                    "macro",
+                    "weighted",
+                ]:
+                    self.average_method = average_method
+                else:
+                    raise ValueError("The input average_method value is not valid.")
         if precision_digits is None:
             self.precision_digits = 3
         else:
@@ -484,6 +494,3 @@ class BinaryClassificationMetrics:
         """
 
         plot_binary_classification_metrics(figsize, **self.plotting_dict)
-
-        
-        
