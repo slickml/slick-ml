@@ -139,10 +139,7 @@ class BinaryClassificationMetrics:
             if not isinstance(average_method, str):
                 raise TypeError("The input average_method must have str dtype.")
             else:
-                if average_method in [
-                    "micro",
-                    "macro",
-                    "weighted",
+                if average_method in ["micro", "macro", "weighted",
                 ]:
                     self.average_method = average_method
                 else:
@@ -150,8 +147,14 @@ class BinaryClassificationMetrics:
         if precision_digits is None:
             self.precision_digits = 3
         else:
-            self.precision_digits = precision_digits
-        self.display_df = display_df
+            if not isinstance(precision_digits, int):
+                raise TypeError("The input precision_digits must have integer dtype.")
+            else:
+                self.precision_digits = precision_digits
+        if not isinstance(display_df, bool):
+            raise TypeError("The input display_df must have bool dtype.")
+        else:
+            self.display_df = display_df        
         self.y_pred = (self.y_pred_proba > self.threshold).astype(int)
         self.accuracy = self._accuracy()
         self.balanced_accuracy = self._balanced_accuracy()
@@ -494,3 +497,6 @@ class BinaryClassificationMetrics:
         """
 
         plot_binary_classification_metrics(figsize, **self.plotting_dict)
+
+        
+        
