@@ -46,8 +46,6 @@ class BinaryClassificationMetrics:
         Flag to display the formatted scores' dataframe
     Attributes
     ----------
-    y_true: numpy.array[int] or list[int]
-        List of predicted class with binary values [0, 1]
     accuracy: float value between 0. and 1.
         Classification accuracy based on threshold value
     balanced_accuracy: float value between 0. and 1.
@@ -486,3 +484,6 @@ class BinaryClassificationMetrics:
         """
 
         plot_binary_classification_metrics(figsize, **self.plotting_dict)
+
+        
+        
