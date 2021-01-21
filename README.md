@@ -116,11 +116,21 @@ metrics based on multiple calculated thresholds:
 ```python
 # plot binary metrics
 from slickml.metrics import BinaryClassificationMetrics
-metrics = BinaryClassificationMetrics(y_test, y_pred_proba)
-metrics.plot()
+clf_metrics = BinaryClassificationMetrics(y_test, y_pred_proba)
+clf_metrics.plot()
 
 ```
-![metrics](https://raw.githubusercontent.com/slickml/slick-ml/master/assets/images/metrics.png)
+![clfmetrics](https://raw.githubusercontent.com/slickml/slick-ml/master/assets/images/clf_metrics.png)
+
+Here is an example using SlickML to quickly visualize the regression metrics:
+
+```python
+# plot regression metrics
+from slickml.metrics import RegressionMetrics
+reg_metrics = RegressionMetrics(y_test, y_pred)
+reg_metrics.plot()
+```
+![regmetrics](https://raw.githubusercontent.com/slickml/slick-ml/master/assets/images/reg_metrics.png)
 
 ## Contributing
 
