@@ -765,7 +765,7 @@ class RegressionMetrics:
 
         metrics_df = pd.DataFrame(
             data=self.metrics_dict,
-            index=[f"""Metrics"""],
+            index=["Metrics"],
         )
         metrics_df = metrics_df.reindex(
             columns=[
