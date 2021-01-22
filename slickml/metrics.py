@@ -1,4 +1,5 @@
 import numpy as np
+import scipy as scp
 import pandas as pd
 import seaborn as sns
 
@@ -13,10 +14,16 @@ from sklearn.metrics import (
     average_precision_score,
     confusion_matrix,
     roc_curve,
+    r2_score,
+    explained_variance_score,
+    mean_absolute_error,
+    mean_squared_error,
+    mean_squared_log_error,
+    mean_absolute_percentage_error,
 )
 
 from IPython.core.display import display
-from slickml.plotting import plot_binary_classification_metrics
+from slickml.plotting import plot_binary_classification_metrics, plot_regression_metrics
 
 
 class BinaryClassificationMetrics:
@@ -46,8 +53,6 @@ class BinaryClassificationMetrics:
         Flag to display the formatted scores' dataframe
     Attributes
     ----------
-    y_true: numpy.array[int] or list[int]
-        List of predicted class with binary values [0, 1]
     accuracy: float value between 0. and 1.
         Classification accuracy based on threshold value
     balanced_accuracy: float value between 0. and 1.
@@ -138,12 +143,28 @@ class BinaryClassificationMetrics:
         if average_method == "binary" or average_method is None:
             self.average_method = None
         else:
-            self.average_method = average_method
+            if not isinstance(average_method, str):
+                raise TypeError("The input average_method must have str dtype.")
+            else:
+                if average_method in [
+                    "micro",
+                    "macro",
+                    "weighted",
+                ]:
+                    self.average_method = average_method
+                else:
+                    raise ValueError("The input average_method value is not valid.")
         if precision_digits is None:
             self.precision_digits = 3
         else:
-            self.precision_digits = precision_digits
-        self.display_df = display_df
+            if not isinstance(precision_digits, int):
+                raise TypeError("The input precision_digits must have integer dtype.")
+            else:
+                self.precision_digits = precision_digits
+        if not isinstance(display_df, bool):
+            raise TypeError("The input display_df must have bool dtype.")
+        else:
+            self.display_df = display_df
         self.y_pred = (self.y_pred_proba > self.threshold).astype(int)
         self.accuracy = self._accuracy()
         self.balanced_accuracy = self._balanced_accuracy()
@@ -486,3 +507,338 @@ class BinaryClassificationMetrics:
         """
 
         plot_binary_classification_metrics(figsize, **self.plotting_dict)
+
+
+class RegressionMetrics:
+    """Regression Metrics.
+    This is wrapper to calculate all the regression metrics.
+    In case of multioutput regression, calculation methods can be chosen
+    among ["raw_values", "uniform_average", "variance_weighted".
+    Parameters
+    ----------
+    y_true: numpy.array[int] or list[float]
+        List of ground truth target (response) values
+    y_pred: numpy.array[float] or list[float]
+        List of predicted target values list[float]
+    multioutput: str, optional (default="uniform_average")
+        Method to calculate the metric for multioutput targets. Possible values are
+        ["raw_values", "uniform_average", "variance_weighted"].
+        "raw_values" returns a full set of scores in case of multioutput input.
+        "uniform_average" scores of all outputs are averaged with uniform weight.
+        "variance_weighted" scores of all outputs are averaged, weighted by the variances
+        of each individual output.
+    precision_digits: int, optional (default=3)
+        The number of precision digits to format the scores' dataframe
+    display_df: boolean, optional (default=True)
+        Flag to display the formatted scores' dataframe
+    Attributes
+    ----------
+    y_residual: numpy.array[float] or list[float]
+        Residual values (errors) calculated as (y_true - y_pred).
+    y_residual_normsq:  numpy.array[float] or list[float]
+        Square root of absolute value of y_residual.
+    r2: float value between 0. and 1
+        R2 score (coefficient of determination)
+    ev: float value between 0. and 1
+        Explained variance score.
+    mae: float value between 0. and 1
+        Mean absolute error.
+    mse: float value between 0. and 1
+        Mean squared error.
+    msle: float value between 0. and 1
+        Mean squared log error.
+    mape: float value between 0. and 1
+        Mean absolute percentage error.
+    auc_rec: float value between 0. and 1
+        Area under REC curve.
+    deviation:  numpy.array[float] or list[float]
+        List of deviations to plot REC curve.
+    accuracy:  numpy.array[float] or list[float]
+        Calculated accuracy at each deviation to plot REC curve.
+    y_ratio:  numpy.array[float] or list[float]
+        Ratio of y_pred/y_true.
+    mean_y_ratio: float value between 0. and 1
+        Mean value of y_pred/y_true ratio.
+    std_y_ratio: float
+        Standard deviation value of y_pred/y_true ratio.
+    cv_y_ratio: float value between 0. and 1
+        Coefficient of variation calculated as std_y_ratio/mean_y_ratio
+    metrics_dict: dict()
+        Dictionary of all calculated metrics
+    metrics_df: Pandas DataFrame()
+        Pandas DataFrame of all calculated metrics
+    plotting_dict: dict()
+        Plotting object as a dictionary consists of all
+        calculated metrics which was used to plot curves
+    """
+
+    def __init__(
+        self,
+        y_true,
+        y_pred,
+        multioutput=None,
+        precision_digits=None,
+        display_df=True,
+    ):
+        if not isinstance(y_true, np.ndarray):
+            self.y_true = np.array(y_true)
+        else:
+            self.y_true = y_true
+        if not isinstance(y_pred, np.ndarray):
+            self.y_pred = np.array(y_pred)
+        else:
+            self.y_pred = y_pred
+        if multioutput is None:
+            self.multioutput = "uniform_average"
+        else:
+            if not isinstance(multioutput, str):
+                raise TypeError("The input multioutput must have str dtype.")
+            else:
+                if multioutput in ["raw_values", "variance_weighted"]:
+                    self.multioutput = multioutput
+                else:
+                    raise ValueError("The input multioutput value is not valid.")
+        if precision_digits is None:
+            self.precision_digits = 3
+        else:
+            if not isinstance(precision_digits, int):
+                raise TypeError("The input precision_digits must have integer dtype.")
+            else:
+                self.precision_digits = precision_digits
+        if not isinstance(display_df, bool):
+            raise TypeError("The input display_df must have bool dtype.")
+        else:
+            self.display_df = display_df
+        self.y_residual = self.y_true - self.y_pred
+        self.y_residual_normsq = np.sqrt(np.abs(self.y_residual))
+        self.r2 = self._r2()
+        self.ev = self._ev()
+        self.mae = self._mae()
+        self.mse = self._mse()
+        self.msle = self._msle()
+        self.mape = self._mape()
+        self.deviation, self.accuracy, self.auc_rec = self._rec_curve()
+        (
+            self.y_ratio,
+            self.mean_y_ratio,
+            self.std_y_ratio,
+            self.cv_y_ratio,
+        ) = self._ratio_hist()
+        self.metrics_dict = self._metrics_dict()
+        self.metrics_df = self._metrics_df()
+        self.plotting_dict = self._plotting_dict()
+
+    def _r2(self):
+        """
+        Function to calculate R^2 score
+        """
+        r2 = r2_score(
+            y_true=self.y_true, y_pred=self.y_pred, multioutput=self.multioutput
+        )
+
+        return r2
+
+    def _ev(self):
+        """
+        Function to calculate explained variance score
+        """
+        ev = explained_variance_score(
+            y_true=self.y_true, y_pred=self.y_pred, multioutput=self.multioutput
+        )
+
+        return ev
+
+    def _mae(self):
+        """
+        Function to calculate mean-absolute-error
+        """
+        mae = mean_absolute_error(
+            y_true=self.y_true, y_pred=self.y_pred, multioutput=self.multioutput
+        )
+
+        return mae
+
+    def _mse(self):
+        """
+        Function to calculate mean-squared-error
+        """
+        mse = mean_squared_error(
+            y_true=self.y_true, y_pred=self.y_pred, multioutput=self.multioutput
+        )
+
+        return mse
+
+    def _msle(self):
+        """
+        Function to calculate mean-squared-log-error
+        """
+        if min(self.y_true) < 0 or min(self.y_pred) < 0:
+            msle = None
+        else:
+            msle = mean_squared_log_error(
+                y_true=self.y_true, y_pred=self.y_pred, multioutput=self.multioutput
+            )
+
+        return msle
+
+    def _mape(self):
+        """
+        Function to calculate mean-absolute-percentage-error
+        """
+        mape = mean_absolute_percentage_error(
+            y_true=self.y_true, y_pred=self.y_pred, multioutput=self.multioutput
+        )
+
+        return mape
+
+    def _rec_curve(self):
+        """
+        Function to calculate the rec curve elements: deviation, accuracy, auc.
+        Simpson method is used as the integral method to calculate the area under
+        regression error characteristics (REC).
+        REC is implemented based on the following paper:
+        Bi, J., & Bennett, K. P. (2003). Regression error characteristic curves.
+        In Proceedings of the 20th international conference on machine learning (ICML-03) (pp. 43-50).
+        https://www.aaai.org/Papers/ICML/2003/ICML03-009.pdf
+        """
+        begin = 0.0
+        end = 1.0
+        interval = 0.01
+        accuracy = []
+        deviation = np.arange(begin, end, interval)
+
+        # main loop to calculate norm and compare with each deviation
+        for i in range(len(deviation)):
+            count = 0.0
+            for j in range(len(self.y_true)):
+                calc_norm = np.linalg.norm(self.y_true[j] - self.y_pred[j]) / np.sqrt(
+                    np.linalg.norm(self.y_true[j]) ** 2
+                    + np.linalg.norm(self.y_pred[j]) ** 2
+                )
+                if calc_norm < deviation[i]:
+                    count += 1
+            accuracy.append(count / len(self.y_true))
+
+        auc_rec = scp.integrate.simps(accuracy, deviation) / end
+
+        return deviation, accuracy, auc_rec
+
+    def _ratio_hist(self):
+        """
+        Function to calculate the histogram elements of y_pred/y_true ratio.
+        This would report the coefficient of variation CV as std(ratio)/mean(ratio) based on the following paper:
+        Tahmassebi, A., Gandomi, A. H., & Meyer-Baese, A. (2018, July). A Pareto front based evolutionary model
+        for airfoil self-noise prediction. In 2018 IEEE Congress on Evolutionary Computation (CEC) (pp. 1-8). IEEE.
+        https://www.amirhessam.com/assets/pdf/projects/cec-airfoil2018.pdf
+        """
+        y_ratio = self.y_pred / self.y_true
+        mean_y_ratio = np.mean(y_ratio)
+        std_y_ratio = np.std(y_ratio)
+        cv_y_ratio = std_y_ratio / mean_y_ratio
+
+        return y_ratio, mean_y_ratio, std_y_ratio, cv_y_ratio
+
+    def _metrics_dict(self):
+        """
+        Function to create a dictionary of all calculated metrics based on the
+        precision digits and multioutput method"""
+        metrics_dict = {
+            "R2 Score": round(self.r2, self.precision_digits),
+            "Explained Variance Score": round(self.ev, self.precision_digits),
+            "Mean Absolute Error": round(self.mae, self.precision_digits),
+            "Mean Squared Error": round(self.mse, self.precision_digits),
+            "Mean Squared Log Error": round(self.msle, self.precision_digits)
+            if self.msle is not None
+            else None,
+            "Mean Absolute Percentage Error": round(self.mape, self.precision_digits),
+            "REC AUC": round(self.auc_rec, self.precision_digits),
+            "Coeff. of Variation": round(self.cv_y_ratio, self.precision_digits),
+            "Mean of Variation": round(self.mean_y_ratio, self.precision_digits),
+        }
+
+        return metrics_dict
+
+    def _metrics_df(self):
+        """
+        Function to create a pandas DataFrame of all calculated metrics based
+        on the precision digits and average method"""
+
+        metrics_df = pd.DataFrame(
+            data=self.metrics_dict,
+            index=["Metrics"],
+        )
+        metrics_df = metrics_df.reindex(
+            columns=[
+                "R2 Score",
+                "Explained Variance Score",
+                "Mean Absolute Error",
+                "Mean Squared Error",
+                "Mean Squared Log Error",
+                "Mean Absolute Percentage Error",
+                "REC AUC",
+                "Coeff. of Variation",
+                "Mean of Variation",
+            ]
+        )
+
+        # Set CSS properties
+        th_props = [
+            ("font-size", "12px"),
+            ("text-align", "left"),
+            ("font-weight", "bold"),
+        ]
+
+        td_props = [("font-size", "12px"), ("text-align", "center")]
+
+        # Set table styles
+        styles = [
+            dict(selector="th", props=th_props),
+            dict(selector="td", props=td_props),
+        ]
+        cm = sns.light_palette("blue", as_cmap=True)
+
+        if self.display_df:
+            display(
+                metrics_df.style.background_gradient(cmap=cm).set_table_styles(styles)
+            )
+
+        return metrics_df
+
+    def _plotting_dict(self):
+        """
+        Function to return the plotting properties as a dictionary
+        """
+        plotting_dict = {
+            "r2": self.r2,
+            "ev": self.ev,
+            "mae": self.mae,
+            "mse": self.mse,
+            "y_pred": self.y_pred,
+            "y_true": self.y_true,
+            "y_residual": self.y_residual,
+            "y_residual_normsq": self.y_residual_normsq,
+            "auc_rec": self.auc_rec,
+            "y_ratio": self.y_ratio,
+            "cv_y_ratio": self.cv_y_ratio,
+            "std_y_ratio": self.std_y_ratio,
+            "mean_y_ratio": self.mean_y_ratio,
+            "msle": self.msle,
+            "mape": self.mape,
+            "deviation": self.deviation,
+            "accuracy": self.accuracy,
+        }
+
+        return plotting_dict
+
+    def plot(self, figsize=None):
+        """
+        Function to plot binary classification metrics.
+        This function is a helper function based on the plotting_dict
+        attribute of the BinaryClassificationMetrics class.
+        Parameters
+        ----------
+        figsize: tuple, optional, (default=(12, 12))
+            Figure size
+        """
+
+        plot_regression_metrics(figsize, **self.plotting_dict)

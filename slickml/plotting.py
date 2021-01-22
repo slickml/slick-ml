@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import matplotlib as mpl
 import seaborn as sns
 import shap
+import scipy as scp
 from sklearn.metrics import accuracy_score
 
 
@@ -55,6 +56,7 @@ def plot_binary_classification_metrics(figsize=None, **kwargs):
 
     fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2, figsize=figsize)
 
+    # -----------------------------------
     # subplot 1: roc curve
     ax1.plot(
         kwargs["fpr_list"],
@@ -97,6 +99,7 @@ def plot_binary_classification_metrics(figsize=None, **kwargs):
         verticalalignment="bottom",
     )
 
+    # -----------------------------------
     # subplot 2: preferred scores vs thresholds
     ax2.plot(kwargs["roc_thresholds"], 1 - kwargs["fpr_list"], label="Specificity")
     ax2.plot(kwargs["roc_thresholds"], kwargs["tpr_list"], label="Sensitivity")
@@ -135,6 +138,7 @@ def plot_binary_classification_metrics(figsize=None, **kwargs):
             verticalalignment="bottom",
         )
 
+    # -----------------------------------
     # subplot 3: precision-recall curve
     ax3.plot(
         kwargs["recall_list"],
@@ -182,6 +186,7 @@ def plot_binary_classification_metrics(figsize=None, **kwargs):
         verticalalignment="bottom",
     )
 
+    # -----------------------------------
     # subplot 4: preferred Scores vs Thresholds
     ax4.plot(kwargs["pr_thresholds"], kwargs["precision_list"][1:], label="Precision")
     ax4.plot(kwargs["pr_thresholds"], kwargs["recall_list"][1:], label="Recall")
@@ -804,4 +809,177 @@ def plot_shap_summary(
         class_inds=class_inds,
         color_bar_label=color_bar_label,
     )
+    plt.show()
+
+
+def plot_regression_metrics(figsize=None, **kwargs):
+    """Function to plot regression metrics.
+    This function is a helper function based on the plotting_dict
+    attribute of the RegressionMetrics class.
+    Parameters
+    ----------
+    figsize: tuple, optional, (default=(12, 12))
+        Figure size
+    """
+
+    # initializing figsize
+    if figsize is None:
+        figsize = (12, 16)
+    elif isinstance(figsize, list) or isinstance(figsize, tuple):
+        figsize = figsize
+    else:
+        raise TypeError("Only tuple and list types are allowed for figsize.")
+
+    fig, ((ax1, ax2), (ax3, ax4), (ax5, ax6)) = plt.subplots(3, 2, figsize=figsize)
+
+    # subplot 1: actual vs predicted
+
+    sns.regplot(
+        kwargs["y_true"],
+        kwargs["y_pred"],
+        marker="o",
+        scatter_kws={"edgecolors": "navy"},
+        color="#B3C3F3",
+        fit_reg=False,
+        ax=ax1,
+    )
+    ax1.plot(
+        [kwargs["y_true"].min(), kwargs["y_true"].max()],
+        [kwargs["y_true"].min(), kwargs["y_true"].max()],
+        "r--",
+        lw=3,
+    )
+
+    ax1.set(
+        xlabel="Actual Values",
+        ylabel="Predicted Values",
+        title="Actual-Predicted",
+    )
+    ax1_ylim = max(max(kwargs["y_pred"]), max(kwargs["y_true"]))
+    ax1.tick_params(axis="both", which="major", labelsize=12)
+    ax1.text(
+        min(kwargs["y_true"]), ax1_ylim, f"MAPE = {kwargs['mape']:.3f}", fontsize=12
+    )
+
+    ax1.text(
+        min(kwargs["y_true"]),
+        ax1_ylim - 0.07 * ax1_ylim,
+        f"$R^2$ = {kwargs['r2']:.3f}",
+        fontsize=12,
+    )
+    # -----------------------------------
+    # subplot 2: Q-Q Normal Plot
+
+    scp.stats.probplot(kwargs["y_residual"], fit=True, dist="norm", plot=ax2)
+    ax2.get_lines()[0].set_marker("o")
+    ax2.get_lines()[0].set_markerfacecolor("#B3C3F3")
+    ax2.get_lines()[0].set_markeredgecolor("navy")
+    ax2.get_lines()[0].set_markersize(6.0)
+    ax2.get_lines()[1].set_linewidth(3.0)
+    ax2.get_lines()[1].set_linestyle("--")
+
+    ax2.set(
+        xlabel="Quantiles",
+        ylabel="Residuals",
+        title="Q-Q",
+    )
+
+    ax2.tick_params(axis="both", which="major", labelsize=12)
+
+    # -----------------------------------
+    # subplot 3: Residuals vs Fitted
+    sns.residplot(
+        kwargs["y_pred"],
+        kwargs["y_true"],
+        lowess=True,
+        order=1,
+        line_kws={"color": "red", "lw": 3, "ls": "--", "alpha": 1},
+        scatter_kws={"edgecolors": "navy"},
+        color="#B3C3F3",
+        robust=True,
+        ax=ax3,
+    )
+
+    ax3.set(
+        xlabel="Predicted Values",
+        ylabel="Residuals",
+        title="Residuals-Predicted",
+    )
+
+    ax3.tick_params(axis="both", which="major", labelsize=12)
+
+    # -----------------------------------
+    # subplot 4: Sqrt Standard Residuals vs Fitted
+
+    sns.regplot(
+        kwargs["y_pred"],
+        kwargs["y_residual_normsq"],
+        lowess=True,
+        line_kws={"color": "red", "lw": 3, "ls": "--", "alpha": 1},
+        scatter_kws={"edgecolors": "navy"},
+        color="#B3C3F3",
+        ax=ax4,
+    )
+
+    ax4.set(
+        xlabel="Predicted Values",
+        ylabel="Standardized Residuals Norm",
+        title="Scale-Location",
+    )
+
+    ax4.tick_params(axis="both", which="major", labelsize=12)
+
+    # -----------------------------------
+    # subplot 5: Histogram of Coeff. of Variations
+
+    freqs, _, _ = ax5.hist(
+        kwargs["y_ratio"],
+        histtype="bar",
+        bins=np.arange(0.75, 1.25, 0.01),
+        alpha=1.0,
+        color="#B3C3F3",
+        edgecolor="navy",
+    )
+
+    ax5.set_xticks([0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4])
+    ax5.set_xticklabels(
+        ["Less", 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, "More"], rotation=30
+    )
+
+    ax5.set(
+        ylabel="Frequency",
+        title="Prediction Variation",
+    )
+
+    ax5.tick_params(axis="both", which="major", labelsize=12)
+
+    ax5_ylim = max(freqs)
+    ax5.text(0.65, ax5_ylim, fr"""$\mu$ = {kwargs['mean_y_ratio']:.3f}""", fontsize=12)
+    ax5.text(
+        0.65,
+        ax5_ylim - 0.05 * ax5_ylim,
+        f"CV = {kwargs['cv_y_ratio']:.3f}",
+        fontsize=12,
+    )
+
+    # -----------------------------------
+    # subplot 6: REC
+
+    ax6.plot(
+        kwargs["deviation"],
+        kwargs["accuracy"],
+        color="red",
+        label=f"AUC = {kwargs['auc_rec']:.3f}",
+    )
+    ax6.set(
+        xlim=[-0.01, 1.01],
+        ylim=[-0.01, 1.01],
+        xlabel="Deviation",
+        ylabel="Accuracy",
+        title="REC Curve",
+    )
+
+    ax6.tick_params(axis="both", which="major", labelsize=12)
+    ax6.legend(prop={"size": 12}, loc=4, framealpha=0.0)
+
     plt.show()
