@@ -5,6 +5,6 @@ scikit-learn==0.24.1
 scipy==1.5.2
 seaborn==0.10.1
 shap==0.35.0
-xgboost==1.0.2
+xgboost==1.0.0
 bayesian-optimization==1.2.0
 hyperopt==0.2.3
