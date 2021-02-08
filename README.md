@@ -111,6 +111,13 @@ clf.plot_shap_summary(plot_type="violin")
 ```
 ![clfshap](https://raw.githubusercontent.com/slickml/slick-ml/master/assets/images/clf_shap_summary.png)
 
+```python
+# plot SHAP waterfall plot
+clf.plot_shap_waterfall()
+
+```
+![clfshap](https://raw.githubusercontent.com/slickml/slick-ml/master/assets/images/clf_shap_waterfall.png)
+
 Here is an example using SlickML to quickly visualize the binary classification 
 metrics based on multiple calculated thresholds:
 ```python
