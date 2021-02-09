@@ -10,6 +10,7 @@ from slickml.plotting import (
     plot_xgb_cv_results,
     plot_xgb_feature_importance,
     plot_shap_summary,
+    plot_shap_waterfall,
 )
 
 
@@ -58,7 +59,7 @@ class XGBoostClassifier:
                   "reg_lambda" : 1.0,
                   "subsample" : 0.9,
                   "max_delta_step": 1,
-                  "silent" : True,
+                  "verbosity" : 0,
                   "nthread" : 4,
                   "scale_pos_weight" : 1})
 
@@ -173,7 +174,7 @@ class XGBoostClassifier:
             "reg_lambda": 1.0,
             "subsample": 0.9,
             "max_delta_step": 1,
-            "silent": True,
+            "verbosity": 0,
             "nthread": 4,
             "scale_pos_weight": 1,
         }
@@ -495,7 +496,7 @@ class XGBoostClassifier:
             features = self.X_test_
         else:
             # define shap values for X_train
-            self.shap_values_ = self.shap_values_train_
+            shap_values = self.shap_values_train_
             features = self.X_train_
 
         plot_shap_summary(
@@ -514,6 +515,95 @@ class XGBoostClassifier:
             class_names=class_names,
             class_inds=class_inds,
             color_bar_label=color_bar_label,
+        )
+
+    def plot_shap_waterfall(
+        self,
+        validation=True,
+        figsize=None,
+        bar_color=None,
+        bar_thickness=None,
+        line_color=None,
+        marker=None,
+        markersize=None,
+        markeredgecolor=None,
+        markerfacecolor=None,
+        markeredgewidth=None,
+        max_display=None,
+        title=None,
+        fontsize=None,
+    ):
+        """Function to plot shap waterfall plot.
+        This function is a helper function to plot the shap waterfall plot
+        based on all types of shap explainers including tree, linear, and dnn.
+        This would show the cumulitative/composite ratios of shap values per feature.
+        Therefore, it can be easily seen with each feature how much explainability we
+        can acheieve. Please note that this function should be ran after the predict_proba to
+        make sure the X_test is being instansiated.
+        Parameters
+        ----------
+        validation: bool, optional, (default=True)
+            Flag to calculate SHAP values of X_test if it is True.
+            If validation=False, it calculates the SHAP values of
+            X_train and plots the summary plot.
+        figsize: tuple, optional, (default=(8, 5))
+            Figure size
+        bar_color: str, optional, (default="#B3C3F3")
+            Color of the horizontal bar lines
+        bar_thickness: float, optional, (default=0.5)
+            Thickness (hight) of the horizontal bar lines
+        line_color: str, optional, (default="purple")
+            Color of the line plot
+        marker: str, optional, (default="o")
+            Marker style
+            marker style can be found at:
+            (https://matplotlib.org/2.1.1/api/markers_api.html#module-matplotlib.markers)
+        markersize: int or float, optional, (default=7)
+            Markersize
+        markeredgecolor: str, optional, (default="purple")
+            Marker edge color
+        markerfacecolor: str, optional, (default="purple")
+            Marker face color
+        markeredgewidth: int or float, optional, (default=1)
+            Marker edge width
+        max_display: int, optional, (default=20)
+            Limit to show the number of features in the plot
+        title: str, optional, (default=None)
+            Title of the plot
+        fontsize: int or float, optional, (default=12)
+            Fontsize for xlabel and ylabel, and ticks parameters
+        """
+
+        # define tree explainer
+        explainer = shap.TreeExplainer(self.model_)
+        self.shap_values_test_ = explainer.shap_values(self.X_test_)
+        self.shap_values_train_ = explainer.shap_values(self.X_train_)
+
+        # check the validation flag
+        if validation:
+            # define shap values for X_test
+            shap_values = self.shap_values_test_
+            features = self.X_test_
+        else:
+            # define shap values for X_train
+            shap_values = self.shap_values_train_
+            features = self.X_train_
+
+        plot_shap_waterfall(
+            shap_values,
+            features,
+            figsize=figsize,
+            bar_color=bar_color,
+            bar_thickness=bar_thickness,
+            line_color=line_color,
+            marker=marker,
+            markersize=markersize,
+            markeredgecolor=markeredgecolor,
+            markerfacecolor=markerfacecolor,
+            markeredgewidth=markeredgewidth,
+            max_display=max_display,
+            title=title,
+            fontsize=fontsize,
         )
 
 
@@ -579,7 +669,7 @@ class XGBoostCVClassifier(XGBoostClassifier):
                   "reg_lambda" : 1.0,
                   "subsample" : 0.9,
                   "max_delta_step": 1,
-                  "silent" : True,
+                  "verbosity" : 0,
                   "nthread" : 4,
                   "scale_pos_weight" : 1})
     callbacks: bool, optional (default=False)

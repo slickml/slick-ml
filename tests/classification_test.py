@@ -23,7 +23,7 @@ def get_params():
         "reg_lambda": 1.0,
         "subsample": 0.9,
         "max_delta_step": 1,
-        "silent": True,
+        "verbosity": 0,
         "nthread": 4,
         "scale_pos_weight": 1,
     }
@@ -32,7 +32,7 @@ def get_params():
 
 @pytest.fixture(scope="session")
 def xgb_classifier():
-    data = pd.read_csv("data/dummy_data.csv")
+    data = pd.read_csv("data/clf_data.csv")
     X = data.iloc[:, :-1]
     y = data.CLASS.values
 

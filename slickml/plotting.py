@@ -255,14 +255,14 @@ def plot_xfs_feature_frequency(
     color: str, optional, (default="#87CEEB")
         Color of the vertical lines of lollipops
     marker: str, optional, (default="o")
-        Market style of the lollipops. Complete valid
-        marker styke can be found at:
+        Marker style of the lollipops. Complete valid
+        marker style can be found at:
         (https://matplotlib.org/2.1.1/api/markers_api.html#module-matplotlib.markers)
     markersize: int or float, optional, (default=10)
         Markersize
-    markeredgecolor: str, optional, (default="1F77B4")
+    markeredgecolor: str, optional, (default="#1F77B4")
         Marker edge color
-    markerfacecolor: str, optional, (default="1F77B4")
+    markerfacecolor: str, optional, (default="#1F77B4")
         Marker face color
     markeredgewidth: int or float, optional, (default=1)
         Marker edge width
@@ -583,7 +583,7 @@ def plot_xgb_feature_importance(
     figsize: tuple, optional, (default=(8, 5))
         Figure size
     color: str, optional, (default="#87CEEB")
-        Color of the vertical lines of lollipops
+        Color of the horizontal lines of lollipops
     marker: str, optional, (default="o")
         Market style of the lollipops. Complete valid
         marker styke can be found at:
@@ -735,7 +735,7 @@ def plot_shap_summary(
     figsize: tuple, optional, (default="auto")
         Figure size
     color: str, optional, (default="#D0AAF3")
-        Color of the vertical lines when plot_type="bar"
+        Color of the horizontal lines when plot_type="bar"
     max_display: int, optional, (default=20)
         Limit to show the number of features in the plot
     feature_names: str, optional, (default=None)
@@ -809,6 +809,202 @@ def plot_shap_summary(
         class_inds=class_inds,
         color_bar_label=color_bar_label,
     )
+    plt.show()
+
+
+def plot_shap_waterfall(
+    shap_values,
+    features,
+    figsize=None,
+    bar_color=None,
+    bar_thickness=None,
+    line_color=None,
+    marker=None,
+    markersize=None,
+    markeredgecolor=None,
+    markerfacecolor=None,
+    markeredgewidth=None,
+    max_display=None,
+    title=None,
+    fontsize=None,
+):
+    """Function to plot shap summary plot.
+    This function is a helper function to plot the shap summary plot
+    based on all types of shap explainers including tree, linear, and dnn.
+    Parameters
+    ----------
+    shap_values: Numpy array or Pandas DataFrame
+        Calculated SHAP values. For single output explanations like
+        binary classificationthis this is a matrix of SHAP values (n_samples, n_features).
+        For multi-output explanations this is a list of such matrices of SHAP values
+    features: Numpy array or Pandas DataFrame
+        The feature matrix that was used to calculate the SHAP values. For the case
+        of Numpy array it is recommened to pass the feature_names list as well
+    figsize: tuple, optional, (default=(8, 5))
+        Figure size
+    bar_color: str, optional, (default="#B3C3F3")
+        Color of the horizontal bar lines
+    bar_thickness: float, optional, (default=0.5)
+        Thickness (hight) of the horizontal bar lines
+    line_color: str, optional, (default="purple")
+        Color of the line plot
+    marker: str, optional, (default="o")
+        Marker style
+        marker style can be found at:
+        (https://matplotlib.org/2.1.1/api/markers_api.html#module-matplotlib.markers)
+    markersize: int or float, optional, (default=7)
+        Markersize
+    markeredgecolor: str, optional, (default="purple")
+        Marker edge color
+    markerfacecolor: str, optional, (default="purple")
+        Marker face color
+    markeredgewidth: int or float, optional, (default=1)
+        Marker edge width
+    max_display: int, optional, (default=20)
+        Limit to show the number of features in the plot
+    title: str, optional, (default=None)
+        Title of the plot
+    fontsize: int or float, optional, (default=12)
+        Fontsize for xlabel and ylabel, and ticks parameters
+    """
+
+    # initializing figsize
+    if figsize is None:
+        figsize = (8, 5)
+    elif isinstance(figsize, list) or isinstance(figsize, tuple):
+        figsize = figsize
+    else:
+        raise TypeError("Only tuple and list types are allowed for figsize.")
+
+    # initializing bar_color
+    if bar_color is None:
+        bar_color = "#B3C3F3"
+    elif isinstance(bar_color, str):
+        bar_color = bar_color
+    else:
+        raise TypeError("Only str type is allowed for bar_color.")
+
+    # initializing bar_thickness
+    if bar_thickness is None:
+        bar_thickness = 0.5
+    elif isinstance(bar_thickness, float):
+        bar_thickness = bar_thickness
+    else:
+        raise TypeError("Only float type is allowed for bar_thickness.")
+
+    # initializing line_color
+    if line_color is None:
+        line_color = "purple"
+    elif isinstance(line_color, str):
+        line_color = line_color
+    else:
+        raise TypeError("Only str type is allowed for line_color.")
+
+    # initializing marker
+    if marker is None:
+        marker = "o"
+    elif isinstance(marker, str):
+        marker = marker
+    else:
+        raise TypeError("Only str type is allowed for marker.")
+
+    # initializing markersize
+    if markersize is None:
+        markersize = 7
+    elif isinstance(markersize, float) or isinstance(markersize, int):
+        markersize = markersize
+    else:
+        raise TypeError("Only int and float types are allowed for markersize.")
+
+    # initializing markeredgecolor
+    if markeredgecolor is None:
+        markeredgecolor = "purple"
+    elif isinstance(markeredgecolor, str):
+        markeredgecolor = markeredgecolor
+    else:
+        raise TypeError("Only str type is allowed for markeredgecolor.")
+
+    # initializing markerfacecolor
+    if markerfacecolor is None:
+        markerfacecolor = "purple"
+    elif isinstance(markerfacecolor, str):
+        markerfacecolor = markerfacecolor
+    else:
+        raise TypeError("Only str type is allowed for markerfacecolor.")
+
+    # initializing markeredgewidth
+    if markeredgewidth is None:
+        markeredgewidth = 1
+    elif isinstance(markeredgewidth, int) or isinstance(markeredgewidth, float):
+        markeredgecolor = markeredgecolor
+    else:
+        raise TypeError("Only int and float types are allowed for markeredgewidth.")
+
+    # initializing max_display
+    if max_display is None:
+        max_display = 20
+    elif isinstance(max_display, int):
+        max_display = max_display
+    else:
+        raise TypeError("Only int type is allowed for max_display.")
+
+    # initializing fontsize
+    if fontsize is None:
+        fontsize = 12
+    elif isinstance(fontsize, float) or isinstance(fontsize, int):
+        fontsize = fontsize
+    else:
+        raise TypeError("Only int and float types are allowed for fontsize.")
+
+    # main calculation of cum/comp ratios
+    feature_names = features.columns
+    shap_ratio = (np.abs(shap_values).sum(0) / np.abs(shap_values).sum()) * 100
+    feature_names = feature_names[np.argsort(shap_ratio)[::-1]]
+    shap_ratio_order = np.sort(shap_ratio)[::-1]
+    cum_sum = np.cumsum(shap_ratio_order)
+    feature_names = feature_names[:max_display]
+    shap_ratio_order = shap_ratio_order[:max_display]
+    cum_sum = cum_sum[:max_display]
+
+    # plotting
+    fig, ax1 = plt.subplots(figsize=figsize)
+
+    # subplot 1: cumsum shap line-marker plot
+    ax1.plot(
+        cum_sum[::-1],
+        feature_names[::-1],
+        color=line_color,
+        marker=marker,
+        markeredgecolor=markeredgecolor,
+        markerfacecolor=markerfacecolor,
+        markeredgewidth=markeredgewidth,
+        markersize=markersize,
+    )
+
+    # subplot2: barplot
+    ax2 = ax1.twiny()
+    ax2.barh(
+        feature_names[::-1],
+        shap_ratio_order[::-1],
+        height=bar_thickness,
+        alpha=0.6,
+        color=bar_color,
+    )
+
+    ax1.grid(True)
+    ax2.grid(False)
+    ax1.set_xticks(np.arange(0, round(cum_sum.max(), -1) + 1, 10))
+    ax2.set_xticks(np.arange(0, round(shap_ratio_order.max(), -1) + 1, 10))
+    ax1.tick_params(axis="both", which="major", labelsize=fontsize)
+
+    ax1.set(
+        ylim=[-1, len(feature_names)],
+        xlabel="Cumulative Ratio (%)",
+        ylabel="Feature",
+        title=title,
+    )
+    ax2.set(xlabel="Composition Ratio (%)")
+
     plt.show()
 
 

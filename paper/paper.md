@@ -10,7 +10,7 @@ authors:
     orcid: 0000-0003-4677-6907
     affiliation: 1
   - name: Trace Smith
-    orcid: XXXX-XXXX-XXXX-XXXX
+    orcid: 0000-0002-0732-5110
     affiliation: 2
   - name: Eitan Lees
     orcid: 0000-0003-0988-6015
@@ -32,7 +32,8 @@ bibliography: paper.bib
 SlickML is a machine learning library for Python. With SlickML, you can save more time on ML-Automation and ML-Tuning. Machine learing consists of many importants tricks that can only be learned in industry while dealing with production and deployment. Thus, the main philosophy of SlickML is to bring simplicity to produce more effective models with a minimal amount of code [@ideeple2018].
 
 
--![Binary Metrics](metrics.png)
+-![clfmetrics](clf_metrics.png)
+-![regmetrics](reg_metrics.png)
 
 
 
