@@ -2,6 +2,7 @@
 [![License](https://img.shields.io/github/license/slickml/slick-ml)](https://github.com/slickml/slick-ml/blob/master/LICENSE/)
 [![PyPI - Downloads](https://img.shields.io/pypi/dm/slickml)](https://pypi.org/project/slickml/)
 ![PyPI Version](https://img.shields.io/pypi/v/slickml)
+[![Issues](https://img.shields.io/github/issues/slickml/slick-ml)](https://github.com/slickml/slick-ml/issues)
 [![Forks](https://img.shields.io/github/forks/slickml/slick-ml)](https://github.com/slickml/slick-ml/network/members/)
 [![Stars](https://img.shields.io/github/stars/slickml/slick-ml)](https://github.com/slickml/slick-ml/stargazers/)
 
@@ -91,7 +92,7 @@ Here is an example using SlickML how to train/validate a XGBoostCV classifier:
 from slickml.classification import XGBoostCVClassifier
 clf = XGBoostCVClassifier(params=best_params)
 clf.fit(X_train, y_train)
-y_pred_proba = clf.predict_proba(X_test, y_test)
+y_pred_proba = clf.predict_proba(X_test)
 
 # plot cross-validation results
 clf.plot_cv_results()

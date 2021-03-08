@@ -245,18 +245,20 @@ class XGBoostClassifier:
 
         return dtrain
 
-    def _dtest(self, X_test, y_test):
+    def _dtest(self, X_test, y_test=None):
         """
-        Functio to return dtest matrix based on
+        Function to return dtest matrix based on
         input X_test, y_test including sparse_matrix,
         and scaled using both numpy array and pandas
         DataFrame. It does apply scaler transformation
-        in case it was used.
+        in case it was used. Please note that y_test is
+        optional since it might not be available while
+        validating the model.
         Parameters
         ----------
         X_test: numpy.array or Pandas DataFrame
             Testing/validation features data
-        y_test: numpy.array[int] or list[int]
+        y_test: numpy.array[int] or list[int], optional (default=None)
             List of testing/validation ground truth binary values [0, 1]
         """
         if isinstance(X_test, np.ndarray):
@@ -268,11 +270,12 @@ class XGBoostClassifier:
         else:
             raise TypeError("The input X_test must be numpy array or pandas DataFrame.")
 
-        if isinstance(y_test, np.ndarray) or isinstance(y_test, list):
+        if y_test is None:
+            self.y_test = None
+        elif isinstance(y_test, np.ndarray) or isinstance(y_test, list):
             self.y_test = y_test
         else:
             raise TypeError("The input y_test must be numpy array or list.")
-        self.y_test = y_test
 
         if self.scale_mean or self.scale_std:
             self.X_test_ = pd.DataFrame(
@@ -330,7 +333,7 @@ class XGBoostClassifier:
         boosting round from the inputs using (X_train, y_train) set
         and returns it.
         """
-        # creating dtrain, dtest (dtest here for the sake of plotting)
+        # creating dtrain
         self.dtrain_ = self._dtrain(X_train, y_train)
 
         # train model
@@ -356,17 +359,18 @@ class XGBoostClassifier:
 
         return self.feature_importance_
 
-    def predict_proba(self, X_test, y_test):
+    def predict_proba(self, X_test, y_test=None):
         """
         Function to return the prediction probabilities for both classes.
         Please note that it only reports the probability of the positive class,
         while the sklearn one returns for both and slicing like pred_proba[:, 1]
-        is needed for positive class predictions.
+        is needed for positive class predictions. Note that y_test is optional while
+        it might not be available in validiation.
         Parameters
         ----------
         X_test: numpy.array or Pandas DataFrame
             Validation features data
-        y_test: numpy.array[int] or list[int]
+        y_test: numpy.array[int] or list[int], optional (default=None)
             List of validation ground truth binary values [0, 1]
         """
         self.dtest_ = self._dtest(X_test, y_test)
