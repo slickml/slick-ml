@@ -8,7 +8,7 @@
 
 <p align="center">
 <a href="https://www.slickml.com/">
-  <img src="https://raw.githubusercontent.com/slickml/slick-ml/master/assets/design/logo.png" width="150"></img></a>
+  <img src="https://raw.githubusercontent.com/slickml/slick-ml/master/assets/design/logo.png" width="250"></img></a>
 </p>
 
 <h1 align="center">
