@@ -92,7 +92,7 @@ Here is an example using SlickML how to train/validate a XGBoostCV classifier:
 from slickml.classification import XGBoostCVClassifier
 clf = XGBoostCVClassifier(params=best_params)
 clf.fit(X_train, y_train)
-y_pred_proba = clf.predict_proba(X_test, y_test)
+y_pred_proba = clf.predict_proba(X_test)
 
 # plot cross-validation results
 clf.plot_cv_results()
