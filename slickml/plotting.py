@@ -734,7 +734,7 @@ def plot_shap_summary(
         and "compact_dot" which is recommended for SHAP interactions
     layered_violin_max_num_bins: int, optional, (default=10)
         The number of bins for calculating the violin plots ranges
-        and outliers        
+        and outliers
     figsize: tuple, optional, (default="auto")
         Figure size
     color: str, optional, (default="#D0AAF3")
