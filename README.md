@@ -142,7 +142,7 @@ reg_metrics.plot()
 
 ## Contributing
 
-Please read the Contributing document to understand the requirements for
+Please read the [Contributing](CONTRIBUTING.md) document to understand the requirements for
 submitting pull-requests. Note before starting any major new feature work,
 please open an issue describing what you are planning to work on. This will
 ensure that interested parties can give valuable feedback on the feature, and
