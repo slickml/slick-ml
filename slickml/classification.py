@@ -458,8 +458,8 @@ class XGBoostClassifier:
             If validation=False, it calculates the SHAP values of
             X_train and plots the summary plot.
         plot_type: str, optional (single-output default="dot", multi-output default="bar")
-            The type of summar plot. Options are "bar", "dot", "violin", and "compact_dot"
-            which is recommended for SHAP interactions
+            The type of summar plot. Options are "bar", "dot", "violin", "layered_violin",
+            and "compact_dot" which is recommended for SHAP interactions
         figsize: tuple, optional, (default="auto")
             Figure size
         color: str, optional, (default="#D0AAF3")
@@ -477,7 +477,7 @@ class XGBoostClassifier:
             Flag to plot sorted shap vlues in descending order
         color_bar: bool, optional, (default=True)
             Flag to show color_bar when plot_type is "dot" or "violin"
-        layered_violin_max_num_bins: int, optional, (default=20)
+        layered_violin_max_num_bins: int, optional, (default=10)
             The number of bins for calculating the violin plots ranges
             and outliers
         class_names: list, optional, (default=None)
@@ -489,9 +489,9 @@ class XGBoostClassifier:
         """
 
         # define tree explainer
-        explainer = shap.TreeExplainer(self.model_)
-        self.shap_values_test_ = explainer.shap_values(self.X_test_)
-        self.shap_values_train_ = explainer.shap_values(self.X_train_)
+        self.explainer_ = shap.TreeExplainer(self.model_)
+        self.shap_values_test_ = self.explainer_.shap_values(self.X_test_)
+        self.shap_values_train_ = self.explainer_.shap_values(self.X_train_)
 
         # check the validation flag
         if validation:
@@ -579,9 +579,9 @@ class XGBoostClassifier:
         """
 
         # define tree explainer
-        explainer = shap.TreeExplainer(self.model_)
-        self.shap_values_test_ = explainer.shap_values(self.X_test_)
-        self.shap_values_train_ = explainer.shap_values(self.X_train_)
+        self.explainer_ = shap.TreeExplainer(self.model_)
+        self.shap_values_test_ = self.explainer_.shap_values(self.X_test_)
+        self.shap_values_train_ = self.explainer_.shap_values(self.X_train_)
 
         # check the validation flag
         if validation:

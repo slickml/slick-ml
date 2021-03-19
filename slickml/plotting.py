@@ -732,6 +732,9 @@ def plot_shap_summary(
     plot_type: str, optional (single-output default="dot", multi-output default="bar")
         The type of summar plot. Options are "bar", "dot", "violin", "layered_violin",
         and "compact_dot" which is recommended for SHAP interactions
+    layered_violin_max_num_bins: int, optional, (default=10)
+        The number of bins for calculating the violin plots ranges
+        and outliers        
     figsize: tuple, optional, (default="auto")
         Figure size
     color: str, optional, (default="#D0AAF3")
@@ -749,9 +752,6 @@ def plot_shap_summary(
         Flag to plot sorted shap vlues in descending order
     color_bar: bool, optional, (default=True)
         Flag to show color_bar when plot_type is "dot" or "violin"
-    layered_violin_max_num_bins: int, optional, (default=20)
-        The number of bins for calculating the violin plots ranges
-        and outliers
     class_names: list, optional, (default=None)
         List of class names for multi-output problems
     class_inds: list, optional, (default=True)
@@ -778,7 +778,7 @@ def plot_shap_summary(
 
     # initializing layered_violin_max_num_bins
     if layered_violin_max_num_bins is None:
-        layered_violin_max_num_bins = 20
+        layered_violin_max_num_bins = 10
     elif isinstance(layered_violin_max_num_bins, int):
         layered_violin_max_num_bins = layered_violin_max_num_bins
     else:
