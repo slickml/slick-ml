@@ -26,7 +26,7 @@ DOWNLOAD_URL = "https://github.com/slickml/slick-ml/"
 LICENSE = "MIT"
 PYTHON_REQUIRES = ">=3.6"
 PACKAGES = setuptools.find_packages()
-VERSION = "0.0.9"
+VERSION = "0.1.0"
 
 # ==============================================================================
 # Setup
