@@ -730,8 +730,8 @@ def plot_shap_summary(
         The feature matrix that was used to calculate the SHAP values. For the case
         of Numpy array it is recommened to pass the feature_names list as well
     plot_type: str, optional (single-output default="dot", multi-output default="bar")
-        The type of summar plot. Options are "bar", "dot", "violin", and "compact_dot"
-        which is recommended for SHAP interactions
+        The type of summar plot. Options are "bar", "dot", "violin", "layered_violin",
+        and "compact_dot" which is recommended for SHAP interactions
     figsize: tuple, optional, (default="auto")
         Figure size
     color: str, optional, (default="#D0AAF3")
