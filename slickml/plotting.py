@@ -550,7 +550,7 @@ def plot_xgb_cv_results(
         fmt=linestyle,
         ecolor=test_std_color,
         c=test_color,
-        label=train_label,
+        label=test_label,
     )
 
     ax.set_xlabel("# of Boosting Rounds", fontsize=12)
