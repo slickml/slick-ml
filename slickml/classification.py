@@ -462,8 +462,9 @@ class XGBoostClassifier:
             and "compact_dot" which is recommended for SHAP interactions
         figsize: tuple, optional, (default="auto")
             Figure size
-        color: str, optional, (default="#D0AAF3")
-            Color of the vertical lines when plot_type="bar"
+        color: str, optional, (default= "#D0AAF3" for "bar")
+            Color of violin and layered violin plots are "RdBl" cmap
+            Color of the horizontal lines when plot_type="bar" is "#D0AAF3"
         max_display: int, optional, (default=20)
             Limit to show the number of features in the plot
         feature_names: str, optional, (default=None)

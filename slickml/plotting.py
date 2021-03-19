@@ -733,12 +733,12 @@ def plot_shap_summary(
         The type of summar plot. Options are "bar", "dot", "violin", "layered_violin",
         and "compact_dot" which is recommended for SHAP interactions
     layered_violin_max_num_bins: int, optional, (default=10)
-        The number of bins for calculating the violin plots ranges
-        and outliers
+        The number of bins for calculating the violin plots ranges and outliers
     figsize: tuple, optional, (default="auto")
         Figure size
-    color: str, optional, (default="#D0AAF3")
-        Color of the horizontal lines when plot_type="bar"
+    color: str, optional, (default= "#D0AAF3" for "bar")
+        Color of violin and layered violin plots are "RdBl" cmap
+        Color of the horizontal lines when plot_type="bar" is "#D0AAF3"
     max_display: int, optional, (default=20)
         Limit to show the number of features in the plot
     feature_names: str, optional, (default=None)
@@ -768,13 +768,16 @@ def plot_shap_summary(
     else:
         raise TypeError("Only tuple and list types are allowed for figsize.")
 
-    # initializing color
-    if color is None:
+    # initializing color for plot_type="bar"
+    if color is None and plot_type == "bar":
         color = "#D0AAF3"
-    elif isinstance(color, str):
-        color = color
+    elif color is None:
+        color = None
     else:
-        raise TypeError("Only str type is allowed for color.")
+        if isinstance(color, str):
+            color = color
+        else:
+            raise TypeError("Only str type is allowed for color.")
 
     # initializing layered_violin_max_num_bins
     if layered_violin_max_num_bins is None:
