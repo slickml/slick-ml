@@ -8,3 +8,4 @@ shap==0.34.0
 xgboost==1.0.0
 bayesian-optimization==1.2.0
 hyperopt==0.2.3
+glmnet==2.2.1
