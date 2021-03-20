@@ -216,7 +216,6 @@ class XGBoostClassifier:
             self.y_train = y_train
         else:
             raise TypeError("The input y_train must be numpy array or list.")
-        self.y_train = y_train
 
         if self.sparse_matrix and self.scale_mean:
             raise ValueError(
