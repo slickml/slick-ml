@@ -13,6 +13,7 @@ from slickml.plotting import (
     plot_shap_summary,
     plot_shap_waterfall,
     plot_glmnet_cv_results,
+    plot_glmnet_coeff_path,
 )
 
 
@@ -1341,7 +1342,7 @@ class GLMNetCVClassifier:
         results["coeff"] = self._coeff_to_dict()
         results["coeff_path"] = dict(
             zip(
-                [f"{i.lower()}" for i in self.X_train_.columns.tolist()],
+                [f"{col}" for col in self.X_train_.columns.tolist()],
                 (
                     self.model_.coef_path_.reshape(-1, self.model_.coef_path_.shape[-1])
                 ).tolist(),
@@ -1365,7 +1366,7 @@ class GLMNetCVClassifier:
         """
         df = pd.DataFrame(
             (self.model_.coef_path_.reshape(-1, self.model_.coef_path_.shape[-1])).T,
-            columns=[f"{i.lower()}_coeff_path" for i in self.X_train_.columns.tolist()],
+            columns=[f"{col}_coeff_path" for col in self.X_train_.columns.tolist()],
         )
         df["intercept_path"] = (
             self.model_.intercept_path_.reshape(
@@ -1555,15 +1556,39 @@ class GLMNetCVClassifier:
         """
 
         plot_glmnet_cv_results(
-            figsize,
-            marker,
-            markersize,
-            color,
-            errorbarcolor,
-            bestlambdacolor,
-            maxlambdacolor,
-            linestyle,
-            fontsize,
-            legendloc,
+            figsize=figsize,
+            marker=marker,
+            markersize=markersize,
+            color=color,
+            errorbarcolor=errorbarcolor,
+            bestlambdacolor=bestlambdacolor,
+            maxlambdacolor=maxlambdacolor,
+            linestyle=linestyle,
+            fontsize=fontsize,
+            legendloc=legendloc,
+            **self.results_,
+        )
+
+    def plot_coeff_path(
+        self, figsize=None, linestyle=None, fontsize=None, legendloc=None
+    ):
+        """Function to plot GLMNetCVClassfier coefficients' paths.
+        Parameters
+        ----------
+        figsize: tuple, optional, (default=(8, 5))
+            Figure size
+        linestyle: str, optional (default="-")
+            Linestyle of vertical lambda lines
+        fontsize: int or float, optional, (default=12)
+            Fontsize for xlabel and ylabel, and ticks parameters
+        legendloc: int or str, optional (default="center")
+            Location of legend
+        """
+
+        plot_glmnet_coeff_path(
+            figsize=figsize,
+            linestyle=linestyle,
+            fontsize=fontsize,
+            legendloc=legendloc,
             **self.results_,
         )

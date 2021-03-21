@@ -1345,5 +1345,81 @@ def plot_glmnet_cv_results(
     )
     ax.tick_params(axis="both", which="major", labelsize=fontsize)
     ax.legend(loc=legendloc, prop={"size": 12}, framealpha=0.0)
-    plt.grid(True)
+    ax.grid(True)
+    plt.show()
+
+
+def plot_glmnet_coeff_path(
+    figsize=None, linestyle=None, fontsize=None, legendloc=None, **kwargs
+):
+    """Function to plot GLMNetCVClassfier coefficients' paths.
+    Parameters
+    ----------
+    figsize: tuple, optional, (default=(8, 5))
+        Figure size
+    linestyle: str, optional (default="-")
+        Linestyle of vertical lambda lines
+    fontsize: int or float, optional, (default=12)
+        Fontsize for xlabel and ylabel, and ticks parameters
+    legendloc: int or str, optional (default="center")
+        Location of legend
+    """
+    # initializing figsize
+    if figsize is None:
+        figsize = (8, 5)
+    elif isinstance(figsize, list) or isinstance(figsize, tuple):
+        figsize = figsize
+    else:
+        raise TypeError("Only tuple and list types are allowed for figsize.")
+
+    # initializing fontsize
+    if fontsize is None:
+        fontsize = 12
+    elif isinstance(fontsize, float) or isinstance(fontsize, int):
+        fontsize = fontsize
+    else:
+        raise TypeError("Only int and float types are allowed for fontsize.")
+
+    # initializing linestyle
+    if linestyle is None:
+        linestyle = "-"
+    elif isinstance(linestyle, str):
+        linestyle = linestyle
+    else:
+        raise TypeError("Only str type is allowed for linestyle.")
+
+    # initializing legendpos
+    if legendloc is None:
+        legendloc = "center"
+    else:
+        legendloc = legendloc
+
+    # plotting
+    fig, ax = plt.subplots(figsize=figsize)
+
+    for feature, coeff_path in kwargs["coeff_path"].items():
+        if feature in kwargs["coeff"]:
+            ax.plot(
+                -np.log(kwargs["lambda_path"]),
+                coeff_path,
+                linestyle=linestyle,
+                label=feature,
+            )
+
+    ax.legend(
+        loc=legendloc,
+        bbox_to_anchor=(1.1, 0.5),
+        ncol=1,
+        prop={"size": fontsize},
+        framealpha=0.0,
+        fancybox=True,
+    )
+    ax.tick_params(axis="both", which="major", labelsize=fontsize)
+    ax.set_ylabel("Coefficients", fontsize=fontsize)
+    ax.set_xlabel(r"-$Log(\lambda)$", fontsize=fontsize)
+    ax.set_title(
+        fr"""Best $\lambda$ = {kwargs["lambda_best"]:.3f} with {len(kwargs["coeff"])} Features""",
+        fontsize=fontsize,
+    )
+    ax.grid(True)
     plt.show()
