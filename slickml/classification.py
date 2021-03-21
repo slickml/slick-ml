@@ -1375,7 +1375,7 @@ class GLMNetCVClassifier:
         ).T
         df["lambda_path"] = self.model_.lambda_path_
         df["cv_standard_error"] = self.model_.cv_standard_error_
-        df[f"cv_mean_score"] = self.model_.cv_standard_error_
+        df["cv_mean_score"] = self.model_.cv_standard_error_
 
         return df
 
