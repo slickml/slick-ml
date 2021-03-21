@@ -12,6 +12,7 @@ from slickml.plotting import (
     plot_xgb_feature_importance,
     plot_shap_summary,
     plot_shap_waterfall,
+    plot_glmnet_cv_results,
 )
 
 
@@ -1045,6 +1046,16 @@ class GLMNetCVClassifier:
         Returns the training grounds truth classes
     y_test_: Numpy 1D array or list
         Returns the testing grounds truth classes
+    coeff_: Pandas DataFrame
+        Return the model's non-zero coefficients
+    intercept_: float
+        Return the model's intercept
+    cv_results_: Pandas DataFrame()
+        Returns the cross-validation results
+    results_: dict()
+        Returns the model's total results
+    params_: dict()
+        Returns model's fitting parameters
     fit(X_train, y_train): class method
         Returns None and applies the training process using
         the (X_train, y_train) set using glmnet.LogitNet()
@@ -1056,11 +1067,18 @@ class GLMNetCVClassifier:
     predict(X_test, y_test=None, threshold=0.5): class method
         Return the prediction classes based on the passed threshold.
         The default threshold is set at 0.5.
-
-    get_xgb_params(): class method
+    get_params(): class method
         Returns params dict
-    get_feature_importance(): class method
-        Returns feature importance based on importance_type
+    get_intercept(): class method
+        Returns model's intercept
+    get_coeffs(): class method
+        Returns non-zero coefficients DataFrame
+    get_cv_results(): class method
+        Returns cross-validation results DataFrame
+    get_results(): class method
+        Returns model's total results dict
+
+
     plot_feature_importance(): class method
         Plots feature importance
     plot_shap_summary(): class method
@@ -1337,10 +1355,11 @@ class GLMNetCVClassifier:
         results["n_lambda"] = self.model_.n_lambda_
         results["intercept"] = self.model_.intercept_
         results["intercept_path"] = self.model_.intercept_path_.tolist()[0]
+        results["params"] = self.model_.get_params()
 
         return results
 
-    def _results_df(self):
+    def _cv_results(self):
         """
         Function to return model's results as a Pandas DataFrame.
         """
@@ -1365,7 +1384,7 @@ class GLMNetCVClassifier:
         """
         self.coeff_ = self._coeff_to_df()
         self.results_ = self._results()
-        self.results_df_ = self._results_df()
+        self.cv_results_ = self._cv_results()
         self.intercept_ = self.model_.intercept_
         self.params_ = self.model_.get_params()
 
@@ -1479,3 +1498,72 @@ class GLMNetCVClassifier:
         """
 
         return self.params_
+
+    def get_cv_results(self):
+        """
+        Function to return model's cv results.
+        """
+
+        return self.cv_results_
+
+    def get_results(self):
+        """
+        Function to return model's total results.
+        """
+
+        return self.results_
+
+    def plot_cv_results(
+        self,
+        figsize=None,
+        marker=None,
+        markersize=None,
+        color=None,
+        errorbarcolor=None,
+        bestlambdacolor=None,
+        maxlambdacolor=None,
+        linestyle=None,
+        fontsize=None,
+        legendloc=None,
+    ):
+        """
+        Function to plot cross-validation results.
+        Parameters
+        ----------
+        figsize: tuple, optional, (default=(8, 5))
+            Figure size
+        marker: str, optional, (default="o")
+            Marker style
+            marker style can be found at:
+            (https://matplotlib.org/2.1.1/api/markers_api.html#module-matplotlib.markers)
+        markersize: int or float, optional, (default=5)
+            Markersize
+        color: str, optional, (default="red")
+            Color of the line plot
+        errorbarcolor: str, optional (default="black")
+            Color of the error bar of the line plot
+        bestlambdacolor: str, optional (default="navy")
+            Color of the best lambda line
+        maxlambdacolor: str, optional (default="purple")
+            Color of the max lambda line
+        linestyle: str, optional (default="--")
+            Linestyle of vertical lambda lines
+        fontsize: int or float, optional, (default=12)
+            Fontsize for xlabel and ylabel, and ticks parameters
+        legendloc: int or str, optional (default="best")
+            Location of legend
+        """
+
+        plot_glmnet_cv_results(
+            figsize,
+            marker,
+            markersize,
+            color,
+            errorbarcolor,
+            bestlambdacolor,
+            maxlambdacolor,
+            linestyle,
+            fontsize,
+            legendloc,
+            **self.results_,
+        )
