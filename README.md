@@ -139,6 +139,13 @@ y_pred_proba = clf.predict_proba(X_test)
 clf.plot_cv_results()
 ```
 ![clfglmnetcv](https://raw.githubusercontent.com/slickml/slick-ml/master/assets/images/clf_glmnet_cv_results.png)
+
+```python
+# plot coefficients paths
+clf.plot_coeff_path()
+
+```
+!
 ![clfglmnetpath](https://raw.githubusercontent.com/slickml/slick-ml/master/assets/images/clf_glmnet_paths.png)
 
 
