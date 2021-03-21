@@ -106,18 +106,50 @@ clf.plot_feature_importance()
 ![clfimp](https://raw.githubusercontent.com/slickml/slick-ml/master/assets/images/clf_feature_importance.png)
 
 ```python
-# plot SHAP summary plot
+# plot SHAP summary violin plot
 clf.plot_shap_summary(plot_type="violin")
 
 ```
 ![clfshap](https://raw.githubusercontent.com/slickml/slick-ml/master/assets/images/clf_shap_summary.png)
 
 ```python
+# plot SHAP summary layered violin plot
+clf.plot_shap_summary(plot_type="layered_violin", layered_violin_max_num_bins=5)
+
+```
+![clfshaplv](https://raw.githubusercontent.com/slickml/slick-ml/master/assets/images/clf_shap_summary_lv.png)
+
+
+```python
 # plot SHAP waterfall plot
 clf.plot_shap_waterfall()
 
 ```
-![clfshap](https://raw.githubusercontent.com/slickml/slick-ml/master/assets/images/clf_shap_waterfall.png)
+![clfshapwf](https://raw.githubusercontent.com/slickml/slick-ml/master/assets/images/clf_shap_waterfall.png)
+
+Here is an example using SlickML how to train/validate a GLMNetCV classifier:
+```python
+# train a classifier using loaded train/test data and best params
+from slickml.classification import GLMNetCVClassifier
+clf = GLMNetCVClassifier(alpha=0.3, n_splits=4, metric="roc_auc")
+clf.fit(X_train, y_train)
+y_pred_proba = clf.predict_proba(X_test)
+
+# plot cross-validation results
+clf.plot_cv_results()
+```
+![clfglmnetcv](https://raw.githubusercontent.com/slickml/slick-ml/master/assets/images/clf_glmnet_cv_results.png)
+
+```python
+# plot coefficients paths
+clf.plot_coeff_path()
+
+```
+!
+![clfglmnetpath](https://raw.githubusercontent.com/slickml/slick-ml/master/assets/images/clf_glmnet_paths.png)
+
+
+
 
 Here is an example using SlickML to quickly visualize the binary classification 
 metrics based on multiple calculated thresholds:
@@ -142,14 +174,11 @@ reg_metrics.plot()
 
 ## Contributing
 
-Please read the Contributing document to understand the requirements for
+Please read the [Contributing](CONTRIBUTING.md) document to understand the requirements for
 submitting pull-requests. Note before starting any major new feature work,
 please open an issue describing what you are planning to work on. This will
 ensure that interested parties can give valuable feedback on the feature, and
-let others know that you are working on it. 
-
-Whether the contributions consists of adding new features,  optimizing code, or
-assisting with the documentation, we welcome new contributors of all experience
+let others know that you are working on it. Whether the contributions consists of adding new features,  optimizing code, or assisting with the documentation, we welcome new contributors of all experience
 levels. The SlickML community goals are to be helpful and effective.
 
 ## Citing SlickML
