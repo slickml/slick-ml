@@ -1321,7 +1321,7 @@ def plot_glmnet_cv_results(
         ymax=max(kwargs["cv_mean_score"]) + 0.05,
         linestyles=linestyle,
         color=bestlambdacolor,
-        label="best $\lambda$",
+        label=r"best $\lambda$",
     )
     ax.vlines(
         -np.log(kwargs["lambda_max"]),
@@ -1329,18 +1329,18 @@ def plot_glmnet_cv_results(
         ymax=max(kwargs["cv_mean_score"]) + 0.05,
         linestyles=linestyle,
         color=maxlambdacolor,
-        label="max $\lambda$",
+        label=r"max $\lambda$",
     )
     ax.set_ylim(
         [min(kwargs["cv_mean_score"]) - 0.05, max(kwargs["cv_mean_score"]) + 0.05]
     )
-    ax.set_xlabel("$-Log(\lambda)$", fontsize=fontsize)
+    ax.set_xlabel(r"$-Log(\lambda)$", fontsize=fontsize)
     ax.set_ylabel(
         f"""{kwargs["params"]["n_splits"]}-Folds CV Mean {' '.join((kwargs["params"]["scoring"]).split("_")).upper()}""",
         fontsize=fontsize,
     )
     ax.set_title(
-        f"""Best $\lambda$ = {kwargs["lambda_best"]:.3f} with {len(kwargs["coeff"])} Features""",
+        fr"""Best $\lambda$ = {kwargs["lambda_best"]:.3f} with {len(kwargs["coeff"])} Features""",
         fontsize=fontsize,
     )
     ax.tick_params(axis="both", which="major", labelsize=fontsize)
