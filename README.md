@@ -127,6 +127,23 @@ clf.plot_shap_waterfall()
 ```
 ![clfshapwf](https://raw.githubusercontent.com/slickml/slick-ml/master/assets/images/clf_shap_waterfall.png)
 
+Here is an example using SlickML how to train/validate a GLMNetCV classifier:
+```python
+# train a classifier using loaded train/test data and best params
+from slickml.classification import GLMNetCVClassifier
+clf = GLMNetCVClassifier(alpha=0.3, n_splits=4, metric="roc_auc")
+clf.fit(X_train, y_train)
+y_pred_proba = clf.predict_proba(X_test)
+
+# plot cross-validation results
+clf.plot_cv_results()
+```
+![clfglmnetcv](https://raw.githubusercontent.com/slickml/slick-ml/master/assets/images/clf_glmnet_cv_results.png)
+![clfglmnetpath](https://raw.githubusercontent.com/slickml/slick-ml/master/assets/images/clf_glmnet_paths.png)
+
+
+
+
 Here is an example using SlickML to quickly visualize the binary classification 
 metrics based on multiple calculated thresholds:
 ```python
