@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 import shap
+import glmnet
 import xgboost as xgb
 from sklearn.preprocessing import StandardScaler
 
@@ -89,12 +90,12 @@ class XGBoostClassifier:
     fit(X_train, y_train): class method
         Returns None and applies the training process using
         the (X_train, y_train) set using xgboost.train()
-    predic_proba(X_test, y_test): class method
-        Return the prediction probabilities for both classes. Please note that
+    predict_proba(X_test, y_test): class method
+        Return the prediction probabilities for positive classes. Please note that
         it only reports the probability of the positive class, while the sklearn
         one returns for both and slicing like pred_proba[:, 1]
         is needed for positive class predictions
-    get_xgb_params(): class method
+    get_params(): class method
         Returns params dict
     get_feature_importance(): class method
         Returns feature importance based on importance_type
@@ -307,7 +308,7 @@ class XGBoostClassifier:
         )
         return model
 
-    def _xgb_imp_to_df(self):
+    def _imp_to_df(self):
         """
         Function to build convert feature importance to df.
         """
@@ -339,11 +340,11 @@ class XGBoostClassifier:
         self.model_ = self._model()
 
         # feature importance
-        self.feature_importance_ = self._xgb_imp_to_df()
+        self.feature_importance_ = self._imp_to_df()
 
         return None
 
-    def get_xgb_params(self):
+    def get_params(self):
         """
         Function to return the train parameters for XGBoost.
         """
@@ -373,9 +374,32 @@ class XGBoostClassifier:
             List of validation ground truth binary values [0, 1]
         """
         self.dtest_ = self._dtest(X_test, y_test)
-        self.predict_proba_ = self.model_.predict(self.dtest_, output_margin=False)
+        self.y_pred_proba_ = self.model_.predict(self.dtest_, output_margin=False)
 
-        return self.predict_proba_
+        return self.y_pred_proba_
+
+    def predict(self, X_test, y_test=None, threshold=0.5):
+        """
+        Function to return the prediction probabilities for both classes.
+        Please note that it only reports the probability of the positive class,
+        while the sklearn one returns for both and slicing like pred_proba[:, 1]
+        is needed for positive class predictions. Note that y_test is optional while
+        it might not be available in validiation.
+        Parameters
+        ----------
+        X_test: numpy.array or Pandas DataFrame
+            Validation features data
+        y_test: numpy.array[int] or list[int], optional (default=None)
+            List of validation ground truth binary values [0, 1]
+        threshold: float, optional (default=0.5)
+            Threshold to define classes based on probabilities.
+            predict_proba >= threshold would be defined as 1 else 0.
+        """
+        self.dtest_ = self._dtest(X_test, y_test)
+        self.y_pred_proba_ = self.model_.predict(self.dtest_, output_margin=False)
+        self.y_pred_ = [1 if p >= threshold else 0 for p in self.y_pred_proba_]
+
+        return self.y_pred_
 
     def plot_feature_importance(
         self,
@@ -714,12 +738,12 @@ class XGBoostCVClassifier(XGBoostClassifier):
     fit(X_train, y_train): class method
         Returns None and applies the training process using
         the (X_train, y_train) set using xgboost.cv() and xgboost.train()
-    predic_proba(X_test, y_test): class method
-        Return the prediction probabilities for both classes. Please note that
+    predict_proba(X_test, y_test): class method
+        Return the prediction probabilities for positive classes. Please note that
         it only reports the probability of the positive class, while the sklearn
         one returns for both and slicing like pred_proba[:, 1]
         is needed for positive class predictions
-    get_xgb_params(): class method
+    get_params(): class method
         Returns params dict
     get_feature_importance(): class method
         Returns feature importance based on importance_type
@@ -890,7 +914,7 @@ class XGBoostCVClassifier(XGBoostClassifier):
         self.model_ = self._model()
 
         # feature importance
-        self.feature_importance_ = self._xgb_imp_to_df()
+        self.feature_importance_ = self._imp_to_df()
 
         return None
 
