@@ -18,7 +18,8 @@ display(HTML("<style>.container { width:95% !important; }</style>"))
 
 
 def plot_binary_classification_metrics(figsize=None, **kwargs):
-    """Function to plot binary classification metrics.
+    """
+    Function to plot binary classification metrics.
     This function is a helper function based on the plotting_dict
     attribute of the BinaryClassificationMetrics class.
     Parameters
@@ -241,7 +242,8 @@ def plot_xfs_feature_frequency(
     markeredgewidth=None,
     fontsize=None,
 ):
-    """Function to plot selected features frequency.
+    """
+    Function to plot selected features frequency.
     This function is a helper function based on the features_frequency
     attribute of the XGBoostFeatureSelector class.
     Parameters
@@ -1012,7 +1014,8 @@ def plot_shap_waterfall(
 
 
 def plot_regression_metrics(figsize=None, **kwargs):
-    """Function to plot regression metrics.
+    """
+    Function to plot regression metrics.
     This function is a helper function based on the plotting_dict
     attribute of the RegressionMetrics class.
     Parameters
@@ -1181,4 +1184,166 @@ def plot_regression_metrics(figsize=None, **kwargs):
     ax6.tick_params(axis="both", which="major", labelsize=12)
     ax6.legend(prop={"size": 12}, loc=4, framealpha=0.0)
 
+    plt.show()
+
+
+def plot_glmnet_cv_results(
+    figsize=None,
+    marker=None,
+    markersize=None,
+    color=None,
+    errorbarcolor=None,
+    bestlambdacolor=None,
+    maxlambdacolor=None,
+    linestyle=None,
+    fontsize=None,
+    legendloc=None,
+    **kwargs,
+):
+    """Function to plot GLMNetCVClassfier cross-validation results.
+    Parameters
+    ----------
+    figsize: tuple, optional, (default=(8, 5))
+        Figure size
+    marker: str, optional, (default="o")
+        Marker style
+        marker style can be found at:
+        (https://matplotlib.org/2.1.1/api/markers_api.html#module-matplotlib.markers)
+    markersize: int or float, optional, (default=5)
+        Markersize
+    color: str, optional, (default="red")
+        Color of the line plot
+    errorbarcolor: str, optional (default="black")
+        Color of the error bar of the line plot
+    bestlambdacolor: str, optional (default="navy")
+        Color of the best lambda line
+    maxlambdacolor: str, optional (default="purple")
+        Color of the max lambda line
+    linestyle: str, optional (default="--")
+        Linestyle of vertical lambda lines
+    fontsize: int or float, optional, (default=12)
+        Fontsize for xlabel and ylabel, and ticks parameters
+    legendloc: int or str, optional (default="best")
+        Location of legend
+    """
+    # initializing figsize
+    if figsize is None:
+        figsize = (8, 5)
+    elif isinstance(figsize, list) or isinstance(figsize, tuple):
+        figsize = figsize
+    else:
+        raise TypeError("Only tuple and list types are allowed for figsize.")
+
+    # initializing fontsize
+    if fontsize is None:
+        fontsize = 12
+    elif isinstance(fontsize, float) or isinstance(fontsize, int):
+        fontsize = fontsize
+    else:
+        raise TypeError("Only int and float types are allowed for fontsize.")
+
+    # initializing marker
+    if marker is None:
+        marker = "o"
+    elif isinstance(marker, str):
+        marker = marker
+    else:
+        raise TypeError("Only str type is allowed for marker.")
+
+    # initializing markersize
+    if markersize is None:
+        markersize = 5
+    elif isinstance(markersize, float) or isinstance(markersize, int):
+        markersize = markersize
+    else:
+        raise TypeError("Only int and float types are allowed for markersize.")
+
+    # initializing color
+    if color is None:
+        color = "red"
+    elif isinstance(color, str):
+        color = color
+    else:
+        raise TypeError("Only str type is allowed for color.")
+
+    # initializing errorbarcolor
+    if errorbarcolor is None:
+        errorbarcolor = "black"
+    elif isinstance(errorbarcolor, str):
+        errorbarcolor = errorbarcolor
+    else:
+        raise TypeError("Only str type is allowed for errorbarcolor.")
+
+    # initializing bestlambdacolor
+    if bestlambdacolor is None:
+        bestlambdacolor = "navy"
+    elif isinstance(bestlambdacolor, str):
+        bestlambdacolor = bestlambdacolor
+    else:
+        raise TypeError("Only str type is allowed for bestlambdacolor.")
+
+    # initializing maxlambdacolor
+    if maxlambdacolor is None:
+        maxlambdacolor = "purple"
+    elif isinstance(maxlambdacolor, str):
+        maxlambdacolor = maxlambdacolor
+    else:
+        raise TypeError("Only str type is allowed for maxlambdacolor.")
+
+    # initializing linestyle
+    if linestyle is None:
+        linestyle = "--"
+    elif isinstance(linestyle, str):
+        linestyle = linestyle
+    else:
+        raise TypeError("Only str type is allowed for linestyle.")
+
+    # initializing legendpos
+    if legendloc is None:
+        legendloc = 0
+    else:
+        legendloc = legendloc
+
+    # plotting
+    fig, ax = plt.subplots(figsize=figsize)
+    ax.errorbar(
+        -np.log(kwargs["lambda_path"]),
+        kwargs["cv_mean_score"],
+        yerr=kwargs["cv_standard_error"],
+        color=color,
+        ecolor=errorbarcolor,
+        marker=marker,
+        markersize=markersize,
+    )
+    ax.vlines(
+        -np.log(kwargs["lambda_best"]),
+        ymin=min(kwargs["cv_mean_score"]) - 0.05,
+        ymax=max(kwargs["cv_mean_score"]) + 0.05,
+        linestyles=linestyle,
+        color=bestlambdacolor,
+        label="best $\lambda$",
+    )
+    ax.vlines(
+        -np.log(kwargs["lambda_max"]),
+        ymin=min(kwargs["cv_mean_score"]) - 0.05,
+        ymax=max(kwargs["cv_mean_score"]) + 0.05,
+        linestyles=linestyle,
+        color=maxlambdacolor,
+        label="max $\lambda$",
+    )
+    ax.set_ylim(
+        [min(kwargs["cv_mean_score"]) - 0.05, max(kwargs["cv_mean_score"]) + 0.05]
+    )
+    ax.set_xlabel("$-Log(\lambda)$", fontsize=fontsize)
+    ax.set_ylabel(
+        f"""{kwargs["params"]["n_splits"]}-Folds CV Mean {' '.join((kwargs["params"]["scoring"]).split("_")).upper()}""",
+        fontsize=fontsize,
+    )
+    ax.set_title(
+        f"""Best $\lambda$ = {kwargs["lambda_best"]:.3f} with {len(kwargs["coeff"])} Features""",
+        fontsize=fontsize,
+    )
+    ax.tick_params(axis="both", which="major", labelsize=fontsize)
+    ax.legend(loc=legendloc, prop={"size": 12}, framealpha=0.0)
+    plt.grid(True)
     plt.show()
