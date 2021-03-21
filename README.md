@@ -178,8 +178,7 @@ Please read the [Contributing](CONTRIBUTING.md) document to understand the requi
 submitting pull-requests. Note before starting any major new feature work,
 please open an issue describing what you are planning to work on. This will
 ensure that interested parties can give valuable feedback on the feature, and
-let others know that you are working on it. Whether the contributions consists of adding new features,  optimizing code, or
-assisting with the documentation, we welcome new contributors of all experience
+let others know that you are working on it. Whether the contributions consists of adding new features,  optimizing code, or assisting with the documentation, we welcome new contributors of all experience
 levels. The SlickML community goals are to be helpful and effective.
 
 ## Citing SlickML
