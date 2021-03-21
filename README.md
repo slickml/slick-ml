@@ -145,11 +145,7 @@ clf.plot_cv_results()
 clf.plot_coeff_path()
 
 ```
-!
 ![clfglmnetpath](https://raw.githubusercontent.com/slickml/slick-ml/master/assets/images/clf_glmnet_paths.png)
-
-
-
 
 Here is an example using SlickML to quickly visualize the binary classification 
 metrics based on multiple calculated thresholds:
