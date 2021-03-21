@@ -380,11 +380,9 @@ class XGBoostClassifier:
 
     def predict(self, X_test, y_test=None, threshold=0.5):
         """
-        Function to return the prediction probabilities for both classes.
-        Please note that it only reports the probability of the positive class,
-        while the sklearn one returns for both and slicing like pred_proba[:, 1]
-        is needed for positive class predictions. Note that y_test is optional while
-        it might not be available in validiation.
+        Function to return the prediction classes based on the passed threshold.
+        The default threshold is set at 0.5 while you can find the optimum thresholds
+        based on different methods using BinaryClassificationMetrics.
         Parameters
         ----------
         X_test: numpy.array or Pandas DataFrame
@@ -974,3 +972,510 @@ class XGBoostCVClassifier(XGBoostClassifier):
             test_color,
             test_std_color,
         )
+
+
+class GLMNetCVClassifier:
+    """GLMNet CV Classifier.
+    This is wrapper using GLM-Net to train a Regularized Linear Model
+    via logitic regression and find the optimal penalty values through
+    N-Folds cross validation. This function is pretty useful to train
+    a Elastic-Net model with the ability of feature reduction. Main
+    theoretical reference:
+    (https://web.stanford.edu/~hastie/glmnet/glmnet_alpha.html)
+    Parameters
+    ----------
+    alpha: float, optional (default=0.5)
+        The stability parameter, 0 <= alpha <= 1: 0.0 for Ridge, 1.0 for LASSO
+    n_lambda: int, optional (default=100)
+        Maximum number of lambda values to compute
+    n_splits: int, optional (default=3)
+        Number of cross validation folds for computing performance metrics and
+        determining lambda_best_ and lambda_max_. If non-zero, must be
+        at least 3.
+    metric: str or callable, optional (default="roc_auc")
+        Metric used for model selection during cross validation.
+        Valid options are "accuracy", "roc_auc", "average_precision",
+        "precision", "recall". Alternatively, supply a function or callable
+        object with the following signature "scorer(estimator, X, y)".
+        Note, the metric function affects the selection of "lambda_best_" and
+        "lambda_max_", fitting the same data ith different metric methods will result
+        in the selection of different models.
+    scale : bool, optional (default=True)
+        Flag to standardize (mean of 0.0 and std of 1) input features prior to fitting.
+        The final coefficients will be on the scale of the original data regardless
+        of the value of the scale flag.
+    sparse_matrix: bool, optional (default=False)
+        Flag to convert data to sparse matrix with csr format. This would increase
+        the speed of feature selection for relatively large datasets. Note that when
+        "scale=True", you would lose sparsity due to standardization process.
+    fit_intercept : bool, optional (default=True)
+        Include an intercept term in the model.
+    cut_point : float, optional (default=1.0)
+        The cut point to use for selecting lambda_best.
+        Based on this value, the distance between "lambda_max" and "best_lambda"
+        would be cut_point * standard_error(lambda_max)
+        arg_max(lambda) for cv_score(lambda) >= cv_score(lambda_max) - cut_point * standard_error(lambda_max)
+    min_lambda_ratio: float, optional (default=1e-4)
+        In combination with "n_lambda", the ratio of the smallest and largest
+        values of lambda computed (min_lambda/max_lambda >= min_lambda_ratio).
+    lambda_path: array, optional (default=None)
+        In place of supplying "n_lambda", provide an array of specific values
+        to compute. The specified values must be in decreasing order. When
+        None, the path of lambda values will be determined automatically. A
+        maximum of "n_lambda" values will be computed.
+    tol: float, optional (default=1e-7)
+        Convergence tolerance
+    max_iter: int, optional (default=100000)
+        Maximum passes over the data
+    random_state: int, optional (default=1367)
+        Seed for the random number generator. The glmnet solver is not
+        deterministic, this seed is used for determining the cv folds.
+    max_features: int, optional (default=None)
+        Optional maximum number of features with nonzero coefficients after
+        regularization. If not set, defaults to X.shape[1] during fit
+        Note, this will be ignored if the user specifies lambda_path.
+
+    Attributes
+    ----------
+    X_train_: Pandas DataFrame()
+        Returns training data set.
+    X_test_: Pandas DataFrame()
+        Returns transformed testing data set.
+    y_train_: Numpy 1D array or list
+        Returns the training grounds truth classes
+    y_test_: Numpy 1D array or list
+        Returns the testing grounds truth classes
+    fit(X_train, y_train): class method
+        Returns None and applies the training process using
+        the (X_train, y_train) set using glmnet.LogitNet()
+    predict_proba(X_test, y_test=None): class method
+        Return the prediction probabilities for positive classes. Please note that
+        it only reports the probability of the positive class, while the sklearn
+        one returns for both and slicing like pred_proba[:, 1]
+        is needed for positive class predictions
+    predict(X_test, y_test=None, threshold=0.5): class method
+        Return the prediction classes based on the passed threshold.
+        The default threshold is set at 0.5.
+
+    get_xgb_params(): class method
+        Returns params dict
+    get_feature_importance(): class method
+        Returns feature importance based on importance_type
+    plot_feature_importance(): class method
+        Plots feature importance
+    plot_shap_summary(): class method
+        Plot shap values summary
+    """
+
+    def __init__(
+        self,
+        alpha=None,
+        n_lambda=None,
+        n_splits=None,
+        metric=None,
+        scale=True,
+        sparse_matrix=False,
+        fit_intercept=True,
+        cut_point=None,
+        min_lambda_ratio=None,
+        lambda_path=None,
+        tol=None,
+        max_iter=None,
+        random_state=None,
+        max_features=None,
+    ):
+
+        if alpha is None:
+            self.alpha = 0.5
+        else:
+            if not isinstance(alpha, float):
+                raise TypeError("The input alpha must have float dtype.")
+            else:
+                self.alpha = alpha
+
+        if n_lambda is None:
+            self.n_lambda = 100
+        else:
+            if not isinstance(n_lambda, int):
+                raise TypeError("The input n_lambda must be a int dtype.")
+            else:
+                self.n_lambda = n_lambda
+
+        if n_splits is None:
+            self.n_splits = 3
+        else:
+            if not isinstance(n_splits, int):
+                raise TypeError("The input n_splits must be a int dtype.")
+            else:
+                self.n_splits = n_splits
+
+        if metric is None:
+            self.metric = "roc_auc"
+        else:
+            if not isinstance(metric, str):
+                raise TypeError("The input metric must have str dtype.")
+            else:
+                if metric in [
+                    "accuracy",
+                    "roc_auc",
+                    "average_precision",
+                    "precision",
+                    "recall",
+                ]:
+                    self.metric = metric
+                else:
+                    raise ValueError("The input metric value is not valid.")
+
+        if not isinstance(scale, bool):
+            raise TypeError("The input scale must have bool dtype.")
+        else:
+            self.scale = scale
+
+        if not isinstance(sparse_matrix, bool):
+            raise TypeError("The input sparse_matrix must have bool dtype.")
+        else:
+            self.sparse_matrix = sparse_matrix
+
+        if self.sparse_matrix and self.scale:
+            raise ValueError(
+                "The scale should be False in conjuction of using sparse_matrix=True to maintain sparsity."
+            )
+
+        if not isinstance(fit_intercept, bool):
+            raise TypeError("The input fit_intercept must have bool dtype.")
+        else:
+            self.fit_intercept = fit_intercept
+
+        if cut_point is None:
+            self.cut_point = 1.0
+        else:
+            if not isinstance(cut_point, float):
+                raise TypeError("The input cut_point must have float dtype.")
+            else:
+                self.cut_point = cut_point
+
+        if min_lambda_ratio is None:
+            self.min_lambda_ratio = 1e-4
+        else:
+            if not isinstance(min_lambda_ratio, float):
+                raise TypeError("The input min_lambda_ratio must have float dtype.")
+            else:
+                self.min_lambda_ratio = min_lambda_ratio
+
+        if lambda_path is None:
+            self.lambda_path = None
+        else:
+            if isinstance(lambda_path, np.ndarray) or isinstance(lambda_path, list):
+                self.lambda_path = lambda_path
+            else:
+                raise TypeError("The input lambda_path must be numpy array or list.")
+
+        if tol is None:
+            self.tol = 1e-7
+        else:
+            if not isinstance(tol, float):
+                raise TypeError("The input tol must have float dtype.")
+            else:
+                self.tol = tol
+
+        if max_iter is None:
+            self.max_iter = 100000
+        else:
+            if not isinstance(max_iter, int):
+                raise TypeError("The input max_iter must have int dtype.")
+            else:
+                self.max_iter = max_iter
+
+        if random_state is None:
+            self.random_state = 1367
+        else:
+            if not isinstance(random_state, int):
+                raise TypeError("The input random_state must have int dtype.")
+            else:
+                self.random_state = random_state
+
+        if max_features is None:
+            self.max_features = None
+        else:
+            if not isinstance(max_features, int):
+                raise TypeError("The input max_features must have int dtype.")
+            else:
+                self.max_features = max_features
+
+    def _dtrain(self, X_train, y_train):
+        """
+        Function to preprocess X_test, y_test data as
+        Pandas DataFrame for the sake of postprocessing.
+        Parameters
+        ----------
+        X_train: numpy.array or Pandas DataFrame
+            Training features data
+        y_train: numpy.array[int] or list[int]
+            List of training ground truth binary values [0, 1]
+        """
+        if isinstance(X_train, np.ndarray):
+            self.X_train = pd.DataFrame(
+                X_train, columns=[f"F_{i}" for i in range(X_train.shape[1])]
+            )
+        elif isinstance(X_train, pd.DataFrame):
+            self.X_train = X_train
+        else:
+            raise TypeError(
+                "The input X_train must be numpy array or pandas DataFrame."
+            )
+
+        if isinstance(y_train, np.ndarray) or isinstance(y_train, list):
+            self.y_train = y_train
+        else:
+            raise TypeError("The input y_train must be numpy array or list.")
+
+        return self.X_train, self.y_train
+
+    def _dtest(self, X_test, y_test=None):
+        """
+        Function to preprocess X_test, y_test data as
+        Pandas DataFrame for the sake of postprocessing.
+        Note that y_test is optional since it might not
+        be available while validating the model.
+        Parameters
+        ----------
+        X_test: numpy.array or Pandas DataFrame
+            Testing features data
+        y_test: numpy.array[int] or list[int]
+            List of testing ground truth binary values [0, 1]
+        """
+        if isinstance(X_test, np.ndarray):
+            self.X_test = pd.DataFrame(
+                X_test, columns=[f"F_{i}" for i in range(X_test.shape[1])]
+            )
+        elif isinstance(X_test, pd.DataFrame):
+            self.X_test = X_test
+        else:
+            raise TypeError("The input X_test must be numpy array or pandas DataFrame.")
+
+        if y_test is None:
+            self.y_test = None
+        elif isinstance(y_test, np.ndarray) or isinstance(y_test, list):
+            self.y_test = y_test
+        else:
+            raise TypeError("The input y_test must be numpy array or list.")
+
+        return self.X_test, self.y_test
+
+    def _model(self):
+        """
+        Function to initialize a LogitNet model.
+        """
+
+        model = glmnet.LogitNet(
+            alpha=self.alpha,
+            n_lambda=self.n_lambda,
+            min_lambda_ratio=self.min_lambda_ratio,
+            lambda_path=self.lambda_path,
+            standardize=self.scale,
+            fit_intercept=self.fit_intercept,
+            cut_point=self.cut_point,
+            n_splits=self.n_splits,
+            scoring=self.metric,
+            n_jobs=-1,
+            tol=self.tol,
+            max_iter=self.max_iter,
+            random_state=self.random_state,
+            max_features=self.max_features,
+            verbose=False,
+        )
+
+        return model
+
+    def _coeff_to_df(self):
+        """
+        Function to return the non-zero coeff
+        for the best lambda as Pandas DataFrame.
+        """
+        dct = self._coeff_to_dict()
+
+        return (
+            pd.DataFrame(data=dct.items(), columns=["feature", "coeff"])
+            .sort_values(by="coeff", ascending=False)
+            .reset_index(drop=True)
+        )
+
+    def _coeff_to_dict(self):
+        """
+        Function to return the non-zero coeff
+        for the best lambda as dict.
+        """
+        idx = list(np.nonzero(np.reshape(self.model_.coef_, (1, -1)))[1])
+        dct = dict(
+            zip(
+                [self.X_train_.columns.tolist()[i] for i in idx],
+                [self.model_.coef_[0][i] for i in idx],
+            )
+        )
+
+        return dct
+
+    def _results(self):
+        """
+        Function to return model's results as a nested dictionary.
+        """
+        results = {}
+        results["coeff"] = self._coeff_to_dict()
+        results["coeff_path"] = dict(
+            zip(
+                [f"{i.lower()}" for i in self.X_train_.columns.tolist()],
+                (
+                    self.model_.coef_path_.reshape(-1, self.model_.coef_path_.shape[-1])
+                ).tolist(),
+            )
+        )
+        results["cv_standard_error"] = self.model_.cv_standard_error_.tolist()
+        results["cv_mean_score"] = self.model_.cv_mean_score_.tolist()
+        results["lambda_path"] = self.model_.lambda_path_.tolist()
+        results["lambda_best"] = self.model_.lambda_best_[0]
+        results["lambda_max"] = self.model_.lambda_max_
+        results["n_lambda"] = self.model_.n_lambda_
+        results["intercept"] = self.model_.intercept_
+        results["intercept_path"] = self.model_.intercept_path_.tolist()[0]
+
+        return results
+
+    def _results_df(self):
+        """
+        Function to return model's results as a Pandas DataFrame.
+        """
+        df = pd.DataFrame(
+            (self.model_.coef_path_.reshape(-1, self.model_.coef_path_.shape[-1])).T,
+            columns=[f"{i.lower()}_coeff_path" for i in self.X_train_.columns.tolist()],
+        )
+        df["intercept_path"] = (
+            self.model_.intercept_path_.reshape(
+                -1, self.model_.intercept_path_.shape[-1]
+            )
+        ).T
+        df["lambda_path"] = self.model_.lambda_path_
+        df["cv_standard_error"] = self.model_.cv_standard_error_
+        df[f"cv_mean_score"] = self.model_.cv_standard_error_
+
+        return df
+
+    def _prep_attributes(self):
+        """
+        Function to run all the model's attributes while fitting.
+        """
+        self.coeff_ = self._coeff_to_df()
+        self.results_ = self._results()
+        self.results_df_ = self._results_df()
+        self.intercept_ = self.model_.intercept_
+        self.params_ = self.model_.get_params()
+
+        return None
+
+    def fit(self, X_train, y_train):
+        """
+        Function to initialize a LogitNet model using (X, y).
+        ----------
+        X_train: numpy.array or Pandas DataFrame
+            Training features data
+        y_train: numpy.array[int] or list[int]
+            List of training ground truth binary values [0, 1]
+        """
+        # preprocessing X, y
+        self.X_train_, self.y_train_ = self._dtrain(X_train, y_train)
+
+        # initialize model
+        self.model_ = self._model()
+
+        # train model
+        if self.sparse_matrix:
+            self.model_.fit(
+                df_to_csr(self.X_train_, fillna=0.0, verbose=False), self.y_train_
+            )
+        else:
+            self.model_.fit(self.X_train_, self.y_train_)
+
+        # prep attributes
+        self._prep_attributes()
+
+        return None
+
+    def predict_proba(self, X_test, y_test=None, lamb=None):
+        """
+        Function to return the prediction probabilities for positive classes.
+        Please note that it only reports the probability of the positive class,
+        while the sklearn one returns for both and slicing like pred_proba[:, 1]
+        is needed for positive class predictions. Note that y_test is optional while
+        it might not be available in validiation.
+        Parameters
+        ----------
+        X_test: numpy.array or Pandas DataFrame
+            Validation features data
+        y_test: numpy.array[int] or list[int], optional (default=None)
+            List of validation ground truth binary values [0, 1]
+        lamb: array, optional (default=None)
+        Values with shape (n_lambda,) of lambda from lambda_path_
+        from which to make predictions. If no values are provided (None),
+        the returned predictions will be those corresponding to lambda_best_.
+        The values of lamb must also be in the range of lambda_path_,
+        values greater than max(lambda_path_) or less than  min(lambda_path_)
+        will be clipped.
+        """
+        self.X_test_, self.y_test_ = self._dtest(X_test, y_test)
+        if self.sparse_matrix:
+            self.y_pred_proba_ = self.model_.predict_proba(
+                df_to_csr(self.X_test_), lamb=lamb
+            )[:, 1]
+        else:
+            self.y_pred_proba_ = self.model_.predict_proba(self.X_test_, lamb=lamb)[
+                :, 1
+            ]
+
+        return self.y_pred_proba_
+
+    def predict(self, X_test, y_test=None, threshold=0.5, lamb=None):
+        """
+        Function to return the prediction classes based on the passed threshold.
+        The default threshold is set at 0.5 while you can find the optimum thresholds
+        based on different methods using BinaryClassificationMetrics.
+        Parameters
+        ----------
+        X_test: numpy.array or Pandas DataFrame
+            Validation features data
+        y_test: numpy.array[int] or list[int], optional (default=None)
+            List of validation ground truth binary values [0, 1]
+        threshold: float, optional (default=0.5)
+            Threshold to define classes based on probabilities.
+            predict_proba >= threshold would be defined as 1 else 0.
+        lamb: array, optional (default=None)
+        Values with shape (n_lambda,) of lambda from lambda_path_
+        from which to make predictions. If no values are provided (None),
+        the returned predictions will be those corresponding to lambda_best_.
+        The values of lamb must also be in the range of lambda_path_,
+        values greater than max(lambda_path_) or less than  min(lambda_path_)
+        will be clipped.
+        """
+        y_pred_proba = self.predict_proba(X_test, y_test=y_test, lamb=lamb)
+        self.y_pred_ = [1 if p >= threshold else 0 for p in y_pred_proba]
+
+        return self.y_pred_
+
+    def get_intercept(self):
+        """
+        Function to return the model's intercept.
+        """
+
+        return self.intercept_
+
+    def get_coeffs(self):
+        """
+        Function to return model's parameters.
+        """
+
+        return self._coeff_to_dict()
+
+    def get_params(self):
+        """
+        Function to return model's parameters.
+        """
+
+        return self.params_
