@@ -129,7 +129,7 @@ clf.plot_shap_waterfall()
 
 Here is an example using SlickML how to train/validate a GLMNetCV classifier:
 ```python
-# train a classifier using loaded train/test data and best params
+# train a classifier using loaded train/test data and your choice of params
 from slickml.classification import GLMNetCVClassifier
 clf = GLMNetCVClassifier(alpha=0.3, n_splits=4, metric="roc_auc")
 clf.fit(X_train, y_train)
