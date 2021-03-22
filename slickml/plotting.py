@@ -22,10 +22,13 @@ def plot_binary_classification_metrics(figsize=None, **kwargs):
     Function to plot binary classification metrics.
     This function is a helper function based on the plotting_dict
     attribute of the BinaryClassificationMetrics class.
+
     Parameters
     ----------
     figsize: tuple, optional, (default=(12, 12))
         Figure size
+
+    Returns None
     """
 
     # initializing figsize
@@ -242,34 +245,45 @@ def plot_xfs_feature_frequency(
     markeredgewidth=None,
     fontsize=None,
 ):
-    """
-    Function to plot selected features frequency.
+    """Function to plot selected features frequency.
     This function is a helper function based on the features_frequency
     attribute of the XGBoostFeatureSelector class.
+
     Parameters
     ----------
     freq: Pandas DataFrame
         Feature frequency
+
     figsize: tuple, optional, (default=(8, 4))
         Figure size
+
     freq_pct: bool, optional, (default=True)
         Flag to show the features frequency in percent
+
     color: str, optional, (default="#87CEEB")
         Color of the vertical lines of lollipops
+
     marker: str, optional, (default="o")
         Marker style of the lollipops. Complete valid
         marker style can be found at:
         (https://matplotlib.org/2.1.1/api/markers_api.html#module-matplotlib.markers)
+
     markersize: int or float, optional, (default=10)
         Markersize
+
     markeredgecolor: str, optional, (default="#1F77B4")
         Marker edge color
+
     markerfacecolor: str, optional, (default="#1F77B4")
         Marker face color
+
     markeredgewidth: int or float, optional, (default=1)
         Marker edge width
+
     fontsize: int or float, optional, (default=12)
         Fontsize for xlabel and ylabel, and ticks parameters
+
+    Returns None
     """
 
     # initializing figsize
@@ -367,29 +381,34 @@ def plot_xfs_feature_frequency(
 def plot_xfs_cv_results(
     figsize=None, int_color=None, ext_color=None, sharex=False, sharey=False, **kwargs
 ):
-    """
-    Function to plot the cross-validation results of
-    XGBoostFeatureSelector. It visualizes the internal
-    and external performance during the selection process.
-    Internal refers to the performance of train/test folds
-    during the xgboost.cv() using "metrics" rounds to help
-    the best number of boosting round. External refers to
-    the performance of xgboost.train() on watchlist using
-    eval_metric.
+    """Function to plot the cross-validation results ofXGBoostFeatureSelector.
+    It visualizes the internal and external performance during the
+    selection process. Internal refers to the performance of
+    train/test folds during the xgboost.cv() using "metrics" rounds
+    to help the best number of boosting round. External refers to
+    the performance of xgboost.train() on watchlist using eval_metric.
+
     Parameters
     ----------
     figsize: tuple, optional, (default=(8, 4))
         Figure size
+
     int_color: str, optional, (default="#4169E1")
         Color of the histograms for internal cv results
+
     ext_color: str, optional, (default="#8A2BE2")
         Color of the histograms for external cv results
+
     sharex: bool, optional, (default=False)
         Flag to share "X" axis for each column of subplots
+
     sharey: bool, optional, (default=False)
         Flag to share "Y" axis for each row of subplots
+
     kwargs: dict
         Plotting object plotting_cv_
+
+    Returns None
     """
 
     # initializing figsize
@@ -445,29 +464,39 @@ def plot_xgb_cv_results(
     test_color=None,
     test_std_color=None,
 ):
-    """
-    Function to plot cv results of XGBoostCVClassifier.
+    """Function to plot cv results of XGBoostCVClassifier.
+
     Parameters
     ----------
     cv_results: Pandas DataFrame()
         Cross-validation results in DataFrame() format
+
     figsize: tuple, optional, (default=(8, 5))
         Figure size
+
     linestyle: str, optional, (default="--")
         Style of lines. Complete options are available at
         (https://matplotlib.org/3.1.0/gallery/lines_bars_and_markers/linestyles.html)
+
     train_label: str, optional (default="Train")
         Label in the figure legend for the training line
+
     test_label: str, optional (default="Test")
         Label in the figure legend for the training line
+
     train_color: str, optional, (default="navy")
         Color of the training line
+
     train_std_color: str, optional, (default="#B3C3F3")
         Color of the edge color of the training std bars
+
     test_color: str, optional, (default="purple")
         Color of the testing line
+
     test_std_color: str, optional, (default="#D0AAF3")
         Color of the edge color of the testing std bars
+
+    Returns None
     """
 
     if figsize is None:
@@ -578,28 +607,39 @@ def plot_xgb_feature_importance(
     """Function to plot XGBoost feature importance.
     This function is a helper function based on the feature_importance_
     attribute of the XGBoostCVClassifier class.
+
     Parameters
     ----------
     feature importance: Pandas DataFrame
         Feature frequency
+
     figsize: tuple, optional, (default=(8, 5))
         Figure size
+
     color: str, optional, (default="#87CEEB")
         Color of the horizontal lines of lollipops
+
     marker: str, optional, (default="o")
         Market style of the lollipops. Complete valid
         marker styke can be found at:
         (https://matplotlib.org/2.1.1/api/markers_api.html#module-matplotlib.markers)
+
     markersize: int or float, optional, (default=10)
         Markersize
+
     markeredgecolor: str, optional, (default="1F77B4")
         Marker edge color
+
     markerfacecolor: str, optional, (default="1F77B4")
         Marker face color
+
     markeredgewidth: int or float, optional, (default=1)
         Marker edge width
+
     fontsize: int or float, optional, (default=12)
         Fontsize for xlabel and ylabel, and ticks parameters
+
+    Returns None
     """
 
     # initializing figsize
@@ -722,44 +762,61 @@ def plot_shap_summary(
     """Function to plot shap summary plot.
     This function is a helper function to plot the shap summary plot
     based on all types of shap explainers including tree, linear, and dnn.
+
     Parameters
     ----------
     shap_values: Numpy array or Pandas DataFrame
         Calculated SHAP values. For single output explanations like
         binary classificationthis this is a matrix of SHAP values (n_samples, n_features).
         For multi-output explanations this is a list of such matrices of SHAP values
+
     features: Numpy array or Pandas DataFrame
         The feature matrix that was used to calculate the SHAP values. For the case
         of Numpy array it is recommened to pass the feature_names list as well
+
     plot_type: str, optional (single-output default="dot", multi-output default="bar")
         The type of summar plot. Options are "bar", "dot", "violin", "layered_violin",
         and "compact_dot" which is recommended for SHAP interactions
+
     layered_violin_max_num_bins: int, optional, (default=10)
         The number of bins for calculating the violin plots ranges and outliers
+
     figsize: tuple, optional, (default="auto")
         Figure size
+
     color: str, optional, (default= "#D0AAF3" for "bar")
         Color of violin and layered violin plots are "RdBl" cmap
         Color of the horizontal lines when plot_type="bar" is "#D0AAF3"
+
     max_display: int, optional, (default=20)
         Limit to show the number of features in the plot
+
     feature_names: str, optional, (default=None)
         List of feature names to pass. It should follow the order
         of fatures
+
     title: str, optional, (default=None)
         Title of the plot
+
     show: bool, optional, (default=True)
         Flag to show the plot in inteactive environment
+
     sort: bool, optional, (default=True)
         Flag to plot sorted shap vlues in descending order
+
     color_bar: bool, optional, (default=True)
         Flag to show color_bar when plot_type is "dot" or "violin"
+
     class_names: list, optional, (default=None)
         List of class names for multi-output problems
+
     class_inds: list, optional, (default=True)
         List of class indices for multi-output problems
+
     color_bar_label: str, optional, (default="Feature Value")
         Label for color bar
+
+    Returns None
     """
 
     # initializing figsize
@@ -836,41 +893,57 @@ def plot_shap_waterfall(
     """Function to plot shap summary plot.
     This function is a helper function to plot the shap summary plot
     based on all types of shap explainers including tree, linear, and dnn.
+
     Parameters
     ----------
     shap_values: Numpy array or Pandas DataFrame
         Calculated SHAP values. For single output explanations like
         binary classificationthis this is a matrix of SHAP values (n_samples, n_features).
         For multi-output explanations this is a list of such matrices of SHAP values
+
     features: Numpy array or Pandas DataFrame
         The feature matrix that was used to calculate the SHAP values. For the case
         of Numpy array it is recommened to pass the feature_names list as well
+
     figsize: tuple, optional, (default=(8, 5))
         Figure size
+
     bar_color: str, optional, (default="#B3C3F3")
         Color of the horizontal bar lines
+
     bar_thickness: float, optional, (default=0.5)
         Thickness (hight) of the horizontal bar lines
+
     line_color: str, optional, (default="purple")
         Color of the line plot
+
     marker: str, optional, (default="o")
         Marker style
         marker style can be found at:
         (https://matplotlib.org/2.1.1/api/markers_api.html#module-matplotlib.markers)
+
     markersize: int or float, optional, (default=7)
         Markersize
+
     markeredgecolor: str, optional, (default="purple")
         Marker edge color
+
     markerfacecolor: str, optional, (default="purple")
         Marker face color
+
     markeredgewidth: int or float, optional, (default=1)
         Marker edge width
+
     max_display: int, optional, (default=20)
         Limit to show the number of features in the plot
+
     title: str, optional, (default=None)
         Title of the plot
+
     fontsize: int or float, optional, (default=12)
         Fontsize for xlabel and ylabel, and ticks parameters
+
+    Returns None
     """
 
     # initializing figsize
@@ -1014,14 +1087,16 @@ def plot_shap_waterfall(
 
 
 def plot_regression_metrics(figsize=None, **kwargs):
-    """
-    Function to plot regression metrics.
+    """Function to plot regression metrics.
     This function is a helper function based on the plotting_dict
     attribute of the RegressionMetrics class.
+
     Parameters
     ----------
     figsize: tuple, optional, (default=(12, 12))
         Figure size
+
+    Returns None
     """
 
     # initializing figsize
@@ -1191,40 +1266,70 @@ def plot_glmnet_cv_results(
     figsize=None,
     marker=None,
     markersize=None,
-    color=None,
-    errorbarcolor=None,
-    bestlambdacolor=None,
-    maxlambdacolor=None,
+    colors=None,
     linestyle=None,
     fontsize=None,
+    grid=True,
+    legend=True,
     legendloc=None,
+    xlabel=None,
+    ylabel=None,
+    title=None,
+    save_path=None,
     **kwargs,
 ):
     """Function to plot GLMNetCVClassfier cross-validation results.
+
     Parameters
     ----------
     figsize: tuple, optional, (default=(8, 5))
         Figure size
+
     marker: str, optional, (default="o")
         Marker style
         marker style can be found at:
         (https://matplotlib.org/2.1.1/api/markers_api.html#module-matplotlib.markers)
+
     markersize: int or float, optional, (default=5)
         Markersize
-    color: str, optional, (default="red")
-        Color of the line plot
-    errorbarcolor: str, optional (default="black")
-        Color of the error bar of the line plot
-    bestlambdacolor: str, optional (default="navy")
-        Color of the best lambda line
-    maxlambdacolor: str, optional (default="purple")
-        Color of the max lambda line
+
+    colors: list or tuple
+        Colors of the marker, errorbar line, max_lambda line,
+        and best_lambda line, respectively. The default colors
+        are ("red", "black", "purple", "navy"). The length of the
+        passed tuple/list should be always four.
+
     linestyle: str, optional (default="--")
         Linestyle of vertical lambda lines
+
     fontsize: int or float, optional, (default=12)
-        Fontsize for xlabel and ylabel, and ticks parameters
+        Fontsize of the title. The fontsizes of xlabel, ylabel,
+        tick_params, and legend are resized with 0.85, 0.85, 0.75,
+        and 0.85 fraction of title fontsize, respectively.
+
+    grid : bool, optional (default=True)
+        Whether to show (x,y) grid on the plot.
+
+    legend: bool, optional (default=True)
+        Whether to show legend on the plot.
+
     legendloc: int or str, optional (default="best")
         Location of legend
+
+    xlabel : str, optional (default="-Log(Lambda)")
+        Xlabel of the plot.
+
+    ylabel : str, optional (default="{n_splits}-Folds CV Mean {metric}"
+        Ylabel of the plot.
+
+    title : str, optional (default="Best {lambda_best} with {n} Features"
+        Title of the plot.
+
+    save_path: string or None
+        The full or relative path to save the image including the image format.
+        For example "myplot.png" or "../../myplot.pdf"
+
+    Returns None
     """
     # initializing figsize
     if figsize is None:
@@ -1258,37 +1363,13 @@ def plot_glmnet_cv_results(
     else:
         raise TypeError("Only int and float types are allowed for markersize.")
 
-    # initializing color
-    if color is None:
-        color = "red"
-    elif isinstance(color, str):
-        color = color
+    # initializing colors
+    if colors is None:
+        colors = ["red", "black", "purple", "navy"]
+    elif (isinstance(colors, tuple) or isinstance(colors, list)) and len(colors) == 4:
+        colors = colors
     else:
-        raise TypeError("Only str type is allowed for color.")
-
-    # initializing errorbarcolor
-    if errorbarcolor is None:
-        errorbarcolor = "black"
-    elif isinstance(errorbarcolor, str):
-        errorbarcolor = errorbarcolor
-    else:
-        raise TypeError("Only str type is allowed for errorbarcolor.")
-
-    # initializing bestlambdacolor
-    if bestlambdacolor is None:
-        bestlambdacolor = "navy"
-    elif isinstance(bestlambdacolor, str):
-        bestlambdacolor = bestlambdacolor
-    else:
-        raise TypeError("Only str type is allowed for bestlambdacolor.")
-
-    # initializing maxlambdacolor
-    if maxlambdacolor is None:
-        maxlambdacolor = "purple"
-    elif isinstance(maxlambdacolor, str):
-        maxlambdacolor = maxlambdacolor
-    else:
-        raise TypeError("Only str type is allowed for maxlambdacolor.")
+        raise TypeError("Only tuple or list with length 4 is allowed for colors.")
 
     # initializing linestyle
     if linestyle is None:
@@ -1300,9 +1381,51 @@ def plot_glmnet_cv_results(
 
     # initializing legendpos
     if legendloc is None:
-        legendloc = 0
+        legendloc = "best"
     else:
         legendloc = legendloc
+
+    # initializing grid
+    if isinstance(grid, bool):
+        grid = grid
+    else:
+        raise TypeError("Only bool type is allowed for grid.")
+
+    # initializing legend
+    if isinstance(legend, bool):
+        legend = legend
+    else:
+        raise TypeError("Only bool type is allowed for legend.")
+
+    # initializing xlabel
+    if xlabel is None:
+        xlabel = r"-$Log(\lambda)$"
+    elif isinstance(xlabel, str):
+        xlabel = xlabel
+    else:
+        raise TypeError("Only string type is allowed for xlabel.")
+
+    # initializing ylabel
+    if ylabel is None:
+        if kwargs["params"]["scoring"] is None:
+            if kwargs["module"] == "glmnet.linear":
+                ylabel = fr"""{kwargs["params"]["n_splits"]}-Folds CV Mean $R^2$"""
+            elif kwargs["module"] == "glmnet.logistic":
+                ylabel = f"""{kwargs["params"]["n_splits"]}-Folds CV Mean ACCURACY"""
+        else:
+            ylabel = f"""{kwargs["params"]["n_splits"]}-Folds CV Mean {' '.join((kwargs["params"]["scoring"]).split("_")).upper()}"""
+    elif isinstance(ylabel, str):
+        ylabel = ylabel
+    else:
+        raise TypeError("Only string type is allowed for ylabel.")
+
+    # initializing title
+    if title is None:
+        title = fr"""Best $\lambda$ = {kwargs["lambda_best"]:.3f} with {len(kwargs["coeff"])} Features"""
+    elif isinstance(title, str):
+        title = title
+    else:
+        raise TypeError("Only string type is allowed for title.")
 
     # plotting
     fig, ax = plt.subplots(figsize=figsize)
@@ -1310,59 +1433,115 @@ def plot_glmnet_cv_results(
         -np.log(kwargs["lambda_path"]),
         kwargs["cv_mean_score"],
         yerr=kwargs["cv_standard_error"],
-        color=color,
-        ecolor=errorbarcolor,
+        color=colors[0],
+        ecolor=colors[1],
         marker=marker,
         markersize=markersize,
     )
-    ax.vlines(
-        -np.log(kwargs["lambda_best"]),
-        ymin=min(kwargs["cv_mean_score"]) - 0.05,
-        ymax=max(kwargs["cv_mean_score"]) + 0.05,
-        linestyles=linestyle,
-        color=bestlambdacolor,
-        label=r"best $\lambda$",
-    )
+
     ax.vlines(
         -np.log(kwargs["lambda_max"]),
         ymin=min(kwargs["cv_mean_score"]) - 0.05,
         ymax=max(kwargs["cv_mean_score"]) + 0.05,
         linestyles=linestyle,
-        color=maxlambdacolor,
+        color=colors[2],
         label=r"max $\lambda$",
     )
+
+    ax.vlines(
+        -np.log(kwargs["lambda_best"]),
+        ymin=min(kwargs["cv_mean_score"]) - 0.05,
+        ymax=max(kwargs["cv_mean_score"]) + 0.05,
+        linestyles=linestyle,
+        color=colors[3],
+        label=r"best $\lambda$",
+    )
+
     ax.set_ylim(
         [min(kwargs["cv_mean_score"]) - 0.05, max(kwargs["cv_mean_score"]) + 0.05]
     )
-    ax.set_xlabel(r"$-Log(\lambda)$", fontsize=fontsize)
+    ax.set_xlabel(xlabel, fontsize=fontsize * 0.85)
     ax.set_ylabel(
-        f"""{kwargs["params"]["n_splits"]}-Folds CV Mean {' '.join((kwargs["params"]["scoring"]).split("_")).upper()}""",
-        fontsize=fontsize,
+        ylabel,
+        fontsize=fontsize * 0.85,
     )
     ax.set_title(
-        fr"""Best $\lambda$ = {kwargs["lambda_best"]:.3f} with {len(kwargs["coeff"])} Features""",
+        title,
         fontsize=fontsize,
     )
-    ax.tick_params(axis="both", which="major", labelsize=fontsize)
-    ax.legend(loc=legendloc, prop={"size": 12}, framealpha=0.0)
-    ax.grid(True)
+    ax.tick_params(axis="both", which="major", labelsize=fontsize * 0.75)
+    ax.grid(grid)
+
+    if legend:
+        ax.legend(loc=legendloc, prop={"size": fontsize * 0.85}, framealpha=0.0)
+
+    if save_path:
+        plt.savefig(save_path, bbox_inches="tight", dpi=200)
+
     plt.show()
 
 
 def plot_glmnet_coeff_path(
-    figsize=None, linestyle=None, fontsize=None, legendloc=None, **kwargs
+    figsize=None,
+    linestyle=None,
+    fontsize=None,
+    grid=True,
+    legend=True,
+    legendloc="center",
+    xlabel=None,
+    ylabel=None,
+    title=None,
+    bbox_to_anchor=None,
+    yscale=None,
+    save_path=None,
+    **kwargs,
 ):
     """Function to plot GLMNetCVClassfier coefficients' paths.
+
     Parameters
     ----------
     figsize: tuple, optional, (default=(8, 5))
         Figure size
+
     linestyle: str, optional (default="-")
         Linestyle of vertical lambda lines
+
     fontsize: int or float, optional, (default=12)
-        Fontsize for xlabel and ylabel, and ticks parameters
-    legendloc: int or str, optional (default="center")
-        Location of legend
+        Fontsize of the title. The fontsizes of xlabel, ylabel,
+        tick_params, and legend are resized with 0.85, 0.85, 0.75,
+        and 0.75 fraction of title fontsize, respectively.
+
+    grid : bool, optional (default=True)
+        Whether to show (x,y) grid on the plot.
+
+    legend: bool, optional (default=True)
+        Whether to show legend on the plot.
+
+    legendloc: str, optional (default="center")
+        Legend location.
+
+    xlabel : str, optional (default="-Log(Lambda")
+        Xlabel of the plot.
+
+    ylabel : str, optional (default="Coefficients")
+        Ylabel of the plot.
+
+    title : str, optional (default="Best {lambda_best} with {n} Features")
+        Title of the plot.
+
+    yscale: str, optional (default="linear")
+        Scale for y-axis (coefficients). Valid options are
+        "linear", "log", "symlog", "logit". More on:
+        https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.yscale.html
+
+    bbox_to_anchor: tuple, list, optional (default=(1.2, 0.5)
+        Relative coordinates for legend location outside of the plot.
+
+    save_path: str, optional (default=None)
+        The full or relative path to save the plot including the image format.
+        For example "myplot.png" or "../../myplot.pdf"
+
+    Returns None
     """
     # initializing figsize
     if figsize is None:
@@ -1388,11 +1567,63 @@ def plot_glmnet_coeff_path(
     else:
         raise TypeError("Only str type is allowed for linestyle.")
 
+    # initializing grid
+    if isinstance(grid, bool):
+        grid = grid
+    else:
+        raise TypeError("Only bool type is allowed for grid.")
+
     # initializing legendpos
     if legendloc is None:
         legendloc = "center"
     else:
         legendloc = legendloc
+
+    # initializing legend
+    if isinstance(legend, bool):
+        legend = legend
+    else:
+        raise TypeError("Only bool type is allowed for legend.")
+
+    # initializing xlabel
+    if xlabel is None:
+        xlabel = r"-$Log(\lambda)$"
+    elif isinstance(xlabel, str):
+        xlabel = xlabel
+    else:
+        raise TypeError("Only string type is allowed for xlabel.")
+
+    # initializing ylabel
+    if ylabel is None:
+        ylabel = "Coefficients"
+    elif isinstance(xlabel, str):
+        ylabel = ylabel
+    else:
+        raise TypeError("Only string type is allowed for ylabel.")
+
+    # initializing title
+    if title is None:
+        title = fr"""Best $\lambda$ = {kwargs["lambda_best"]:.3f} with {len(kwargs["coeff"])} Features"""
+    elif isinstance(title, str):
+        title = title
+    else:
+        raise TypeError("Only string type is allowed for title.")
+
+    # initializing bbox_to_anchor
+    if bbox_to_anchor is None:
+        bbox_to_anchor = (1.1, 0.5)
+    elif isinstance(bbox_to_anchor, tuple) or isinstance(bbox_to_anchor, list):
+        bbox_to_anchor = bbox_to_anchor
+    else:
+        raise TypeError("Only tuple or list type is allowed for bbox_to_anchor.")
+
+    # initializing yscale
+    if yscale is None:
+        yscale = "linear"
+    elif isinstance(yscale, str):
+        yscale = yscale
+    else:
+        raise TypeError("Only string type is allowed for yscale.")
 
     # plotting
     fig, ax = plt.subplots(figsize=figsize)
@@ -1406,20 +1637,27 @@ def plot_glmnet_coeff_path(
                 label=feature,
             )
 
-    ax.legend(
-        loc=legendloc,
-        bbox_to_anchor=(1.1, 0.5),
-        ncol=1,
-        prop={"size": fontsize},
-        framealpha=0.0,
-        fancybox=True,
-    )
-    ax.tick_params(axis="both", which="major", labelsize=fontsize)
-    ax.set_ylabel("Coefficients", fontsize=fontsize)
-    ax.set_xlabel(r"-$Log(\lambda)$", fontsize=fontsize)
+    ax.tick_params(axis="both", which="major", labelsize=fontsize * 0.75)
+    ax.set_ylabel(ylabel, fontsize=fontsize * 0.85)
+    ax.set_xlabel(xlabel, fontsize=fontsize * 0.85)
     ax.set_title(
-        fr"""Best $\lambda$ = {kwargs["lambda_best"]:.3f} with {len(kwargs["coeff"])} Features""",
+        title,
         fontsize=fontsize,
     )
+    ax.set_yscale(yscale)
     ax.grid(True)
+
+    if legend:
+        ax.legend(
+            loc=legendloc,
+            bbox_to_anchor=bbox_to_anchor,
+            ncol=1,
+            prop={"size": fontsize * 0.75},
+            framealpha=0.0,
+            fancybox=True,
+        )
+
+    if save_path:
+        plt.savefig(save_path, bbox_inches="tight", dpi=200)
+
     plt.show()
