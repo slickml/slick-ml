@@ -19,46 +19,59 @@ class XGBoostFeatureSelector:
     it finds the best boosting round to overcome the over-fitting and
     run xgboost.train(). Main reference is XGBoost Python API:
     (https://xgboost.readthedocs.io/en/latest/python/python_api.html)
+
     Parameters
     ----------
     n_iter: int, optional (default=3)
         Number of iteration for feature selection
+
     num_boost_round: int, optional (default=100)
         Number of boosting round at each fold of xgboost.cv()
+
     n_splits: int, optional (default=4)
         Number of folds for cross-validation
+
     metrics: str or tuple[str], optional (default=("auc"))
         Metric used for evaluation at cross-validation
         using xgboost.cv(). Please note that this is different
         than eval_metric that needs to be passed to params dict.
         Possible values are "auc", "aucpr"
+
     early_stopping_rounds: int, optional (default=20)
         The criterion to early abort the xgboost.cv() phase
         if the test metric is not improved
+
     random_state: int, optional (default=1367)
         Random seed
+
     stratified: bool, optional (default=True)
         Flag to stratificaiton of the targets to run xgboost.cv() to
         find the best number of boosting round at each fold of
         each iteration
+
     shuffle: bool, optional (default=True)
         Flag to shuffle data to have the ability of building
         stratified folds in xgboost.cv()
+
     sparse_matrix: bool, optional (default=False)
         Flag to convert data to sparse matrix with csr format.
         This would increase the speed of feature selection for
         relatively large datasets
+
     nth_noise_threshold: int, optional (default=1)
         The threshold to keep all the features up to the n-th
         noisy feature at each fold of each iteration. For example,
         for a feature selection with 4 iterations and 5-folds cv,
         maximum number of noisy features would be 4*5=20.
+
     show_stdv: bool, optional (default=False)
         Flag to show standard deviations in callbacks for
         xgboost.cv() results
+
     importance_type: str, optional (default="total_gain")
         Importance type of xgboost.train() with possible values
         "weight", "gain", "total_gain", "cover", "total_cover"
+
     params: dict, optional
         Set of parameters for evaluation of xboost.train()
         (default={"eval_metric" : "auc",
@@ -75,42 +88,54 @@ class XGBoostFeatureSelector:
                   "silent" : True,
                   "nthread" : 4,
                   "scale_pos_weight" : 1})
+
     verbose_eval: bool, optional (default=True)
         Flag to show the results of xgboost.train() on train/test sets
         using params["eval_metric"]
+
     callbacks: bool, optional (default=False)
         Flag for printing results during xgboost.cv().
         This would help to track the early stopping criterion
+
     Attributes
     ----------
     feature_importance_: dict()
         Returns a dict() of all feature importance based on
         importance_type at each fold of each iteration during
         selection process
+
     feature_frequency_: Pandas DataFrame()
         Returns a DataFrame() cosists of total frequency of
         each feature during the selection process
+
     cv_results_: dict()
         Return a dict() of the total internal/external
         cross-validation results
+
     cv_results_: dict()
         Return a dict() of the total internal/external
         cross-validation results
+
     plotting_cv_: dict()
         Returns a dict() of the required variables
         to plot the histograms of total internal/external
         cross-validation results
+
     fit(): class method
         This is the main method to run the feature selection process and
         receives two arguments (X, y)
+
     get_xgb_params(): class method
         Returns params dict
+
     get_feature_importance(): class method
         Returns feature importance based on importance_type
         at each fold of each iteration of the selection process
+
     get_feature_frequency(): class method
         Returns the total feature frequency of the best model
         at each fold of each iteration of selection process
+
     get_cv_results(): class method
         Returns the total internal/external cross-validation results
     """
@@ -415,28 +440,38 @@ class XGBoostFeatureSelector:
         """Function to plot selected features frequency.
         This function is a helper function based on the features_frequency
         attribute of the XGBoostFeatureSelector class.
+
         Parameters
         ----------
         freq: Pandas DataFrame
             Feature frequency
+
         figsize: tuple, optional, (default=(8, 8))
             Figure size
+
         freq_pct: bool, optional, (default=True)
             Flag to show the features frequency in percent
+
         color: str, optional, (default="#87CEEB")
             Color of the vertical lines of lollipops
+
         marker: str, optional, (default="o")
             Market style of the lollipops. Complete valid
             marker styke can be found at:
             (https://matplotlib.org/2.1.1/api/markers_api.html#module-matplotlib.markers)
+
         markersize: int or float, optional, (default=10)
             Markersize
+
         markeredgecolor: str, optional, (default="1F77B4")
             Marker edge color
+
         markerfacecolor: str, optional, (default="1F77B4")
             Marker face color
+
         markeredgewidth: int or float, optional, (default=1)
             Marker edge width
+
         fontsize: int or float, optional, (default=12)
             Fontsize for xlabel and ylabel, and ticks parameters
         """
@@ -457,8 +492,7 @@ class XGBoostFeatureSelector:
     def plot_cv_results(
         self, figsize=None, int_color=None, ext_color=None, sharex=False, sharey=False
     ):
-        """
-        Function to plot the cross-validation results of
+        """Function to plot the cross-validation results of
         XGBoostFeatureSelector. It visualizes the internal
         and external performance during the selection process.
         Internal refers to the performance of train/test folds
@@ -466,18 +500,24 @@ class XGBoostFeatureSelector:
         the best number of boosting round. External refers to
         the performance of xgboost.train() on watchlist using
         eval_metric.
+
         Parameters
         ----------
         figsize: tuple, optional, (default=(8, 4))
             Figure size
+
         int_color: str, optional, (default="#4169E1")
             Color of the histograms for internal cv results
+
         ext_color: str, optional, (default="#8A2BE2")
             Color of the histograms for external cv results
+
         sharex: bool, optional, (default=False)
             Flag to share "X" axis for each column of subplots
+
         sharey: bool, optional, (default=False)
             Flag to share "Y" axis for each row of subplots
+
         kwargs: dict
             Plotting object plotting_cv_
         """
@@ -490,10 +530,12 @@ class XGBoostFeatureSelector:
         """
         Function to fit the main feature selection algorith,
         and run the selection process.
+
         Parameters
         ----------
         X: numpy.array or Pandas DataFrame
             Features data
+
         y: numpy.array[int] or list[int]
             List of ground truth binary values [0, 1]
         """

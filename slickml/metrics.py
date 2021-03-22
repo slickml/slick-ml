@@ -34,86 +34,120 @@ class BinaryClassificationMetrics:
     1) Youden Index: (https://en.wikipedia.org/wiki/Youden%27s_J_statistic).
     2) Maximizing Precision-Recall.
     3) Maximizing Sensitivity-Specificity.
+
     Parameters
     ----------
     y_true: numpy.array[int] or list[int]
         List of ground truth binary values [0, 1]
+
     y_pred_proba: numpy.array[float] or list[float]
         List of predicted probability for the positive class
         (class=1 or y_pred_proba[:, 1] in scikit-learn)
+
     threshold: float, optional (default=0.5)
         Threshold value for mapping y_pred_prob to y_pred
         Note that for threshold ">" is used instead of  ">="
+
     average_method: str, optional (default="binary")
         Method to calculate the average of the metric. Possible values are
         "micro", "macro", "weighted", "binary"
+
     precision_digits: int, optional (default=3)
         The number of precision digits to format the scores' dataframe
+
     display_df: boolean, optional (default=True)
         Flag to display the formatted scores' dataframe
+
     Attributes
     ----------
     accuracy: float value between 0. and 1.
         Classification accuracy based on threshold value
+
     balanced_accuracy: float value between 0. and 1.
         Balanced classification accuracy based on threshold value
         considering the prevalence of the classes
+
     fpr_list: numpy.array[float] or list[float]
         List of calculated false-positive-rates based on roc_thresholds.
         This can be used for ROC curve plotting
+
     tpr_list: numpy.array[float] or list[float]
         List of calculated true-positive-rates based on roc_thresholds
         This can be used for ROC curve plotting
+
     roc_thresholds: numpy.array[float] or list[float]
         List of thresholds value to calculate fpr_list and tpr_list
+
     auc_roc: float value between 0. and 1.
         Area under ROC curve
+
     precision_list: numpy.array[float] or list[float]
         List of calculated precision based on pr_thresholds
         This can be used for ROC curve plotting
+
     recall_list: numpy.array[float] or list[float]
         List of calculated recall based on pr_thresholds
         This can be used for ROC curve plotting
+
     pr_thresholds: numpy.array[float] or list[float]
         List of thresholds value to calculate precision_list and recall_list
+
     auc_pr: float value between 0. and 1.
         Area under Precision-Recall curve
+
     precision: float value between 0. and 1.
         Precision based on threshold value
+
     recall: float value between 0. and 1.
         Recall based on threshold value
+
     f1: float value between 0. and 1.
         F1-score based on threshold value (beta=1.0)
+
     f2: float value between 0. and 1.
         F2-score based on threshold value (beta=2.0)
+
     f05: float value between 0. and 1.
         F(1/2)-score based on threshold value (beta=0.5)
     average_precision: float value between 0. and 1.
         Avearge precision based on threshold value and class prevalence
+
     tn: integer
         True negative counts based on threshold value
+
     fp: integer
         False positive counts based on threshold value
+
     fn: integer
         False negative counts based on threshold value
+
     tp: integer
         True positive counts based on threshold value
+
     threat_score: float value between 0. and 1.
         Threat score based on threshold value
+
     youden_threshold: float value between 0. and 1.
         Threshold calculated based on Youden Index
+
     sens_spec_threshold: float value between 0. and 1.
         Threshold calculated based on maximized sensitivity-specificity
+
     prec_rec_threshold: float value between 0. and 1.
         Threshold calculated based on maximized precision-recall
+
     thresholds_dict: dict()
         Dictionary of all calculated thresholds
+
     metrics_dict: dict()
         Dictionary of all calculated metrics
+
     metrics_df: Pandas DataFrame()
         Pandas DataFrame of all calculated metrics with threshold as index
+
     average_methods: list[str]
         List of all possible average methods
+
     plotting_dict: dict()
         Plotting object as a dictionary consists of all
         calculated metrics which was used to plot the thresholds
@@ -242,7 +276,8 @@ class BinaryClassificationMetrics:
     def _precision_recall_curve(self):
         """
         Function to calculate the precision recall curve elements:
-            precision_list, recall_list, pr_thresholds"""
+        precision_list, recall_list, pr_thresholds
+        """
         precision_list, recall_list, pr_thresholds = precision_recall_curve(
             y_true=self.y_true, probas_pred=self.y_pred_proba
         )
@@ -496,10 +531,10 @@ class BinaryClassificationMetrics:
         return ["binary", "weighted", "macro", "micro"]
 
     def plot(self, figsize=None):
-        """
-        Function to plot binary classification metrics.
+        """Function to plot binary classification metrics.
         This function is a helper function based on the plotting_dict
         attribute of the BinaryClassificationMetrics class.
+
         Parameters
         ----------
         figsize: tuple, optional, (default=(12, 12))
@@ -514,12 +549,15 @@ class RegressionMetrics:
     This is wrapper to calculate all the regression metrics.
     In case of multioutput regression, calculation methods can be chosen
     among ["raw_values", "uniform_average", "variance_weighted".
+
     Parameters
     ----------
     y_true: numpy.array[int] or list[float]
         List of ground truth target (response) values
+
     y_pred: numpy.array[float] or list[float]
         List of predicted target values list[float]
+
     multioutput: str, optional (default="uniform_average")
         Method to calculate the metric for multioutput targets. Possible values are
         ["raw_values", "uniform_average", "variance_weighted"].
@@ -527,46 +565,66 @@ class RegressionMetrics:
         "uniform_average" scores of all outputs are averaged with uniform weight.
         "variance_weighted" scores of all outputs are averaged, weighted by the variances
         of each individual output.
+
     precision_digits: int, optional (default=3)
         The number of precision digits to format the scores' dataframe
+
     display_df: boolean, optional (default=True)
         Flag to display the formatted scores' dataframe
+
     Attributes
     ----------
     y_residual: numpy.array[float] or list[float]
         Residual values (errors) calculated as (y_true - y_pred).
+
     y_residual_normsq:  numpy.array[float] or list[float]
         Square root of absolute value of y_residual.
+
     r2: float value between 0. and 1
         R2 score (coefficient of determination)
+
     ev: float value between 0. and 1
         Explained variance score.
+
     mae: float value between 0. and 1
         Mean absolute error.
+
     mse: float value between 0. and 1
         Mean squared error.
+
     msle: float value between 0. and 1
         Mean squared log error.
+
     mape: float value between 0. and 1
         Mean absolute percentage error.
+
     auc_rec: float value between 0. and 1
         Area under REC curve.
+
     deviation:  numpy.array[float] or list[float]
         List of deviations to plot REC curve.
+
     accuracy:  numpy.array[float] or list[float]
         Calculated accuracy at each deviation to plot REC curve.
+
     y_ratio:  numpy.array[float] or list[float]
         Ratio of y_pred/y_true.
+
     mean_y_ratio: float value between 0. and 1
         Mean value of y_pred/y_true ratio.
+
     std_y_ratio: float
         Standard deviation value of y_pred/y_true ratio.
+
     cv_y_ratio: float value between 0. and 1
         Coefficient of variation calculated as std_y_ratio/mean_y_ratio
+
     metrics_dict: dict()
         Dictionary of all calculated metrics
+
     metrics_df: Pandas DataFrame()
         Pandas DataFrame of all calculated metrics
+
     plotting_dict: dict()
         Plotting object as a dictionary consists of all
         calculated metrics which was used to plot curves
@@ -835,6 +893,7 @@ class RegressionMetrics:
         Function to plot binary classification metrics.
         This function is a helper function based on the plotting_dict
         attribute of the BinaryClassificationMetrics class.
+
         Parameters
         ----------
         figsize: tuple, optional, (default=(12, 12))

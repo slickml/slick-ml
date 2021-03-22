@@ -9,12 +9,15 @@ def noisy_features(X, random_state=None, prefix=None):
     of the models. In better words, we are permuting the target class.
     The input data with shape of (n, m) would be transformed
     to output data with shape of(n, 2m).
+
     Parameters
     ----------
     X: numpy.array() or Pandas DataFrame() or array in form of list of list
         Input data (features)
+
     random_state : integer, optional (default=1367)
         Random seed for randomizing the permutations
+
     prefix= str, optional (default="noisy")
         Prefix string that will be added to the noisy features.
     """
