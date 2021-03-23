@@ -6,10 +6,12 @@ def join_dictionaries(dict1, dict2):
     """Join two dictionaries.
     Function to join two input dictionaries. For the pairs
     with the same keys, the set of values will be stored in a list.
+
     Parameters
     ----------
-    dict1: dictionary or key-value pairs
-    dict2: dictionary or key-value pairs
+    dict1: dict() or key-value pairs
+
+    dict2: dict() or key-value pairs
     """
     if not (isinstance(dict1, dict) and isinstance(dict2, dict)):
         raise TypeError("The Type for dict1 and dict2 should be dict!")
@@ -39,6 +41,7 @@ def join_dictionaries(dict1, dict2):
 
 def memory_use_csr(csr):
     """Memory use in bytes by sparse matrix in csr format.
+
     Parameters
     ----------
     csr: sparse matric in csr format
@@ -47,12 +50,16 @@ def memory_use_csr(csr):
 
 
 def df_to_csr(df, fillna=0.0, verbose=False):
-    """Convert Pandas DataFrame to a sparse csr matrix.
+    """Convert pandas.DataFrame to a sparse csr matrix.
+
     Parameters
     ----------
-    df: Pandas DataFrame
+    df: pandas.DataFrame
+        Input feautres
+
     fillna: Value to fill null values, (default=0.0)
         Note: csr matrices assume the values have float dtype.
+
     verbose: Flag to show the memory usage of csr matrix, (default=False)
     """
     df_ = df.copy()
@@ -66,10 +73,14 @@ def df_to_csr(df, fillna=0.0, verbose=False):
 
 def pd_explode(df, column):
     """Function to explodes a column into columnar format.
+
     Parameters
     ----------
-    df: Pandas DataFrame
-    column: str, name of column wanting to explode
+    df: panads.DataFrame
+        Input features
+
+    column: str
+        Name of the column wanting to explode
     """
     if not isinstance(df, pd.DataFrame):
         raise TypeError("Input df must have Pandas DataFrame dtype")
@@ -89,11 +100,15 @@ def pd_struct_explode(df, column):
 
     """Function to explodes a column into columnar format.
     This is useful function when you load data from SQL or Spark
-    with "struct" dtype into Pandas DataFrame().
+    with "struct" dtype into pandas.DataFrame.
+
     Parameters
     ----------
-    df: Pandas DataFrame
-    column: str, name of column wanting to explode
+    df: pandas.DataFrame
+        Input data
+
+    column: str
+        Name of the column wanting to explode
     """
     if not isinstance(df, pd.DataFrame):
         raise TypeError("Input df must have Pandas DataFrame dtype")

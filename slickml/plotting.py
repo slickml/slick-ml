@@ -251,7 +251,7 @@ def plot_xfs_feature_frequency(
 
     Parameters
     ----------
-    freq: Pandas DataFrame
+    freq: pandas.DataFrame
         Feature frequency
 
     figsize: tuple, optional, (default=(8, 4))
@@ -405,7 +405,7 @@ def plot_xfs_cv_results(
     sharey: bool, optional, (default=False)
         Flag to share "Y" axis for each row of subplots
 
-    kwargs: dict
+    kwargs: dict()
         Plotting object plotting_cv_
 
     Returns None
@@ -468,7 +468,7 @@ def plot_xgb_cv_results(
 
     Parameters
     ----------
-    cv_results: Pandas DataFrame()
+    cv_results: pandas.DataFrame
         Cross-validation results in DataFrame() format
 
     figsize: tuple, optional, (default=(8, 5))
@@ -610,7 +610,7 @@ def plot_xgb_feature_importance(
 
     Parameters
     ----------
-    feature importance: Pandas DataFrame
+    feature importance: pandas.DataFrame
         Feature frequency
 
     figsize: tuple, optional, (default=(8, 5))
@@ -765,7 +765,7 @@ def plot_shap_summary(
 
     Parameters
     ----------
-    shap_values: Numpy array or Pandas DataFrame
+    shap_values: numpy.array or pandas.DataFrame
         Calculated SHAP values. For single output explanations like
         binary classificationthis this is a matrix of SHAP values (n_samples, n_features).
         For multi-output explanations this is a list of such matrices of SHAP values
@@ -791,9 +791,9 @@ def plot_shap_summary(
     max_display: int, optional, (default=20)
         Limit to show the number of features in the plot
 
-    feature_names: str, optional, (default=None)
+    feature_names: list[str], optional, (default=None)
         List of feature names to pass. It should follow the order
-        of fatures
+        of features
 
     title: str, optional, (default=None)
         Title of the plot
@@ -896,12 +896,12 @@ def plot_shap_waterfall(
 
     Parameters
     ----------
-    shap_values: Numpy array or Pandas DataFrame
+    shap_values: numpy.array or pandas.DataFrame
         Calculated SHAP values. For single output explanations like
         binary classificationthis this is a matrix of SHAP values (n_samples, n_features).
         For multi-output explanations this is a list of such matrices of SHAP values
 
-    features: Numpy array or Pandas DataFrame
+    features: numpy.array or pandas.DataFrame
         The feature matrix that was used to calculate the SHAP values. For the case
         of Numpy array it is recommened to pass the feature_names list as well
 

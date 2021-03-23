@@ -100,28 +100,24 @@ class XGBoostFeatureSelector:
     Attributes
     ----------
     feature_importance_: dict()
-        Returns a dict() of all feature importance based on
+        Returns a dict of all feature importance based on
         importance_type at each fold of each iteration during
         selection process
 
     feature_frequency_: Pandas DataFrame()
-        Returns a DataFrame() cosists of total frequency of
+        Returns a pandas.DataFrame cosists of total frequency of
         each feature during the selection process
 
     cv_results_: dict()
-        Return a dict() of the total internal/external
-        cross-validation results
-
-    cv_results_: dict()
-        Return a dict() of the total internal/external
+        Return a dict of the total internal/external
         cross-validation results
 
     plotting_cv_: dict()
-        Returns a dict() of the required variables
+        Returns a dict of the required variables
         to plot the histograms of total internal/external
         cross-validation results
 
-    fit(): class method
+    fit(X, y): class method
         This is the main method to run the feature selection process and
         receives two arguments (X, y)
 
@@ -533,7 +529,7 @@ class XGBoostFeatureSelector:
 
         Parameters
         ----------
-        X: numpy.array or Pandas DataFrame
+        X: numpy.array or pandas.DataFrame
             Features data
 
         y: numpy.array[int] or list[int]
