@@ -84,11 +84,11 @@ class XGBoostClassifier:
         Returns the scaler object if any of scale_mean or scale_std
         was passed True.
 
-    X_train_: Pandas DataFrame()
+    X_train_: pandas.DataFrame
         Returns scaled training data set that passed if if any of
         scale_mean or scale_std was passed as True, else X_train.
 
-    X_test_: Pandas DataFrame()
+    X_test_: pandas.DataFrame
         Returns transformed testing data set using scaler_ object if if any of
         scale_mean or scale_std was passed as True, else X_train.
 
@@ -98,10 +98,10 @@ class XGBoostClassifier:
     d_test_: xgboost.DMatrix object
         Returns the xgboost.DMatrix(X_test_, y_test)
 
-    shap_values_train_: Numpy array
+    shap_values_train_: numpy.array
         SHAP values from treeExplainer using X_train
 
-    shap_values_test_: Numpy array
+    shap_values_test_: numpy.array
         SHAP values from treeExplainer using X_test
 
     fit(X_train, y_train): class method
@@ -113,6 +113,11 @@ class XGBoostClassifier:
         it only reports the probability of the positive class, while the sklearn
         one returns for both and slicing like pred_proba[:, 1]
         is needed for positive class predictions
+
+    predict(X_test, y_test, threshold=0.5): class method
+        Return the prediction classes based on the passed threshold.
+        The default threshold is set at 0.5 while you can find the optimum thresholds
+        based on different methods using BinaryClassificationMetrics.
 
     get_params(): class method
         Returns params dict
@@ -220,7 +225,7 @@ class XGBoostClassifier:
 
         Parameters
         ----------
-        X_train: numpy.array or Pandas DataFrame
+        X_train: numpy.array or pandas.DataFrame
             Training features data
 
         y_train: numpy.array[int] or list[int]
@@ -281,7 +286,7 @@ class XGBoostClassifier:
 
         Parameters
         ----------
-        X_test: numpy.array or Pandas DataFrame
+        X_test: numpy.array or pandas.DataFrame
             Testing/validation features data
 
         y_test: numpy.array[int] or list[int], optional (default=None)
@@ -361,7 +366,7 @@ class XGBoostClassifier:
 
         Parameters
         ----------
-        X_train: numpy.array or Pandas DataFrame
+        X_train: numpy.array or pandas.DataFrame
             Training features data
 
         y_train: numpy.array[int] or list[int]
@@ -403,7 +408,7 @@ class XGBoostClassifier:
 
         Parameters
         ----------
-        X_test: numpy.array or Pandas DataFrame
+        X_test: numpy.array or pandas.DataFrame
             Validation features data
 
         y_test: numpy.array[int] or list[int], optional (default=None)
@@ -422,7 +427,7 @@ class XGBoostClassifier:
 
         Parameters
         ----------
-        X_test: numpy.array or Pandas DataFrame
+        X_test: numpy.array or pandas.DataFrame
             Validation features data
 
         y_test: numpy.array[int] or list[int], optional (default=None)
@@ -842,6 +847,11 @@ class XGBoostCVClassifier(XGBoostClassifier):
         one returns for both and slicing like pred_proba[:, 1]
         is needed for positive class predictions
 
+    predict(X_test, y_test, threshold=0.5): class method
+        Return the prediction classes based on the passed threshold.
+        The default threshold is set at 0.5 while you can find the optimum thresholds
+        based on different methods using BinaryClassificationMetrics.
+
     get_params(): class method
         Returns params dict
 
@@ -981,7 +991,7 @@ class XGBoostCVClassifier(XGBoostClassifier):
 
         Parameters
         ----------
-        X_train: numpy.array or Pandas DataFrame
+        X_train: numpy.array or pandas.DataFrame
             Training features data
 
         y_train: numpy.array[int] or list[int]
@@ -1174,25 +1184,25 @@ class GLMNetCVClassifier:
 
     Attributes
     ----------
-    X_train_: Pandas DataFrame()
+    X_train_: pandas.DataFrame()
         Returns training data set.
 
-    X_test_: Pandas DataFrame()
+    X_test_: pandas.DataFrame()
         Returns transformed testing data set.
 
-    y_train_: Numpy 1D array or list
-        Returns the training grounds truth classes
+    y_train_: numpy.array[int] or list[int]
+        Returns the list of training ground truth binary values [0, 1]
 
-    y_test_: Numpy 1D array or list
-        Returns the testing grounds truth classes
+    y_test_: numpy.array[int] or list[int]
+        Returns the list of testing ground truth binary values [0, 1]
 
-    coeff_: Pandas DataFrame
+    coeff_: pandas.DataFrame
         Return the model's non-zero coefficients
 
     intercept_: float
         Return the model's intercept
 
-    cv_results_: Pandas DataFrame()
+    cv_results_: pandas.DataFrame
         Returns the cross-validation results
 
     results_: dict()
@@ -1551,7 +1561,7 @@ class GLMNetCVClassifier:
 
         Parameters
         ----------
-        X_train: numpy.array or Pandas DataFrame
+        X_train: numpy.array or pandas.DataFrame
             Training features data
 
         y_train: numpy.array[int] or list[int]
@@ -1586,7 +1596,7 @@ class GLMNetCVClassifier:
 
         Parameters
         ----------
-        X_test: numpy.array or Pandas DataFrame
+        X_test: numpy.array or pandas.DataFrame
             Validation features data
 
         y_test: numpy.array[int] or list[int], optional (default=None)
@@ -1620,7 +1630,7 @@ class GLMNetCVClassifier:
 
         Parameters
         ----------
-        X_test: numpy.array or Pandas DataFrame
+        X_test: numpy.array or pandas.DataFrame
             Validation features data
 
         y_test: numpy.array[int] or list[int], optional (default=None)
