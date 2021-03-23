@@ -4,6 +4,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 
+### Updated
+* [#61](https://github.com/slickml/slick-ml/pull/61) updated `metrics.py` attributes API to end with under-score
+
+
 ### Added
 * [#60](https://github.com/slickml/slick-ml/pull/60) added `CHANGELOG.md`
 
