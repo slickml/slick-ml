@@ -4,6 +4,9 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 
+### Added
+* [#60](https://github.com/slickml/slick-ml/pull/60) added `CHANGELOG.md`
+
 ## 0.1.1 - 2021-03-18
 
 ### Fixed
@@ -16,7 +19,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Added
 * [#44](https://github.com/slickml/slick-ml/pull/44) added XGBoostClassifierHyperOpt
-* [#57](https://github.com/slickml/slick-ml/pull/57) added GLMNetCVClassifier class, plotting, and examples, `CODE_OF_CONDUCT`
+* [#57](https://github.com/slickml/slick-ml/pull/57) added GLMNetCVClassifier class, plotting, and examples, `CODE_OF_CONDUCT.md`
 
 ## 0.0.8 - 2021-02-17
 
