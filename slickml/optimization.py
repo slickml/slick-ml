@@ -17,14 +17,18 @@ class XGBoostClassifierBayesianOpt(XGBoostCVClassifier):
     the optimizier objective is always to maximize the target. Therefore,
     in case of using a metric such as logloss or error, the negative value
     of the metric will be maximized.
+
     Parameters
     ----------
     n_iter: int, optional (default=5)
         Number of iteration rounds for hyper-parameters tuning
+
     init_points: int, optional (default=5)
         Number of initial points to initialize the optimizer
+
     acq: str, optional (default="ei")
         Type of acquisition function such as expected improvement (ei)
+
     pbounds: dict, optional
         Set of parameters boundaries for Bayesian Optimization
         (default={"max_depth" : (2, 7),
@@ -35,44 +39,57 @@ class XGBoostClassifierBayesianOpt(XGBoostCVClassifier):
                   "gamma" : (0, 1),
                   "reg_alpha" : (0, 1),
                   "reg_lambda" : (0, 1)})
+
     num_boost_round: int, optional (default=200)
         Number of boosting round at each fold of xgboost.cv()
+
     n_splits: int, optional (default=4)
         Number of folds for cross-validation
+
     metrics: str or tuple[str], optional (default=("auc"))
         Metric used for evaluation at cross-validation
         using xgboost.cv(). Please note that this is different
         than eval_metric that needs to be passed to params dict.
         Possible values are "auc", "aucpr", "error", "logloss"
+
     objective: str, optional (default="binary:logistic")
         Type of objective function for classification and regression
+
     early_stopping_rounds: int, optional (default=20)
         The criterion to early abort the xgboost.cv() phase
         if the test metric is not improved
+
     random_state: int, optional (default=1367)
         Random seed
+
     stratified: bool, optional (default=True)
         Flag to stratificaiton of the targets to run xgboost.cv() to
         find the best number of boosting round at each fold of
         each iteration
+
     shuffle: bool, optional (default=True)
         Flag to shuffle data to have the ability of building
         stratified folds in xgboost.cv()
+
     sparse_matrix: bool, optional (default=False)
         Flag to convert data to sparse matrix with csr format.
         This would increase the speed of feature selection for
         relatively large datasets
+
     scale_mean: bool, optional (default=False)
         Flag to center the data before scaling. This flag should be
         False when using sparse_matrix=True, since it centering the data
         would decrease the sparsity and in practice it does not make any
         sense to use sparse matrix method and it would make it worse.
+
     scale_std: bool, optional (default=False)
         Flag to scale the data to unit variance
         (or equivalently, unit standard deviation)
+
     importance_type: str, optional (default="total_gain")
         Importance type of xgboost.train() with possible values
         "weight", "gain", "total_gain", "cover", "total_cover"
+
     verbose: bool, optional (default=True)
         Flag to show the Bayesian Optimization progress at each iteration
 
@@ -81,22 +98,30 @@ class XGBoostClassifierBayesianOpt(XGBoostCVClassifier):
     scaler_: StandardScaler object
         Returns the scaler object if any of scale_mean or scale_std
         was passed True.
-    X_train_: Pandas DataFrame()
+
+    X_train_: pandas.DataFrame
         Returns scaled training data set that passed if if any of
         scale_mean or scale_std was passed as True, else X_train.
+
     d_train_: xgboost.DMatrix object
         Returns the xgboost.DMatrix(X_train_, y_train)
+
     optimizer_: Bayesian Optimiziation object
         Returns the fitted optimizer on (X_train_, y_train)
+
     optimization_results_: Optimization results Pandas DataFrame()
         Returns all the optimization results including target and params
+
     best_params_: Tuned xgboost params dict
         Returns the tuned params dict
+
     best_performance_: Target value and tuned params Pandas DataFrame()
         Return the dataframe of the best performance
+
     fit(X_train, y_train): class method
         Returns None and applies the optimization process using
         the (X_train, y_train) set using xgboost.cv() and Bayesian Opt
+
     plot_optimization_results(): class method
         Plot all the optimization results
     """
@@ -347,59 +372,75 @@ class XGBoostClassifierHyperOpt(XGBoostClassifier):
     optimization over search spaces, which may include real-valued, discrete,
     and conditional dimensions to train a XGBoost model.Main reference is
     HyperOpt GitHub: (https://github.com/hyperopt/hyperopt)
+
     Parameters
     ----------
     num_boost_round: int, optional (default=200)
         Number of boosting round at each fold of xgboost.cv()
+
     n_splits: int, optional (default=4)
         Number of folds for cross-validation
+
     metrics: str or tuple[str], optional (default=("auc"))
         Metric used for evaluation at cross-validation
         using xgboost.cv(). Please note that this is different
         than eval_metric that needs to be passed to params dict.
         Possible values are "auc", "aucpr", "error", "logloss"
+
     early_stopping_rounds: int, optional (default=20)
         The criterion to early abort the xgboost.cv() phase
         if the test metric is not improved
+
     random_state: int, optional (default=1367)
         Random seed
+
     stratified: bool, optional (default=True)
         Flag to stratificaiton of the targets to run xgboost.cv() to
         find the best number of boosting round at each fold of
         each iteration
+
     shuffle: bool, optional (default=True)
         Flag to shuffle data to have the ability of building
         stratified folds in xgboost.cv()
+
     sparse_matrix: bool, optional (default=False)
         Flag to convert data to sparse matrix with csr format.
         This would increase the speed of feature selection for
         relatively large datasets
+
     scale_mean: bool, optional (default=False)
         Flag to center the data before scaling. This flag should be
         False when using sparse_matrix=True, since it centering the data
         would decrease the sparsity and in practice it does not make any
         sense to use sparse matrix method and it would make it worse.
+
     scale_std: bool, optional (default=False)
         Flag to scale the data to unit variance
         (or equivalently, unit standard deviation)
+
     func_name: str
-            function name for performing optimization
-    space: dict
-            The set of possible arguments to `fn` is the set of objects
-            that could be created with non-zero probability by drawing randomly
-            from this stochastic program involving involving hp
-    trials: object
-            Storage for completed, ongoing, and scheduled evaluation points.  If
-            None, then a temporary `base.Trials` instance will be created.  If
-            a trials object, then that trials object will be affected by
-            side-effect of this call
-    algo: object
-            provides logic for sequential search of the hyperparameter space
+        Function name for performing optimization
+
+    space: dict()
+        The set of possible arguments to `fn` is the set of objects
+        that could be created with non-zero probability by drawing randomly
+        from this stochastic program involving involving hp
+
+    trials: HyperOpt Object
+        Storage for completed, ongoing, and scheduled evaluation points.
+        If None, then a temporary `base.Trials` instance will be created.
+        If a trials object, then that trials object will be affected by
+        side-effect of this call
+
+    algo: HyperOpt Object
+        Provides logic for sequential search of the hyperparameter space
+
     max_evals: int
-            Storage for completed, ongoing, and scheduled evaluation points.  If
-            None, then a temporary `base.Trials` instance will be created.  If
-            a trials object, then that trials object will be affected by
-            side-effect of this call
+        Storage for completed, ongoing, and scheduled evaluation points.
+        If None, then a temporary `base.Trials` instance will be created.
+        If a trials object, then that trials object will be affected by
+        side-effect of this call
+
     verbose: str, optional (default=False)
         Print evaluation results from model
 
@@ -408,11 +449,14 @@ class XGBoostClassifierHyperOpt(XGBoostClassifier):
     fit(X_train, y_train): class method
         Returns None and applies the tuning process using
         the (X_train, y_train) and the given set of hyperparameters
+
     xgb_cv(space): class method
         Optimization function for XGBoost utilizing cross-validation
         based on space params
+
     get_optimization_results(): class method
         Returns pd.DataFrame for best parameters from all runs
+
     get_optimization_trials(): class method
         Returns dict of best parameters for each individual trial run
     """
@@ -506,10 +550,12 @@ class XGBoostClassifierHyperOpt(XGBoostClassifier):
         Fit model for a given a hyperparameter space
         according to a given algorithm, allowing up to a certain number of
         function evaluations.
+
         Parameters
         ----------
-        X_train: numpy.array or Pandas DataFrame
+        X_train: numpy.array or pandas.DataFrame
             Training features data
+
         y_train: numpy.array[int] or list[int]
             List of training ground truth binary values [0, 1]
         """
@@ -536,10 +582,11 @@ class XGBoostClassifierHyperOpt(XGBoostClassifier):
     def xgb_cv(self, space):
         """
         Function to perform XGBoost Cross-Validation with stochastic parameters
-        for hyperparameter optimization
+        for hyperparameter optimization.
+
         Parameters
         ----------
-        space: dict
+        space: dict()
             The set of possible arguments to `fn` is the set of objects
             that could be created with non-zero probability by drawing randomly
             from this stochastic program involving involving hp
