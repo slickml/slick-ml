@@ -1,0 +1,64 @@
+# Change Log
+All notable changes to this project will be documented in this file.
+This project adheres to [Semantic Versioning](http://semver.org/).
+
+## Unreleased
+
+## 0.1.1 - 2021-03-18
+
+### Fixed
+* [#54](https://github.com/slickml/slick-ml/pull/54) fixed bug in XGBoostClassifer. dtest has `y_test` as required parameter while it should be optional, since you wont have the `y_true` in production.
+* [#56](https://github.com/slickml/slick-ml/pull/56) fixed bugs in plotting
+
+### Updated
+* [#57](https://github.com/slickml/slick-ml/pull/57) updated `requirements.txt`
+* [#59](https://github.com/slickml/slick-ml/pull/59) updated docstrings
+
+### Added
+* [#44](https://github.com/slickml/slick-ml/pull/44) added XGBoostClassifierHyperOpt
+* [#57](https://github.com/slickml/slick-ml/pull/57) added GLMNetCVClassifier class, plotting, and examples, `CODE_OF_CONDUCT`
+
+## 0.0.8 - 2021-02-17
+
+### Fixed
+* [#47](https://github.com/slickml/slick-ml/pull/47) fixed bugs in HyperOpt `__init__`
+### Updated
+* [#52](https://github.com/slickml/slick-ml/pull/52) updated xgboost version to 1.0.0 to remove the conflict with shap version
+
+### Added
+* [#44](https://github.com/slickml/slick-ml/pull/44) added XGBoostClassifierHyperOpt
+* [#49](https://github.com/slickml/slick-ml/pull/49) added Google Colab links to notebooks
+* [#51](https://github.com/slickml/slick-ml/pull/51) added regression metrics
+* [#52](https://github.com/slickml/slick-ml/pull/52) added SHAP waterfall plot
+
+
+## 0.0.7 - 2020-09-27
+
+### API Changes
+* [#28](https://github.com/slickml/slick-ml/pull/28) updated feature selection method from run to fit and removed X, y from init and added to fit to be similar to sklearn API.
+* [#17](https://github.com/slickml/slick-ml/pull/17) updated plotting to Matplotlib object oriented API
+
+## Fixed
+* [#34](https://github.com/slickml/slick-ml/pull/34) fixed formatting and import bugs in source code
+* [#38](https://github.com/slickml/slick-ml/pull/38) fixed typos in README and bug in `df_to_csr` function
+
+### Updated
+* [#41](https://github.com/slickml/slick-ml/pull/41) updated requirements for bayesian optimization, design pattern, classification examples
+
+### Added
+* [#4](https://github.com/slickml/slick-ml/pull/4) added `metrics.py`
+* [#6](https://github.com/slickml/slick-ml/pull/6) added logo design
+* [#9](https://github.com/slickml/slick-ml/pull/9) added plots for metrics and `utilities.py`
+* [#12](https://github.com/slickml/slick-ml/pull/12) added PEP8
+* [#15](https://github.com/slickml/slick-ml/pull/15) added `feature_selection.py` and `tests/`
+* [#20](https://github.com/slickml/slick-ml/pull/20) added `formatting.py`
+* [#23](https://github.com/slickml/slick-ml/pull/23) added examples for feature selection
+* [#24](https://github.com/slickml/slick-ml/pull/24) added XGBoostCVClassifier
+* [#37](https://github.com/slickml/slick-ml/pull/37) added SHAP summary plots
+* [#38](https://github.com/slickml/slick-ml/pull/38) added unit tests for classification
+* [#43](https://github.com/slickml/slick-ml/pull/43) added BayesianOpt class
+
+
+## 0.0.1 - 2020-08-31
+### Added
+* [#2](https://github.com/slickml/slick-ml/pull/2) initial ideas
