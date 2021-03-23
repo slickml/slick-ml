@@ -60,11 +60,6 @@ class BinaryClassificationMetrics:
 
     Attributes
     ----------
-    y_pred_: numpy.array(int) or list[int]
-        Predicted class based on the threshold.
-        Positive class for y_pred_proba >= threshold and
-        negative for else.
-
     accuracy_: float value between 0. and 1.
         Classification accuracy based on threshold value
 
@@ -72,89 +67,88 @@ class BinaryClassificationMetrics:
         Balanced classification accuracy based on threshold value
         considering the prevalence of the classes
 
-    fpr_list_: numpy.array[float] or list[float]
+    fpr_list: numpy.array[float] or list[float]
         List of calculated false-positive-rates based on roc_thresholds.
         This can be used for ROC curve plotting
 
-    tpr_list_: numpy.array[float] or list[float]
+    tpr_list: numpy.array[float] or list[float]
         List of calculated true-positive-rates based on roc_thresholds
         This can be used for ROC curve plotting
 
-    roc_thresholds_: numpy.array[float] or list[float]
-        List of thresholds value to calculate fpr_list_ and tpr_list_
+    roc_thresholds: numpy.array[float] or list[float]
+        List of thresholds value to calculate fpr_list and tpr_list
 
-    auc_roc_: float value between 0. and 1.
+    auc_roc: float value between 0. and 1.
         Area under ROC curve
 
-    precision_list_: numpy.array[float] or list[float]
+    precision_list: numpy.array[float] or list[float]
         List of calculated precision based on pr_thresholds
         This can be used for ROC curve plotting
 
-    recall_list_: numpy.array[float] or list[float]
+    recall_list: numpy.array[float] or list[float]
         List of calculated recall based on pr_thresholds
         This can be used for ROC curve plotting
 
-    pr_thresholds_: numpy.array[float] or list[float]
-        List of thresholds value to calculate precision_list_ and recall_list_
+    pr_thresholds: numpy.array[float] or list[float]
+        List of thresholds value to calculate precision_list and recall_list
 
-    auc_pr_: float value between 0. and 1.
+    auc_pr: float value between 0. and 1.
         Area under Precision-Recall curve
 
-    precision_: float value between 0. and 1.
+    precision: float value between 0. and 1.
         Precision based on threshold value
 
-    recall_: float value between 0. and 1.
+    recall: float value between 0. and 1.
         Recall based on threshold value
 
-    f1_: float value between 0. and 1.
+    f1: float value between 0. and 1.
         F1-score based on threshold value (beta=1.0)
 
-    f2_: float value between 0. and 1.
+    f2: float value between 0. and 1.
         F2-score based on threshold value (beta=2.0)
 
-    f05_: float value between 0. and 1.
+    f05: float value between 0. and 1.
         F(1/2)-score based on threshold value (beta=0.5)
-
-    average_precision_: float value between 0. and 1.
+    average_precision: float value between 0. and 1.
         Avearge precision based on threshold value and class prevalence
 
-    tn_: integer
+    tn: integer
         True negative counts based on threshold value
 
-    fp_: integer
+    fp: integer
         False positive counts based on threshold value
 
-    fn_: integer
+    fn: integer
         False negative counts based on threshold value
 
-    tp_: integer
+    tp: integer
         True positive counts based on threshold value
 
-    threat_score_: float value between 0. and 1.
+    threat_score: float value between 0. and 1.
         Threat score based on threshold value
 
-    youden_threshold_: float value between 0. and 1.
+    youden_threshold: float value between 0. and 1.
         Threshold calculated based on Youden Index
 
-    sens_spec_threshold_: float value between 0. and 1.
+    sens_spec_threshold: float value between 0. and 1.
         Threshold calculated based on maximized sensitivity-specificity
 
-    prec_rec_threshold_: float value between 0. and 1.
+    prec_rec_threshold: float value between 0. and 1.
         Threshold calculated based on maximized precision-recall
 
-    thresholds_dict_: dict()
+    thresholds_dict: dict()
         Dictionary of all calculated thresholds
 
-    metrics_dict_: dict()
+    metrics_dict: dict()
         Dictionary of all calculated metrics
 
-    metrics_df_: pandas.DataFrame
+    metrics_df: Pandas DataFrame()
         Pandas DataFrame of all calculated metrics with threshold as index
 
-    average_methods_: list[str]
+    average_methods: list[str]
         List of all possible average methods
 
-    plotting_dict_: dict()
+    plotting_dict: dict()
         Plotting object as a dictionary consists of all
         calculated metrics which was used to plot the thresholds
     """
@@ -205,43 +199,43 @@ class BinaryClassificationMetrics:
             raise TypeError("The input display_df must have bool dtype.")
         else:
             self.display_df = display_df
-        self.y_pred_ = (self.y_pred_proba >= self.threshold).astype(int)
+        self.y_pred = (self.y_pred_proba > self.threshold).astype(int)
         self.accuracy_ = self._accuracy()
         self.balanced_accuracy_ = self._balanced_accuracy()
-        self.fpr_list_, self.tpr_list_, self.roc_thresholds_ = self._roc_curve()
-        self.auc_roc_ = self._auc_roc()
+        self.fpr_list, self.tpr_list, self.roc_thresholds = self._roc_curve()
+        self.auc_roc = self._auc_roc()
         (
-            self.precision_list_,
-            self.recall_list_,
-            self.pr_thresholds_,
+            self.precision_list,
+            self.recall_list,
+            self.pr_thresholds,
         ) = self._precision_recall_curve()
-        self.auc_pr_ = self._auc_pr()
-        self.precision_, self.recall_, self.f1_ = self._precision_recall_f1()
-        self.f2_, self.f05_ = self._f2_f50()
-        self.average_precision_ = self._average_precision()
-        self.tn_, self.fp_, self.fn_, self.tp_ = self._confusion_matrix()
-        self.threat_score_ = self._threat_score()
-        self.metrics_dict_ = self._metrics_dict()
-        self.metrics_df_ = self._metrics_df()
-        self.youden_index_, self.youden_threshold_ = self._threshold_youden()
+        self.auc_pr = self._auc_pr()
+        self.precision, self.recall, self.f1 = self._precision_recall_f1()
+        self.f2, self.f05 = self._f2_f50()
+        self.average_precision = self._average_precision()
+        self.tn, self.fp, self.fn, self.tp = self._confusion_matrix()
+        self.threat_score = self._threat_score()
+        self.metrics_dict = self._metrics_dict()
+        self.metrics_df = self._metrics_df()
+        self.youden_index, self.youden_threshold = self._threshold_youden()
         (
-            self.sens_spec_index_,
-            self.sens_spec_threshold_,
+            self.sens_spec_index,
+            self.sens_spec_threshold,
         ) = self._threshold_sens_spec()
         (
-            self.prec_rec_index_,
-            self.prec_rec_threshold_,
+            self.prec_rec_index,
+            self.prec_rec_threshold,
         ) = self._threshold_prec_rec()
-        self.thresholds_dict_ = self._thresholds_dict()
-        self.plotting_dict_ = self._plotting_dict()
-        self.average_methods_ = self._average_methods()
+        self.thresholds_dict = self._thresholds_dict()
+        self.plotting_dict = self._plotting_dict()
+        self.average_methods = self._average_methods()
 
     def _accuracy(self):
         """
         Function to calculate accuracy score
         """
         accuracy = accuracy_score(
-            y_true=self.y_true, y_pred=self.y_pred_, normalize=True
+            y_true=self.y_true, y_pred=self.y_pred, normalize=True
         )
 
         return accuracy
@@ -251,7 +245,7 @@ class BinaryClassificationMetrics:
         Function to calculate balanced accuracy score
         """
         balanced_accuracy = balanced_accuracy_score(
-            y_true=self.y_true, y_pred=self.y_pred_, adjusted=False
+            y_true=self.y_true, y_pred=self.y_pred, adjusted=False
         )
 
         return balanced_accuracy
@@ -294,7 +288,7 @@ class BinaryClassificationMetrics:
         """
         Function to calculate the area under Precision-Recal curve (auc_pr)
         """
-        auc_pr = auc(self.recall_list_, self.precision_list_)
+        auc_pr = auc(self.recall_list, self.precision_list)
 
         return auc_pr
 
@@ -304,7 +298,7 @@ class BinaryClassificationMetrics:
         """
         precision, recall, f1, _ = precision_recall_fscore_support(
             y_true=self.y_true,
-            y_pred=self.y_pred_,
+            y_pred=self.y_pred,
             beta=1.0,
             average=self.average_method,
         )
@@ -323,13 +317,13 @@ class BinaryClassificationMetrics:
         """
         f2 = fbeta_score(
             y_true=self.y_true,
-            y_pred=self.y_pred_,
+            y_pred=self.y_pred,
             beta=2.0,
             average=self.average_method,
         )
         f05 = fbeta_score(
             y_true=self.y_true,
-            y_pred=self.y_pred_,
+            y_pred=self.y_pred,
             beta=0.5,
             average=self.average_method,
         )
@@ -358,7 +352,7 @@ class BinaryClassificationMetrics:
         Function to calculate confusion matrix elements: tn, fp, fn, tp
         """
         tn, fp, fn, tp = confusion_matrix(
-            y_true=self.y_true, y_pred=self.y_pred_
+            y_true=self.y_true, y_pred=self.y_pred
         ).ravel()
 
         return tn, fp, fn, tp
@@ -368,20 +362,20 @@ class BinaryClassificationMetrics:
         Function to calculate threat score
         """
         if self.average_method == "weighted":
-            w = self.tp_ + self.tn_
-            wp = self.tp_ / w
-            wn = self.tn_ / w
-            threat_score = wp * (self.tp_ / (self.tp_ + self.fp_ + self.fn_)) + wn * (
-                self.tn_ / (self.tn_ + self.fn_ + self.fp_)
+            w = self.tp + self.tn
+            wp = self.tp / w
+            wn = self.tn / w
+            threat_score = wp * (self.tp / (self.tp + self.fp + self.fn)) + wn * (
+                self.tn / (self.tn + self.fn + self.fp)
             )
 
         elif self.average_method == "macro":
-            threat_score = 0.5 * (self.tp_ / (self.tp_ + self.fp_ + self.fn_)) + 0.5 * (
-                self.tn_ / (self.tn_ + self.fn_ + self.fp_)
+            threat_score = 0.5 * (self.tp / (self.tp + self.fp + self.fn)) + 0.5 * (
+                self.tn / (self.tn + self.fn + self.fp)
             )
 
         else:
-            threat_score = self.tp_ / (self.tp_ + self.fp_ + self.fn_)
+            threat_score = self.tp / (self.tp + self.fp + self.fn)
 
         return threat_score
 
@@ -392,19 +386,19 @@ class BinaryClassificationMetrics:
         metrics_dict = {
             "Accuracy": round(self.accuracy_, self.precision_digits),
             "Balanced Accuracy": round(self.balanced_accuracy_, self.precision_digits),
-            "ROC AUC": round(self.auc_roc_, self.precision_digits),
-            "PR AUC": round(self.auc_pr_, self.precision_digits),
-            "Precision": round(self.precision_, self.precision_digits),
-            "Recall": round(self.recall_, self.precision_digits),
-            "F-1 Score": round(self.f1_, self.precision_digits),
-            "F-2 Score": round(self.f2_, self.precision_digits),
-            "F-0.50 Score": round(self.f05_, self.precision_digits),
-            "Threat Score": round(self.threat_score_, self.precision_digits),
-            "Average Precision": round(self.average_precision_, self.precision_digits),
-            "TP": self.tp_,
-            "TN": self.tn_,
-            "FP": self.fp_,
-            "FN": self.fn_,
+            "ROC AUC": round(self.auc_roc, self.precision_digits),
+            "PR AUC": round(self.auc_pr, self.precision_digits),
+            "Precision": round(self.precision, self.precision_digits),
+            "Recall": round(self.recall, self.precision_digits),
+            "F-1 Score": round(self.f1, self.precision_digits),
+            "F-2 Score": round(self.f2, self.precision_digits),
+            "F-0.50 Score": round(self.f05, self.precision_digits),
+            "Threat Score": round(self.threat_score, self.precision_digits),
+            "Average Precision": round(self.average_precision, self.precision_digits),
+            "TP": self.tp,
+            "TN": self.tn,
+            "FP": self.fp,
+            "FN": self.fn,
         }
 
         return metrics_dict
@@ -418,7 +412,7 @@ class BinaryClassificationMetrics:
             self.average_method = "binary"
 
         metrics_df = pd.DataFrame(
-            data=self.metrics_dict_,
+            data=self.metrics_dict,
             index=[
                 f"""Threshold = {self.threshold:.3f} | Average =
                 {self.average_method.title()}"""
@@ -471,8 +465,8 @@ class BinaryClassificationMetrics:
         """
         Function to calculate youden index as a threshold
         """
-        youden_index = np.argmax(np.abs(self.tpr_list_ - self.fpr_list_))
-        youden_threshold = self.roc_thresholds_[youden_index]
+        youden_index = np.argmax(np.abs(self.tpr_list - self.fpr_list))
+        youden_threshold = self.roc_thresholds[youden_index]
 
         return youden_index, youden_threshold
 
@@ -480,8 +474,8 @@ class BinaryClassificationMetrics:
         """
         Function to calculate the threshold that maximizes
         sensitivity-specificity curve"""
-        sens_spec_index = np.argmin(abs(self.tpr_list_ + self.fpr_list_ - 1))
-        sens_spec_threshold = self.roc_thresholds_[sens_spec_index]
+        sens_spec_index = np.argmin(abs(self.tpr_list + self.fpr_list - 1))
+        sens_spec_threshold = self.roc_thresholds[sens_spec_index]
 
         return sens_spec_index, sens_spec_threshold
 
@@ -489,8 +483,8 @@ class BinaryClassificationMetrics:
         """
         Function to calculate the threshold that maximizes precision-recall
         curve"""
-        prec_rec_index = np.argmin(abs(self.precision_list_ - self.recall_list_))
-        prec_rec_threshold = self.pr_thresholds_[prec_rec_index]
+        prec_rec_index = np.argmin(abs(self.precision_list - self.recall_list))
+        prec_rec_threshold = self.pr_thresholds[prec_rec_index]
 
         return prec_rec_index, prec_rec_threshold
 
@@ -499,9 +493,9 @@ class BinaryClassificationMetrics:
         Function to return calculated thresholds as a dictionary
         """
         thresholds_dict = {
-            "Youden": self.youden_threshold_,
-            "Sensitivity-Specificity": self.sens_spec_threshold_,
-            "Precision-Recall-F1": self.prec_rec_threshold_,
+            "Youden": self.youden_threshold,
+            "Sensitivity-Specificity": self.sens_spec_threshold,
+            "Precision-Recall-F1": self.prec_rec_threshold,
         }
 
         return thresholds_dict
@@ -511,21 +505,21 @@ class BinaryClassificationMetrics:
         Function to return the plotting properties as a dictionary
         """
         plotting_dict = {
-            "roc_thresholds": self.roc_thresholds_,
-            "pr_thresholds": self.pr_thresholds_,
-            "precision_list": self.precision_list_,
-            "recall_list": self.recall_list_,
+            "roc_thresholds": self.roc_thresholds,
+            "pr_thresholds": self.pr_thresholds,
+            "precision_list": self.precision_list,
+            "recall_list": self.recall_list,
             "y_pred_proba": self.y_pred_proba,
             "y_true": self.y_true,
-            "fpr_list": self.fpr_list_,
-            "tpr_list": self.tpr_list_,
-            "auc_roc": self.auc_roc_,
-            "youden_index": self.youden_index_,
-            "youden_threshold": self.youden_threshold_,
-            "sens_spec_threshold": self.sens_spec_threshold_,
-            "prec_rec_threshold": self.prec_rec_threshold_,
-            "auc_pr": self.auc_pr_,
-            "prec_rec_index": self.prec_rec_index_,
+            "fpr_list": self.fpr_list,
+            "tpr_list": self.tpr_list,
+            "auc_roc": self.auc_roc,
+            "youden_index": self.youden_index,
+            "youden_threshold": self.youden_threshold,
+            "sens_spec_threshold": self.sens_spec_threshold,
+            "prec_rec_threshold": self.prec_rec_threshold,
+            "auc_pr": self.auc_pr,
+            "prec_rec_index": self.prec_rec_index,
         }
 
         return plotting_dict
@@ -547,7 +541,7 @@ class BinaryClassificationMetrics:
             Figure size
         """
 
-        plot_binary_classification_metrics(figsize, **self.plotting_dict_)
+        plot_binary_classification_metrics(figsize, **self.plotting_dict)
 
 
 class RegressionMetrics:
@@ -580,58 +574,58 @@ class RegressionMetrics:
 
     Attributes
     ----------
-    y_residual_: numpy.array[float] or list[float]
+    y_residual: numpy.array[float] or list[float]
         Residual values (errors) calculated as (y_true - y_pred).
 
-    y_residual_normsq_:  numpy.array[float] or list[float]
-        Square root of absolute value of y_residual_.
+    y_residual_normsq:  numpy.array[float] or list[float]
+        Square root of absolute value of y_residual.
 
-    r2_: float value between 0. and 1
+    r2: float value between 0. and 1
         R2 score (coefficient of determination)
 
-    ev_: float value between 0. and 1
+    ev: float value between 0. and 1
         Explained variance score.
 
-    mae_: float value between 0. and 1
+    mae: float value between 0. and 1
         Mean absolute error.
 
-    mse_: float value between 0. and 1
+    mse: float value between 0. and 1
         Mean squared error.
 
-    msle_: float value between 0. and 1
+    msle: float value between 0. and 1
         Mean squared log error.
 
-    mape_: float value between 0. and 1
+    mape: float value between 0. and 1
         Mean absolute percentage error.
 
-    auc_rec_: float value between 0. and 1
+    auc_rec: float value between 0. and 1
         Area under REC curve.
 
-    deviation_:  numpy.array[float] or list[float]
+    deviation:  numpy.array[float] or list[float]
         List of deviations to plot REC curve.
 
-    accuracy_:  numpy.array[float] or list[float]
+    accuracy:  numpy.array[float] or list[float]
         Calculated accuracy at each deviation to plot REC curve.
 
-    y_ratio_:  numpy.array[float] or list[float]
+    y_ratio:  numpy.array[float] or list[float]
         Ratio of y_pred/y_true.
 
-    mean_y_ratio_: float value between 0. and 1
+    mean_y_ratio: float value between 0. and 1
         Mean value of y_pred/y_true ratio.
 
-    std_y_ratio_: float
+    std_y_ratio: float
         Standard deviation value of y_pred/y_true ratio.
 
-    cv_y_ratio_: float value between 0. and 1
+    cv_y_ratio: float value between 0. and 1
         Coefficient of variation calculated as std_y_ratio/mean_y_ratio
 
-    metrics_dict_: dict()
+    metrics_dict: dict()
         Dictionary of all calculated metrics
 
-    metrics_df_: pandas.DataFrame()
+    metrics_df: Pandas DataFrame()
         Pandas DataFrame of all calculated metrics
 
-    plotting_dict_: dict()
+    plotting_dict: dict()
         Plotting object as a dictionary consists of all
         calculated metrics which was used to plot curves
     """
@@ -673,24 +667,24 @@ class RegressionMetrics:
             raise TypeError("The input display_df must have bool dtype.")
         else:
             self.display_df = display_df
-        self.y_residual_ = self.y_true - self.y_pred
-        self.y_residual_normsq_ = np.sqrt(np.abs(self.y_residual_))
-        self.r2_ = self._r2()
-        self.ev_ = self._ev()
-        self.mae_ = self._mae()
-        self.mse_ = self._mse()
-        self.msle_ = self._msle()
-        self.mape_ = self._mape()
-        self.deviation_, self.accuracy_, self.auc_rec_ = self._rec_curve()
+        self.y_residual = self.y_true - self.y_pred
+        self.y_residual_normsq = np.sqrt(np.abs(self.y_residual))
+        self.r2 = self._r2()
+        self.ev = self._ev()
+        self.mae = self._mae()
+        self.mse = self._mse()
+        self.msle = self._msle()
+        self.mape = self._mape()
+        self.deviation, self.accuracy, self.auc_rec = self._rec_curve()
         (
-            self.y_ratio_,
-            self.mean_y_ratio_,
-            self.std_y_ratio_,
-            self.cv_y_ratio_,
+            self.y_ratio,
+            self.mean_y_ratio,
+            self.std_y_ratio,
+            self.cv_y_ratio,
         ) = self._ratio_hist()
-        self.metrics_dict_ = self._metrics_dict()
-        self.metrics_df_ = self._metrics_df()
-        self.plotting_dict_ = self._plotting_dict()
+        self.metrics_dict = self._metrics_dict()
+        self.metrics_df = self._metrics_df()
+        self.plotting_dict = self._plotting_dict()
 
     def _r2(self):
         """
@@ -807,17 +801,17 @@ class RegressionMetrics:
         Function to create a dictionary of all calculated metrics based on the
         precision digits and multioutput method"""
         metrics_dict = {
-            "R2 Score": round(self.r2_, self.precision_digits),
-            "Explained Variance Score": round(self.ev_, self.precision_digits),
-            "Mean Absolute Error": round(self.mae_, self.precision_digits),
-            "Mean Squared Error": round(self.mse_, self.precision_digits),
-            "Mean Squared Log Error": round(self.msle_, self.precision_digits)
-            if self.msle_ is not None
+            "R2 Score": round(self.r2, self.precision_digits),
+            "Explained Variance Score": round(self.ev, self.precision_digits),
+            "Mean Absolute Error": round(self.mae, self.precision_digits),
+            "Mean Squared Error": round(self.mse, self.precision_digits),
+            "Mean Squared Log Error": round(self.msle, self.precision_digits)
+            if self.msle is not None
             else None,
-            "Mean Absolute Percentage Error": round(self.mape_, self.precision_digits),
-            "REC AUC": round(self.auc_rec_, self.precision_digits),
-            "Coeff. of Variation": round(self.cv_y_ratio_, self.precision_digits),
-            "Mean of Variation": round(self.mean_y_ratio_, self.precision_digits),
+            "Mean Absolute Percentage Error": round(self.mape, self.precision_digits),
+            "REC AUC": round(self.auc_rec, self.precision_digits),
+            "Coeff. of Variation": round(self.cv_y_ratio, self.precision_digits),
+            "Mean of Variation": round(self.mean_y_ratio, self.precision_digits),
         }
 
         return metrics_dict
@@ -828,7 +822,7 @@ class RegressionMetrics:
         on the precision digits and average method"""
 
         metrics_df = pd.DataFrame(
-            data=self.metrics_dict_,
+            data=self.metrics_dict,
             index=["Metrics"],
         )
         metrics_df = metrics_df.reindex(
@@ -873,23 +867,23 @@ class RegressionMetrics:
         Function to return the plotting properties as a dictionary
         """
         plotting_dict = {
-            "r2": self.r2_,
-            "ev": self.ev_,
-            "mae": self.mae_,
-            "mse": self.mse_,
+            "r2": self.r2,
+            "ev": self.ev,
+            "mae": self.mae,
+            "mse": self.mse,
             "y_pred": self.y_pred,
             "y_true": self.y_true,
-            "y_residual": self.y_residual_,
-            "y_residual_normsq": self.y_residual_normsq_,
-            "auc_rec": self.auc_rec_,
-            "y_ratio": self.y_ratio_,
-            "cv_y_ratio": self.cv_y_ratio_,
-            "std_y_ratio": self.std_y_ratio_,
-            "mean_y_ratio": self.mean_y_ratio_,
-            "msle": self.msle_,
-            "mape": self.mape_,
-            "deviation": self.deviation_,
-            "accuracy": self.accuracy_,
+            "y_residual": self.y_residual,
+            "y_residual_normsq": self.y_residual_normsq,
+            "auc_rec": self.auc_rec,
+            "y_ratio": self.y_ratio,
+            "cv_y_ratio": self.cv_y_ratio,
+            "std_y_ratio": self.std_y_ratio,
+            "mean_y_ratio": self.mean_y_ratio,
+            "msle": self.msle,
+            "mape": self.mape,
+            "deviation": self.deviation,
+            "accuracy": self.accuracy,
         }
 
         return plotting_dict
@@ -906,4 +900,4 @@ class RegressionMetrics:
             Figure size
         """
 
-        plot_regression_metrics(figsize, **self.plotting_dict_)
+        plot_regression_metrics(figsize, **self.plotting_dict)
