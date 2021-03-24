@@ -1384,7 +1384,7 @@ class GLMNetCVClassifier:
 
     def _dtrain(self, X_train, y_train):
         """
-        Function to preprocess X_test, y_test data as
+        Function to preprocess X_train, y_train data as
         Pandas DataFrame for the sake of postprocessing.
 
         Parameters
@@ -1491,7 +1491,9 @@ class GLMNetCVClassifier:
         dct = dict(
             zip(
                 [self.X_train_.columns.tolist()[i] for i in idx],
-                [self.model_.coef_[0][i] for i in idx],
+                [self.model_.coef_.reshape(-1, self.model_.coef_.shape[-1])[0][i] for i in idx],
+                
+#                 [self.model_.coef_[0][i] for i in idx],
             )
         )
 
