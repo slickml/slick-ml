@@ -1,17 +1,22 @@
-# Change Log
+# Changelog
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 
+### Fixed
+* [#63](https://github.com/slickml/slick-ml/pull/63) fixed bugs in RegressionMetrics plotting. Now, the text label positions are dynamic and invariat of the data. Additionally, fixed the bug in coef. shapes in `GLMNet` classes. 
+
 ### Updated
 * [#61](https://github.com/slickml/slick-ml/pull/61) updated `metrics.py` attributes API to end with under-score
+* [#63](https://github.com/slickml/slick-ml/pull/63) updated all docstrings based on Scikit-Learn API
 
 
 ### Added
 * [#60](https://github.com/slickml/slick-ml/pull/60) added `CHANGELOG.md`
+* [#63](https://github.com/slickml/slick-ml/pull/63) added `GLMNetCVRegressor` class
 
-## 0.1.1 - 2021-03-18
+## Version 0.1.1 - 2021-03-18
 
 ### Fixed
 * [#54](https://github.com/slickml/slick-ml/pull/54) fixed bug in XGBoostClassifer. dtest has `y_test` as required parameter while it should be optional, since you wont have the `y_true` in production.
@@ -25,7 +30,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 * [#44](https://github.com/slickml/slick-ml/pull/44) added XGBoostClassifierHyperOpt
 * [#57](https://github.com/slickml/slick-ml/pull/57) added GLMNetCVClassifier class, plotting, and examples, `CODE_OF_CONDUCT.md`
 
-## 0.0.8 - 2021-02-17
+## Version 0.0.8 - 2021-02-17
 
 ### Fixed
 * [#47](https://github.com/slickml/slick-ml/pull/47) fixed bugs in HyperOpt `__init__`
@@ -39,7 +44,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 * [#52](https://github.com/slickml/slick-ml/pull/52) added SHAP waterfall plot
 
 
-## 0.0.7 - 2020-09-27
+## Version 0.0.7 - 2020-09-27
 
 ### API Changes
 * [#28](https://github.com/slickml/slick-ml/pull/28) updated feature selection method from run to fit and removed X, y from init and added to fit to be similar to sklearn API.
@@ -66,6 +71,6 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 * [#43](https://github.com/slickml/slick-ml/pull/43) added BayesianOpt class
 
 
-## 0.0.1 - 2020-08-31
+## Version 0.0.1 - 2020-08-31
 ### Added
 * [#2](https://github.com/slickml/slick-ml/pull/2) initial ideas

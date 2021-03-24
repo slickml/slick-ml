@@ -1134,16 +1134,33 @@ def plot_regression_metrics(figsize=None, **kwargs):
     )
     ax1_ylim = max(max(kwargs["y_pred"]), max(kwargs["y_true"]))
     ax1.tick_params(axis="both", which="major", labelsize=12)
+    #     ax1.text(
+    #         min(kwargs["y_true"]), ax1_ylim, f"MAPE = {kwargs['mape']:.3f}", fontsize=12
+    #     )
+
+    #     ax1.text(
+    #         min(kwargs["y_true"]),
+    #         0.97 * ax1_ylim,
+    #         f"$R^2$ = {kwargs['r2']:.3f}",
+    #         fontsize=12, transform=ax1.transAxes
+    #     )
+
     ax1.text(
-        min(kwargs["y_true"]), ax1_ylim, f"MAPE = {kwargs['mape']:.3f}", fontsize=12
+        0.05 * min(kwargs["y_true"]),
+        0.93 * ax1_ylim,
+        f"MAPE = {kwargs['mape']:.3f}",
+        fontsize=12,
+        transform=ax1.transAxes,
     )
 
     ax1.text(
-        min(kwargs["y_true"]),
-        ax1_ylim - 0.07 * ax1_ylim,
+        0.05 * min(kwargs["y_true"]),
+        0.86 * ax1_ylim,
         f"$R^2$ = {kwargs['r2']:.3f}",
         fontsize=12,
+        transform=ax1.transAxes,
     )
+
     # -----------------------------------
     # subplot 2: Q-Q Normal Plot
 
@@ -1231,10 +1248,15 @@ def plot_regression_metrics(figsize=None, **kwargs):
     ax5.tick_params(axis="both", which="major", labelsize=12)
 
     ax5_ylim = max(freqs)
-    ax5.text(0.65, ax5_ylim, fr"""$\mu$ = {kwargs['mean_y_ratio']:.3f}""", fontsize=12)
     ax5.text(
         0.65,
-        ax5_ylim - 0.05 * ax5_ylim,
+        ax5_ylim,
+        fr"""$\mu$ = {kwargs['mean_y_ratio']:.3f}""",
+        fontsize=12,
+    )
+    ax5.text(
+        0.65,
+        0.93 * ax5_ylim,
         f"CV = {kwargs['cv_y_ratio']:.3f}",
         fontsize=12,
     )

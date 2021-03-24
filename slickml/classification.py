@@ -104,31 +104,31 @@ class XGBoostClassifier:
     shap_values_test_: numpy.array
         SHAP values from treeExplainer using X_test
 
-    fit(X_train, y_train): class method
+    fit(X_train, y_train): instance method
         Returns None and applies the training process using
         the (X_train, y_train) set using xgboost.train()
 
-    predict_proba(X_test, y_test): class method
+    predict_proba(X_test, y_test): instance method
         Return the prediction probabilities for positive classes. Please note that
         it only reports the probability of the positive class, while the sklearn
         one returns for both and slicing like pred_proba[:, 1]
         is needed for positive class predictions
 
-    predict(X_test, y_test, threshold=0.5): class method
+    predict(X_test, y_test, threshold=0.5): instance method
         Return the prediction classes based on the passed threshold.
         The default threshold is set at 0.5 while you can find the optimum thresholds
         based on different methods using BinaryClassificationMetrics.
 
-    get_params(): class method
+    get_params(): instance method
         Returns params dict
 
-    get_feature_importance(): class method
+    get_feature_importance(): instance method
         Returns feature importance based on importance_type
 
-    plot_feature_importance(): class method
+    plot_feature_importance(): instance method
         Plots feature importance
 
-    plot_shap_summary(): class method
+    plot_shap_summary(): instance method
         Plot shap values summary
     """
 
@@ -837,39 +837,39 @@ class XGBoostCVClassifier(XGBoostClassifier):
     shap_values_test_: Numpy array
         SHAP values from treeExplainer using X_test
 
-    fit(X_train, y_train): class method
+    fit(X_train, y_train): instance method
         Returns None and applies the training process using
         the (X_train, y_train) set using xgboost.cv() and xgboost.train()
 
-    predict_proba(X_test, y_test): class method
+    predict_proba(X_test, y_test): instance method
         Return the prediction probabilities for positive classes. Please note that
         it only reports the probability of the positive class, while the sklearn
         one returns for both and slicing like pred_proba[:, 1]
         is needed for positive class predictions
 
-    predict(X_test, y_test, threshold=0.5): class method
+    predict(X_test, y_test, threshold=0.5): instance method
         Return the prediction classes based on the passed threshold.
         The default threshold is set at 0.5 while you can find the optimum thresholds
         based on different methods using BinaryClassificationMetrics.
 
-    get_params(): class method
+    get_params(): instance method
         Returns params dict
 
-    get_feature_importance(): class method
+    get_feature_importance(): instance method
         Returns feature importance based on importance_type
         at each fold of each iteration of the selection process
 
-    get_cv_results(): class method
+    get_cv_results(): instance method
         Return a Pandas DataFrame() of the mean value of the metrics
         in n-folds cross-validation for each boosting round
 
-    plot_cv_results(): class method
+    plot_cv_results(): instance method
         Plot cross-validation results
 
-    plot_feature_importance(): class method
+    plot_feature_importance(): instance method
         Plots feature importance
 
-    plot_shap_summary(): class method
+    plot_shap_summary(): instance method
         Plot shap values summary
     """
 
@@ -1112,7 +1112,7 @@ class GLMNetCVClassifier:
     This is wrapper using GLM-Net to train a Regularized Linear Model
     via logitic regression and find the optimal penalty values through
     N-Folds cross validation. This function is pretty useful to train
-    a Elastic-Net model with the ability of feature reduction. Main
+    a Logit-Net model with the ability of feature reduction. Main
     theoretical reference:
     (https://web.stanford.edu/~hastie/glmnet/glmnet_alpha.html)
 
@@ -1211,39 +1211,39 @@ class GLMNetCVClassifier:
     params_: dict()
         Returns model's fitting parameters
 
-    fit(X_train, y_train): class method
+    fit(X_train, y_train): instance method
         Returns None and applies the training process using
         the (X_train, y_train) set using glmnet.LogitNet()
 
-    predict_proba(X_test, y_test=None): class method
+    predict_proba(X_test, y_test=None): instance method
         Return the prediction probabilities for positive classes. Please note that
         it only reports the probability of the positive class, while the sklearn
         one returns for both and slicing like pred_proba[:, 1]
         is needed for positive class predictions
 
-    predict(X_test, y_test=None, threshold=0.5): class method
+    predict(X_test, y_test=None, threshold=0.5): instance method
         Returns the prediction classes based on the passed threshold.
         The default threshold is set at 0.5.
 
-    get_params(): class method
+    get_params(): instance method
         Returns params dict
 
-    get_intercept(): class method
+    get_intercept(): instance method
         Returns model's intercept
 
-    get_coeffs(): class method
+    get_coeffs(): instance method
         Returns non-zero coefficients DataFrame
 
-    get_cv_results(): class method
+    get_cv_results(): instance method
         Returns cross-validation results DataFrame
 
-    get_results(): class method
+    get_results(): instance method
         Returns model's total results dict
 
-    plot_cv_results(): class method
+    plot_cv_results(): instance method
         Returns plot of cross-validation results
 
-    plot_coeff_path(): class method
+    plot_coeff_path(): instance method
         Returns plot of coeff. paths
     """
 
@@ -1384,7 +1384,7 @@ class GLMNetCVClassifier:
 
     def _dtrain(self, X_train, y_train):
         """
-        Function to preprocess X_test, y_test data as
+        Function to preprocess X_train, y_train data as
         Pandas DataFrame for the sake of postprocessing.
 
         Parameters
@@ -1491,7 +1491,11 @@ class GLMNetCVClassifier:
         dct = dict(
             zip(
                 [self.X_train_.columns.tolist()[i] for i in idx],
-                [self.model_.coef_[0][i] for i in idx],
+                [
+                    self.model_.coef_.reshape(-1, self.model_.coef_.shape[-1])[0][i]
+                    for i in idx
+                ],
+                #                 [self.model_.coef_[0][i] for i in idx],
             )
         )
 
