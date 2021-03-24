@@ -1491,9 +1491,11 @@ class GLMNetCVClassifier:
         dct = dict(
             zip(
                 [self.X_train_.columns.tolist()[i] for i in idx],
-                [self.model_.coef_.reshape(-1, self.model_.coef_.shape[-1])[0][i] for i in idx],
-                
-#                 [self.model_.coef_[0][i] for i in idx],
+                [
+                    self.model_.coef_.reshape(-1, self.model_.coef_.shape[-1])[0][i]
+                    for i in idx
+                ],
+                #                 [self.model_.coef_[0][i] for i in idx],
             )
         )
 
