@@ -1134,16 +1134,6 @@ def plot_regression_metrics(figsize=None, **kwargs):
     )
     ax1_ylim = max(max(kwargs["y_pred"]), max(kwargs["y_true"]))
     ax1.tick_params(axis="both", which="major", labelsize=12)
-    #     ax1.text(
-    #         min(kwargs["y_true"]), ax1_ylim, f"MAPE = {kwargs['mape']:.3f}", fontsize=12
-    #     )
-
-    #     ax1.text(
-    #         min(kwargs["y_true"]),
-    #         0.97 * ax1_ylim,
-    #         f"$R^2$ = {kwargs['r2']:.3f}",
-    #         fontsize=12, transform=ax1.transAxes
-    #     )
 
     ax1.text(
         0.05 * min(kwargs["y_true"]),
