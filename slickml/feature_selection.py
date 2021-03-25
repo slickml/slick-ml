@@ -117,22 +117,22 @@ class XGBoostFeatureSelector:
         to plot the histograms of total internal/external
         cross-validation results
 
-    fit(X, y): class method
+    fit(X, y): instance method
         This is the main method to run the feature selection process and
         receives two arguments (X, y)
 
-    get_xgb_params(): class method
+    get_xgb_params(): instance method
         Returns params dict
 
-    get_feature_importance(): class method
+    get_feature_importance(): instance method
         Returns feature importance based on importance_type
         at each fold of each iteration of the selection process
 
-    get_feature_frequency(): class method
+    get_feature_frequency(): instance method
         Returns the total feature frequency of the best model
         at each fold of each iteration of selection process
 
-    get_cv_results(): class method
+    get_cv_results(): instance method
         Returns the total internal/external cross-validation results
     """
 
