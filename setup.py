@@ -13,6 +13,7 @@ def read(path, encoding="utf-8"):
     with io.open(path, encoding=encoding) as fp:
         return fp.read()
 
+
 def get_install_requirements(path):
     """Install all the packages in requirements.txt"""
     content = read(path)
@@ -28,6 +29,7 @@ def get_version(path):
     if version_match:
         return version_match.group(1)
     raise RuntimeError("Unable to find version string.")
+
 
 # ==============================================================================
 # Variables
