@@ -118,11 +118,11 @@ class XGBoostClassifierBayesianOpt(XGBoostCVClassifier):
     best_performance_: Target value and tuned params Pandas DataFrame()
         Return the dataframe of the best performance
 
-    fit(X_train, y_train): class method
+    fit(X_train, y_train): instance method
         Returns None and applies the optimization process using
         the (X_train, y_train) set using xgboost.cv() and Bayesian Opt
 
-    plot_optimization_results(): class method
+    plot_optimization_results(): instance method
         Plot all the optimization results
     """
 
@@ -446,18 +446,18 @@ class XGBoostClassifierHyperOpt(XGBoostClassifier):
 
     Attributes
     ----------
-    fit(X_train, y_train): class method
+    fit(X_train, y_train): instance method
         Returns None and applies the tuning process using
         the (X_train, y_train) and the given set of hyperparameters
 
-    xgb_cv(space): class method
+    xgb_cv(space): instance method
         Optimization function for XGBoost utilizing cross-validation
         based on space params
 
-    get_optimization_results(): class method
+    get_optimization_results(): instance method
         Returns pd.DataFrame for best parameters from all runs
 
-    get_optimization_trials(): class method
+    get_optimization_trials(): instance method
         Returns dict of best parameters for each individual trial run
     """
 
