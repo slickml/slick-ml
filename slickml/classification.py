@@ -216,148 +216,6 @@ class XGBoostClassifier:
                 for key, val in params.items():
                     self.params[key] = val
 
-    def _dtrain(self, X_train, y_train):
-        """
-        Function to return dtrain matrix based on
-        input parameters including sparse_matrix,
-        and scaled using both numpy array and pandas
-        DataFrame.
-
-        Parameters
-        ----------
-        X_train: numpy.array or pandas.DataFrame
-            Training features data
-
-        y_train: numpy.array[int] or list[int]
-            List of training ground truth binary values [0, 1]
-        """
-        if isinstance(X_train, np.ndarray):
-            self.X_train = pd.DataFrame(
-                X_train, columns=[f"F_{i}" for i in range(X_train.shape[1])]
-            )
-        elif isinstance(X_train, pd.DataFrame):
-            self.X_train = X_train
-        else:
-            raise TypeError(
-                "The input X_train must be numpy array or pandas DataFrame."
-            )
-
-        if isinstance(y_train, np.ndarray) or isinstance(y_train, list):
-            self.y_train = y_train
-        else:
-            raise TypeError("The input y_train must be numpy array or list.")
-
-        if self.sparse_matrix and self.scale_mean:
-            raise ValueError(
-                "The scale_mean should be False in conjuction of using sparse_matrix=True."
-            )
-
-        if self.scale_mean or self.scale_std:
-            self.scaler_ = StandardScaler(
-                with_mean=self.scale_mean, with_std=self.scale_std
-            )
-            self.X_train_ = pd.DataFrame(
-                self.scaler_.fit_transform(self.X_train),
-                columns=self.X_train.columns.tolist(),
-            )
-        else:
-            self.X_train_ = self.X_train.copy()
-
-        if not self.sparse_matrix:
-            dtrain = xgb.DMatrix(data=self.X_train_, label=self.y_train)
-        else:
-            dtrain = xgb.DMatrix(
-                data=df_to_csr(self.X_train_, fillna=0.0, verbose=False),
-                label=self.y_train,
-                feature_names=self.X_train_.columns.tolist(),
-            )
-
-        return dtrain
-
-    def _dtest(self, X_test, y_test=None):
-        """
-        Function to return dtest matrix based on
-        input X_test, y_test including sparse_matrix,
-        and scaled using both numpy array and pandas
-        DataFrame. It does apply scaler transformation
-        in case it was used. Please note that y_test is
-        optional since it might not be available while
-        validating the model.
-
-        Parameters
-        ----------
-        X_test: numpy.array or pandas.DataFrame
-            Testing/validation features data
-
-        y_test: numpy.array[int] or list[int], optional (default=None)
-            List of testing/validation ground truth binary values [0, 1]
-        """
-        if isinstance(X_test, np.ndarray):
-            self.X_test = pd.DataFrame(
-                X_test, columns=[f"F_{i}" for i in range(X_test.shape[1])]
-            )
-        elif isinstance(X_test, pd.DataFrame):
-            self.X_test = X_test
-        else:
-            raise TypeError("The input X_test must be numpy array or pandas DataFrame.")
-
-        if y_test is None:
-            self.y_test = None
-        elif isinstance(y_test, np.ndarray) or isinstance(y_test, list):
-            self.y_test = y_test
-        else:
-            raise TypeError("The input y_test must be numpy array or list.")
-
-        if self.scale_mean or self.scale_std:
-            self.X_test_ = pd.DataFrame(
-                self.scaler_.transform(self.X_test),
-                columns=self.X_test.columns.tolist(),
-            )
-        else:
-            self.X_test_ = self.X_test.copy()
-
-        if not self.sparse_matrix:
-            dtest = xgb.DMatrix(data=self.X_test_, label=self.y_test)
-        else:
-            dtest = xgb.DMatrix(
-                data=df_to_csr(self.X_test_, fillna=0.0, verbose=False),
-                label=self.y_test,
-                feature_names=self.X_test_.columns.tolist(),
-            )
-
-        return dtest
-
-    def _model(self):
-        """
-        Function to train XGBoost model based on the given number
-        of boosting round.
-        """
-        model = xgb.train(
-            params=self.params,
-            dtrain=self.dtrain_,
-            num_boost_round=self.num_boost_round - 1,
-        )
-        return model
-
-    def _imp_to_df(self):
-        """
-        Function to build convert feature importance to df.
-        """
-
-        data = {"feature": [], f"{self.importance_type}": []}
-        features_gain = self.model_.get_score(importance_type=self.importance_type)
-        for key, val in features_gain.items():
-            data["feature"].append(key)
-            data[f"{self.importance_type}"].append(val)
-
-        df = (
-            pd.DataFrame(data)
-            .sort_values(by=f"{self.importance_type}", ascending=False)
-            .reset_index(drop=True)
-        )
-
-        return df
-
     def fit(self, X_train, y_train):
         """
         Function to run xgboost.train() method based on the given number of
@@ -712,6 +570,148 @@ class XGBoostClassifier:
             fontsize=fontsize,
         )
 
+    def _dtrain(self, X_train, y_train):
+        """
+        Function to return dtrain matrix based on
+        input parameters including sparse_matrix,
+        and scaled using both numpy array and pandas
+        DataFrame.
+
+        Parameters
+        ----------
+        X_train: numpy.array or pandas.DataFrame
+            Training features data
+
+        y_train: numpy.array[int] or list[int]
+            List of training ground truth binary values [0, 1]
+        """
+        if isinstance(X_train, np.ndarray):
+            self.X_train = pd.DataFrame(
+                X_train, columns=[f"F_{i}" for i in range(X_train.shape[1])]
+            )
+        elif isinstance(X_train, pd.DataFrame):
+            self.X_train = X_train
+        else:
+            raise TypeError(
+                "The input X_train must be numpy array or pandas DataFrame."
+            )
+
+        if isinstance(y_train, np.ndarray) or isinstance(y_train, list):
+            self.y_train = y_train
+        else:
+            raise TypeError("The input y_train must be numpy array or list.")
+
+        if self.sparse_matrix and self.scale_mean:
+            raise ValueError(
+                "The scale_mean should be False in conjuction of using sparse_matrix=True."
+            )
+
+        if self.scale_mean or self.scale_std:
+            self.scaler_ = StandardScaler(
+                with_mean=self.scale_mean, with_std=self.scale_std
+            )
+            self.X_train_ = pd.DataFrame(
+                self.scaler_.fit_transform(self.X_train),
+                columns=self.X_train.columns.tolist(),
+            )
+        else:
+            self.X_train_ = self.X_train.copy()
+
+        if not self.sparse_matrix:
+            dtrain = xgb.DMatrix(data=self.X_train_, label=self.y_train)
+        else:
+            dtrain = xgb.DMatrix(
+                data=df_to_csr(self.X_train_, fillna=0.0, verbose=False),
+                label=self.y_train,
+                feature_names=self.X_train_.columns.tolist(),
+            )
+
+        return dtrain
+
+    def _dtest(self, X_test, y_test=None):
+        """
+        Function to return dtest matrix based on
+        input X_test, y_test including sparse_matrix,
+        and scaled using both numpy array and pandas
+        DataFrame. It does apply scaler transformation
+        in case it was used. Please note that y_test is
+        optional since it might not be available while
+        validating the model.
+
+        Parameters
+        ----------
+        X_test: numpy.array or pandas.DataFrame
+            Testing/validation features data
+
+        y_test: numpy.array[int] or list[int], optional (default=None)
+            List of testing/validation ground truth binary values [0, 1]
+        """
+        if isinstance(X_test, np.ndarray):
+            self.X_test = pd.DataFrame(
+                X_test, columns=[f"F_{i}" for i in range(X_test.shape[1])]
+            )
+        elif isinstance(X_test, pd.DataFrame):
+            self.X_test = X_test
+        else:
+            raise TypeError("The input X_test must be numpy array or pandas DataFrame.")
+
+        if y_test is None:
+            self.y_test = None
+        elif isinstance(y_test, np.ndarray) or isinstance(y_test, list):
+            self.y_test = y_test
+        else:
+            raise TypeError("The input y_test must be numpy array or list.")
+
+        if self.scale_mean or self.scale_std:
+            self.X_test_ = pd.DataFrame(
+                self.scaler_.transform(self.X_test),
+                columns=self.X_test.columns.tolist(),
+            )
+        else:
+            self.X_test_ = self.X_test.copy()
+
+        if not self.sparse_matrix:
+            dtest = xgb.DMatrix(data=self.X_test_, label=self.y_test)
+        else:
+            dtest = xgb.DMatrix(
+                data=df_to_csr(self.X_test_, fillna=0.0, verbose=False),
+                label=self.y_test,
+                feature_names=self.X_test_.columns.tolist(),
+            )
+
+        return dtest
+
+    def _model(self):
+        """
+        Function to train XGBoost model based on the given number
+        of boosting round.
+        """
+        model = xgb.train(
+            params=self.params,
+            dtrain=self.dtrain_,
+            num_boost_round=self.num_boost_round - 1,
+        )
+        return model
+
+    def _imp_to_df(self):
+        """
+        Function to build convert feature importance to df.
+        """
+
+        data = {"feature": [], f"{self.importance_type}": []}
+        features_gain = self.model_.get_score(importance_type=self.importance_type)
+        for key, val in features_gain.items():
+            data["feature"].append(key)
+            data[f"{self.importance_type}"].append(val)
+
+        df = (
+            pd.DataFrame(data)
+            .sort_values(by=f"{self.importance_type}", ascending=False)
+            .reset_index(drop=True)
+        )
+
+        return df
+
 
 class XGBoostCVClassifier(XGBoostClassifier):
     """XGBoost CV Classifier.
@@ -952,38 +952,6 @@ class XGBoostCVClassifier(XGBoostClassifier):
         else:
             self.verbose = verbose
 
-    def _cv(self):
-        """
-        Function to return XGBoost cv_results to find the best
-        number of boosting rounds.
-        """
-        cvr = xgb.cv(
-            params=self.params,
-            dtrain=self.dtrain_,
-            num_boost_round=self.num_boost_round,
-            nfold=self.n_splits,
-            stratified=self.stratified,
-            metrics=self.metrics,
-            early_stopping_rounds=self.early_stopping_rounds,
-            seed=self.random_state,
-            shuffle=self.shuffle,
-            callbacks=self.callbacks,
-        )
-
-        return cvr
-
-    def _model(self):
-        """
-        Function to train XGBoost model based on the best number
-        of boosting round.
-        """
-        model = xgb.train(
-            params=self.params,
-            dtrain=self.dtrain_,
-            num_boost_round=len(self.cv_results_) - 1,
-        )
-        return model
-
     def fit(self, X_train, y_train):
         """
         Function to run xgboost.cv() method first to find the best number of boosting round
@@ -1105,6 +1073,38 @@ class XGBoostCVClassifier(XGBoostClassifier):
             test_color,
             test_std_color,
         )
+
+    def _cv(self):
+        """
+        Function to return XGBoost cv_results to find the best
+        number of boosting rounds.
+        """
+        cvr = xgb.cv(
+            params=self.params,
+            dtrain=self.dtrain_,
+            num_boost_round=self.num_boost_round,
+            nfold=self.n_splits,
+            stratified=self.stratified,
+            metrics=self.metrics,
+            early_stopping_rounds=self.early_stopping_rounds,
+            seed=self.random_state,
+            shuffle=self.shuffle,
+            callbacks=self.callbacks,
+        )
+
+        return cvr
+
+    def _model(self):
+        """
+        Function to train XGBoost model based on the best number
+        of boosting round.
+        """
+        model = xgb.train(
+            params=self.params,
+            dtrain=self.dtrain_,
+            num_boost_round=len(self.cv_results_) - 1,
+        )
+        return model
 
 
 class GLMNetCVClassifier:
@@ -1381,183 +1381,6 @@ class GLMNetCVClassifier:
                 raise TypeError("The input max_features must have int dtype.")
             else:
                 self.max_features = max_features
-
-    def _dtrain(self, X_train, y_train):
-        """
-        Function to preprocess X_train, y_train data as
-        Pandas DataFrame for the sake of postprocessing.
-
-        Parameters
-        ----------
-        X_train: numpy.array or Pandas DataFrame
-            Training features data
-
-        y_train: numpy.array[int] or list[int]
-            List of training ground truth binary values [0, 1]
-        """
-        if isinstance(X_train, np.ndarray):
-            self.X_train = pd.DataFrame(
-                X_train, columns=[f"F_{i}" for i in range(X_train.shape[1])]
-            )
-        elif isinstance(X_train, pd.DataFrame):
-            self.X_train = X_train
-        else:
-            raise TypeError(
-                "The input X_train must be numpy array or pandas DataFrame."
-            )
-
-        if isinstance(y_train, np.ndarray) or isinstance(y_train, list):
-            self.y_train = y_train
-        else:
-            raise TypeError("The input y_train must be numpy array or list.")
-
-        return self.X_train, self.y_train
-
-    def _dtest(self, X_test, y_test=None):
-        """
-        Function to preprocess X_test, y_test data as
-        Pandas DataFrame for the sake of postprocessing.
-        Note that y_test is optional since it might not
-        be available while validating the model.
-
-        Parameters
-        ----------
-        X_test: numpy.array or Pandas DataFrame
-            Testing features data
-
-        y_test: numpy.array[int] or list[int]
-            List of testing ground truth binary values [0, 1]
-        """
-        if isinstance(X_test, np.ndarray):
-            self.X_test = pd.DataFrame(
-                X_test, columns=[f"F_{i}" for i in range(X_test.shape[1])]
-            )
-        elif isinstance(X_test, pd.DataFrame):
-            self.X_test = X_test
-        else:
-            raise TypeError("The input X_test must be numpy array or pandas DataFrame.")
-
-        if y_test is None:
-            self.y_test = None
-        elif isinstance(y_test, np.ndarray) or isinstance(y_test, list):
-            self.y_test = y_test
-        else:
-            raise TypeError("The input y_test must be numpy array or list.")
-
-        return self.X_test, self.y_test
-
-    def _model(self):
-        """
-        Function to initialize a LogitNet model.
-        """
-
-        model = glmnet.LogitNet(
-            alpha=self.alpha,
-            n_lambda=self.n_lambda,
-            min_lambda_ratio=self.min_lambda_ratio,
-            lambda_path=self.lambda_path,
-            standardize=self.scale,
-            fit_intercept=self.fit_intercept,
-            cut_point=self.cut_point,
-            n_splits=self.n_splits,
-            scoring=self.metric,
-            n_jobs=-1,
-            tol=self.tol,
-            max_iter=self.max_iter,
-            random_state=self.random_state,
-            max_features=self.max_features,
-            verbose=False,
-        )
-
-        return model
-
-    def _coeff_to_df(self):
-        """
-        Function to return the non-zero coeff for the best lambda as Pandas DataFrame.
-        """
-        dct = self._coeff_to_dict()
-
-        return (
-            pd.DataFrame(data=dct.items(), columns=["feature", "coeff"])
-            .sort_values(by="coeff", ascending=False)
-            .reset_index(drop=True)
-        )
-
-    def _coeff_to_dict(self):
-        """
-        Function to return the non-zero coeff for the best lambda as dict.
-        """
-        idx = list(np.nonzero(np.reshape(self.model_.coef_, (1, -1)))[1])
-        dct = dict(
-            zip(
-                [self.X_train_.columns.tolist()[i] for i in idx],
-                [
-                    self.model_.coef_.reshape(-1, self.model_.coef_.shape[-1])[0][i]
-                    for i in idx
-                ],
-                #                 [self.model_.coef_[0][i] for i in idx],
-            )
-        )
-
-        return dct
-
-    def _results(self):
-        """
-        Function to return model's results as a nested dictionary.
-        """
-        results = {}
-        results["coeff"] = self._coeff_to_dict()
-        results["coeff_path"] = dict(
-            zip(
-                [f"{col}" for col in self.X_train_.columns.tolist()],
-                (
-                    self.model_.coef_path_.reshape(-1, self.model_.coef_path_.shape[-1])
-                ).tolist(),
-            )
-        )
-        results["cv_standard_error"] = self.model_.cv_standard_error_.tolist()
-        results["cv_mean_score"] = self.model_.cv_mean_score_.tolist()
-        results["lambda_path"] = self.model_.lambda_path_.tolist()
-        results["lambda_best"] = self.model_.lambda_best_[0]
-        results["lambda_max"] = self.model_.lambda_max_
-        results["n_lambda"] = self.model_.n_lambda_
-        results["intercept"] = self.model_.intercept_
-        results["intercept_path"] = self.model_.intercept_path_.tolist()[0]
-        results["params"] = self.model_.get_params()
-        results["module"] = self.model_.__module__
-
-        return results
-
-    def _cv_results(self):
-        """
-        Function to return model's results as a Pandas DataFrame.
-        """
-        df = pd.DataFrame(
-            (self.model_.coef_path_.reshape(-1, self.model_.coef_path_.shape[-1])).T,
-            columns=[f"{col}_coeff_path" for col in self.X_train_.columns.tolist()],
-        )
-        df["intercept_path"] = (
-            self.model_.intercept_path_.reshape(
-                -1, self.model_.intercept_path_.shape[-1]
-            )
-        ).T
-        df["lambda_path"] = self.model_.lambda_path_
-        df["cv_standard_error"] = self.model_.cv_standard_error_
-        df["cv_mean_score"] = self.model_.cv_standard_error_
-
-        return df
-
-    def _prep_attributes(self):
-        """
-        Function to run all the model's attributes while fitting.
-        """
-        self.coeff_ = self._coeff_to_df()
-        self.results_ = self._results()
-        self.cv_results_ = self._cv_results()
-        self.intercept_ = self.model_.intercept_
-        self.params_ = self.model_.get_params()
-
-        return None
 
     def fit(self, X_train, y_train):
         """
@@ -1857,3 +1680,180 @@ class GLMNetCVClassifier:
             save_path=save_path,
             **self.results_,
         )
+
+    def _dtrain(self, X_train, y_train):
+        """
+        Function to preprocess X_train, y_train data as
+        Pandas DataFrame for the sake of postprocessing.
+
+        Parameters
+        ----------
+        X_train: numpy.array or Pandas DataFrame
+            Training features data
+
+        y_train: numpy.array[int] or list[int]
+            List of training ground truth binary values [0, 1]
+        """
+        if isinstance(X_train, np.ndarray):
+            self.X_train = pd.DataFrame(
+                X_train, columns=[f"F_{i}" for i in range(X_train.shape[1])]
+            )
+        elif isinstance(X_train, pd.DataFrame):
+            self.X_train = X_train
+        else:
+            raise TypeError(
+                "The input X_train must be numpy array or pandas DataFrame."
+            )
+
+        if isinstance(y_train, np.ndarray) or isinstance(y_train, list):
+            self.y_train = y_train
+        else:
+            raise TypeError("The input y_train must be numpy array or list.")
+
+        return self.X_train, self.y_train
+
+    def _dtest(self, X_test, y_test=None):
+        """
+        Function to preprocess X_test, y_test data as
+        Pandas DataFrame for the sake of postprocessing.
+        Note that y_test is optional since it might not
+        be available while validating the model.
+
+        Parameters
+        ----------
+        X_test: numpy.array or Pandas DataFrame
+            Testing features data
+
+        y_test: numpy.array[int] or list[int]
+            List of testing ground truth binary values [0, 1]
+        """
+        if isinstance(X_test, np.ndarray):
+            self.X_test = pd.DataFrame(
+                X_test, columns=[f"F_{i}" for i in range(X_test.shape[1])]
+            )
+        elif isinstance(X_test, pd.DataFrame):
+            self.X_test = X_test
+        else:
+            raise TypeError("The input X_test must be numpy array or pandas DataFrame.")
+
+        if y_test is None:
+            self.y_test = None
+        elif isinstance(y_test, np.ndarray) or isinstance(y_test, list):
+            self.y_test = y_test
+        else:
+            raise TypeError("The input y_test must be numpy array or list.")
+
+        return self.X_test, self.y_test
+
+    def _model(self):
+        """
+        Function to initialize a LogitNet model.
+        """
+
+        model = glmnet.LogitNet(
+            alpha=self.alpha,
+            n_lambda=self.n_lambda,
+            min_lambda_ratio=self.min_lambda_ratio,
+            lambda_path=self.lambda_path,
+            standardize=self.scale,
+            fit_intercept=self.fit_intercept,
+            cut_point=self.cut_point,
+            n_splits=self.n_splits,
+            scoring=self.metric,
+            n_jobs=-1,
+            tol=self.tol,
+            max_iter=self.max_iter,
+            random_state=self.random_state,
+            max_features=self.max_features,
+            verbose=False,
+        )
+
+        return model
+
+    def _coeff_to_df(self):
+        """
+        Function to return the non-zero coeff for the best lambda as Pandas DataFrame.
+        """
+        dct = self._coeff_to_dict()
+
+        return (
+            pd.DataFrame(data=dct.items(), columns=["feature", "coeff"])
+            .sort_values(by="coeff", ascending=False)
+            .reset_index(drop=True)
+        )
+
+    def _coeff_to_dict(self):
+        """
+        Function to return the non-zero coeff for the best lambda as dict.
+        """
+        idx = list(np.nonzero(np.reshape(self.model_.coef_, (1, -1)))[1])
+        dct = dict(
+            zip(
+                [self.X_train_.columns.tolist()[i] for i in idx],
+                [
+                    self.model_.coef_.reshape(-1, self.model_.coef_.shape[-1])[0][i]
+                    for i in idx
+                ],
+                #                 [self.model_.coef_[0][i] for i in idx],
+            )
+        )
+
+        return dct
+
+    def _results(self):
+        """
+        Function to return model's results as a nested dictionary.
+        """
+        results = {}
+        results["coeff"] = self._coeff_to_dict()
+        results["coeff_path"] = dict(
+            zip(
+                [f"{col}" for col in self.X_train_.columns.tolist()],
+                (
+                    self.model_.coef_path_.reshape(-1, self.model_.coef_path_.shape[-1])
+                ).tolist(),
+            )
+        )
+        results["cv_standard_error"] = self.model_.cv_standard_error_.tolist()
+        results["cv_mean_score"] = self.model_.cv_mean_score_.tolist()
+        results["lambda_path"] = self.model_.lambda_path_.tolist()
+        results["lambda_best"] = self.model_.lambda_best_[0]
+        results["lambda_max"] = self.model_.lambda_max_
+        results["n_lambda"] = self.model_.n_lambda_
+        results["intercept"] = self.model_.intercept_
+        results["intercept_path"] = self.model_.intercept_path_.tolist()[0]
+        results["params"] = self.model_.get_params()
+        results["module"] = self.model_.__module__
+
+        return results
+
+    def _cv_results(self):
+        """
+        Function to return model's results as a Pandas DataFrame.
+        """
+        df = pd.DataFrame(
+            (self.model_.coef_path_.reshape(-1, self.model_.coef_path_.shape[-1])).T,
+            columns=[f"{col}_coeff_path" for col in self.X_train_.columns.tolist()],
+        )
+        df["intercept_path"] = (
+            self.model_.intercept_path_.reshape(
+                -1, self.model_.intercept_path_.shape[-1]
+            )
+        ).T
+        df["lambda_path"] = self.model_.lambda_path_
+        df["cv_standard_error"] = self.model_.cv_standard_error_
+        df["cv_mean_score"] = self.model_.cv_standard_error_
+
+        return df
+
+    def _prep_attributes(self):
+        """
+        Function to run all the model's attributes while fitting.
+        """
+        self.coeff_ = self._coeff_to_df()
+        self.results_ = self._results()
+        self.cv_results_ = self._cv_results()
+        self.intercept_ = self.model_.intercept_
+        self.params_ = self.model_.get_params()
+
+        return None
