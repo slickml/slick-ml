@@ -1,9 +1,8 @@
 import gc
 import numpy as np
 import pandas as pd
-import xgboost
-from sklearn.model_selection import StratifiedKFold
 import xgboost as xgb
+from sklearn.model_selection import StratifiedKFold
 
 from slickml.feature_engineering import noisy_features
 from slickml.utilities import df_to_csr
@@ -293,238 +292,9 @@ class XGBoostFeatureSelector:
             else:
                 self.callbacks = None
 
-    def _xgb_imp_to_df(self):
-        """
-        Function to build convert feature importance to df.
-        """
-
-        data = {"feature": [], f"{self.importance_type}": []}
-        features_gain = self.model_.get_score(importance_type=self.importance_type)
-        for key, val in features_gain.items():
-            data["feature"].append(key)
-            data[f"{self.importance_type}"].append(val)
-
-        df = (
-            pd.DataFrame(data)
-            .sort_values(by=f"{self.importance_type}", ascending=False)
-            .reset_index(drop=True)
-        )
-
-        return df
-
-    def _cv(self):
-        """
-        Function to return XGBoost cv_results to find
-        the best number of boosting rounds.
-        """
-        cvr = xgb.cv(
-            params=self.params,
-            dtrain=self.dtrain,
-            num_boost_round=self.num_boost_round,
-            nfold=self.n_splits,
-            stratified=self.stratified,
-            metrics=self.metrics,
-            early_stopping_rounds=self.early_stopping_rounds,
-            seed=self.random_state_,
-            verbose_eval=self.verbose_eval,
-            shuffle=self.shuffle,
-            callbacks=self.callbacks,
-        )
-
-        return cvr
-
-    def _model(self):
-        """
-        Function to train XGBoost model based on
-        the best number of boosting round.
-        """
-        model = xgb.train(
-            params=self.params,
-            dtrain=self.dtrain,
-            num_boost_round=len(self.cvr) - 1,
-            evals=self.watchlist,
-            evals_result=self.evals_result,
-            verbose_eval=self.verbose_eval,
-        )
-
-        return model
-
-    def _freq(self):
-        """
-        Function to calculate feature frequency
-        based on final pruned features.
-        """
-
-        unique_elements, counts_elements = np.unique(
-            self.pruned_features, return_counts=True
-        )
-        counts_elements = [float(i) for i in list(counts_elements)]
-        feature_frequency = pd.DataFrame(
-            data={"Feature": list(unique_elements), "Frequency": counts_elements}
-        )
-        feature_frequency["Frequency (%)"] = round(
-            (feature_frequency["Frequency"] / float(self.n_splits * self.n_iter) * 100),
-            ndigits=2,
-        )
-        feature_frequency_ = feature_frequency.sort_values(
-            by=["Frequency", "Frequency (%)"], ascending=[False, False]
-        ).reset_index(drop=True)
-
-        return feature_frequency_
-
-    def get_xgb_params(self):
-        """
-        Function to return the train parameters for XGBoost.
-        """
-
-        return self.params
-
-    def get_feature_importance(self):
-        """
-        Function to return the feature importance of the best model
-        at each fold of each iteration of feature selection.
-        """
-
-        return self.feature_importance_
-
-    def get_feature_frequency(self):
-        """
-        Function to return the total feature frequency of the best model
-        at each fold of each iteration of feature selection.
-        """
-
-        return self.feature_frequency_
-
-    def get_cv_results(self):
-        """
-        Function to return both internal and external
-        cross-validation results as Pandas DataFrame().
-        """
-
-        return pd.DataFrame(self.cv_results_)
-
-    def get_plotting_cv(self):
-        """
-        Function to return the plotting dict()
-        for cross-validation results.
-        """
-
-        self.plotting_cv_ = {}
-        self.plotting_cv_["metric"] = self.metrics.upper()
-        self.plotting_cv_["eval_metric"] = self.params["eval_metric"].upper()
-        self.plotting_cv_["n_splits"] = self.n_splits
-        self.plotting_cv_["int_cv_train"] = self.cv_results_["int_cv_train"]
-        self.plotting_cv_["int_cv_test"] = self.cv_results_["int_cv_test"]
-        self.plotting_cv_["ext_cv_train"] = self.cv_results_["ext_cv_train"]
-        self.plotting_cv_["ext_cv_test"] = self.cv_results_["ext_cv_test"]
-
-        return self.plotting_cv_
-
-    def plot_frequency(
-        self,
-        figsize=None,
-        freq_pct=True,
-        color=None,
-        marker=None,
-        markersize=None,
-        markeredgecolor=None,
-        markerfacecolor=None,
-        markeredgewidth=None,
-        fontsize=None,
-    ):
-
-        """Function to plot selected features frequency.
-        This function is a helper function based on the features_frequency
-        attribute of the XGBoostFeatureSelector class.
-
-        Parameters
-        ----------
-        freq: Pandas DataFrame
-            Feature frequency
-
-        figsize: tuple, optional, (default=(8, 8))
-            Figure size
-
-        freq_pct: bool, optional, (default=True)
-            Flag to show the features frequency in percent
-
-        color: str, optional, (default="#87CEEB")
-            Color of the vertical lines of lollipops
-
-        marker: str, optional, (default="o")
-            Market style of the lollipops. Complete valid
-            marker styke can be found at:
-            (https://matplotlib.org/2.1.1/api/markers_api.html#module-matplotlib.markers)
-
-        markersize: int or float, optional, (default=10)
-            Markersize
-
-        markeredgecolor: str, optional, (default="1F77B4")
-            Marker edge color
-
-        markerfacecolor: str, optional, (default="1F77B4")
-            Marker face color
-
-        markeredgewidth: int or float, optional, (default=1)
-            Marker edge width
-
-        fontsize: int or float, optional, (default=12)
-            Fontsize for xlabel and ylabel, and ticks parameters
-        """
-
-        plot_xfs_feature_frequency(
-            self.feature_frequency_,
-            figsize,
-            freq_pct,
-            color,
-            marker,
-            markersize,
-            markeredgecolor,
-            markerfacecolor,
-            markeredgewidth,
-            fontsize,
-        )
-
-    def plot_cv_results(
-        self, figsize=None, int_color=None, ext_color=None, sharex=False, sharey=False
-    ):
-        """Function to plot the cross-validation results of
-        XGBoostFeatureSelector. It visualizes the internal
-        and external performance during the selection process.
-        Internal refers to the performance of train/test folds
-        during the xgboost.cv() using "metrics" rounds to help
-        the best number of boosting round. External refers to
-        the performance of xgboost.train() on watchlist using
-        eval_metric.
-
-        Parameters
-        ----------
-        figsize: tuple, optional, (default=(8, 4))
-            Figure size
-
-        int_color: str, optional, (default="#4169E1")
-            Color of the histograms for internal cv results
-
-        ext_color: str, optional, (default="#8A2BE2")
-            Color of the histograms for external cv results
-
-        sharex: bool, optional, (default=False)
-            Flag to share "X" axis for each column of subplots
-
-        sharey: bool, optional, (default=False)
-            Flag to share "Y" axis for each row of subplots
-
-        kwargs: dict
-            Plotting object plotting_cv_
-        """
-
-        plot_xfs_cv_results(
-            figsize, int_color, ext_color, sharex, sharey, **self.plotting_cv_
-        )
-
     def fit(self, X, y):
         """
-        Function to fit the main feature selection algorith,
+        Function to fit the main feature selection algorithm,
         and run the selection process.
 
         Parameters
@@ -790,3 +560,232 @@ class XGBoostFeatureSelector:
         self.feature_frequency_ = self._freq()
 
         return None
+
+    def plot_frequency(
+        self,
+        figsize=None,
+        freq_pct=True,
+        color=None,
+        marker=None,
+        markersize=None,
+        markeredgecolor=None,
+        markerfacecolor=None,
+        markeredgewidth=None,
+        fontsize=None,
+    ):
+
+        """Function to plot selected features frequency.
+        This function is a helper function based on the features_frequency
+        attribute of the XGBoostFeatureSelector class.
+
+        Parameters
+        ----------
+        freq: Pandas DataFrame
+            Feature frequency
+
+        figsize: tuple, optional, (default=(8, 8))
+            Figure size
+
+        freq_pct: bool, optional, (default=True)
+            Flag to show the features frequency in percent
+
+        color: str, optional, (default="#87CEEB")
+            Color of the vertical lines of lollipops
+
+        marker: str, optional, (default="o")
+            Market style of the lollipops. Complete valid
+            marker styke can be found at:
+            (https://matplotlib.org/2.1.1/api/markers_api.html#module-matplotlib.markers)
+
+        markersize: int or float, optional, (default=10)
+            Markersize
+
+        markeredgecolor: str, optional, (default="1F77B4")
+            Marker edge color
+
+        markerfacecolor: str, optional, (default="1F77B4")
+            Marker face color
+
+        markeredgewidth: int or float, optional, (default=1)
+            Marker edge width
+
+        fontsize: int or float, optional, (default=12)
+            Fontsize for xlabel and ylabel, and ticks parameters
+        """
+
+        plot_xfs_feature_frequency(
+            self.feature_frequency_,
+            figsize,
+            freq_pct,
+            color,
+            marker,
+            markersize,
+            markeredgecolor,
+            markerfacecolor,
+            markeredgewidth,
+            fontsize,
+        )
+
+    def plot_cv_results(
+        self, figsize=None, int_color=None, ext_color=None, sharex=False, sharey=False
+    ):
+        """Function to plot the cross-validation results of
+        XGBoostFeatureSelector. It visualizes the internal
+        and external performance during the selection process.
+        Internal refers to the performance of train/test folds
+        during the xgboost.cv() using "metrics" rounds to help
+        the best number of boosting round. External refers to
+        the performance of xgboost.train() on watchlist using
+        eval_metric.
+
+        Parameters
+        ----------
+        figsize: tuple, optional, (default=(8, 4))
+            Figure size
+
+        int_color: str, optional, (default="#4169E1")
+            Color of the histograms for internal cv results
+
+        ext_color: str, optional, (default="#8A2BE2")
+            Color of the histograms for external cv results
+
+        sharex: bool, optional, (default=False)
+            Flag to share "X" axis for each column of subplots
+
+        sharey: bool, optional, (default=False)
+            Flag to share "Y" axis for each row of subplots
+
+        kwargs: dict
+            Plotting object plotting_cv_
+        """
+
+        plot_xfs_cv_results(
+            figsize, int_color, ext_color, sharex, sharey, **self.plotting_cv_
+        )
+
+    def get_xgb_params(self):
+        """
+        Function to return the train parameters for XGBoost.
+        """
+
+        return self.params
+
+    def get_feature_importance(self):
+        """
+        Function to return the feature importance of the best model
+        at each fold of each iteration of feature selection.
+        """
+
+        return self.feature_importance_
+
+    def get_feature_frequency(self):
+        """
+        Function to return the total feature frequency of the best model
+        at each fold of each iteration of feature selection.
+        """
+
+        return self.feature_frequency_
+
+    def get_cv_results(self):
+        """
+        Function to return both internal and external
+        cross-validation results as Pandas DataFrame().
+        """
+
+        return pd.DataFrame(self.cv_results_)
+
+    def get_plotting_cv(self):
+        """
+        Function to return the plotting dict()
+        for cross-validation results.
+        """
+
+        self.plotting_cv_ = {}
+        self.plotting_cv_["metric"] = self.metrics.upper()
+        self.plotting_cv_["eval_metric"] = self.params["eval_metric"].upper()
+        self.plotting_cv_["n_splits"] = self.n_splits
+        self.plotting_cv_["int_cv_train"] = self.cv_results_["int_cv_train"]
+        self.plotting_cv_["int_cv_test"] = self.cv_results_["int_cv_test"]
+        self.plotting_cv_["ext_cv_train"] = self.cv_results_["ext_cv_train"]
+        self.plotting_cv_["ext_cv_test"] = self.cv_results_["ext_cv_test"]
+
+        return self.plotting_cv_
+
+    def _xgb_imp_to_df(self):
+        """
+        Function to convert the feature importance to df.
+        """
+
+        data = {"feature": [], f"{self.importance_type}": []}
+        features_gain = self.model_.get_score(importance_type=self.importance_type)
+        for key, val in features_gain.items():
+            data["feature"].append(key)
+            data[f"{self.importance_type}"].append(val)
+
+        df = (
+            pd.DataFrame(data)
+            .sort_values(by=f"{self.importance_type}", ascending=False)
+            .reset_index(drop=True)
+        )
+
+        return df
+
+    def _cv(self):
+        """
+        Function to return XGBoost cv_results to find
+        the best number of boosting rounds.
+        """
+        cvr = xgb.cv(
+            params=self.params,
+            dtrain=self.dtrain,
+            num_boost_round=self.num_boost_round,
+            nfold=self.n_splits,
+            stratified=self.stratified,
+            metrics=self.metrics,
+            early_stopping_rounds=self.early_stopping_rounds,
+            seed=self.random_state_,
+            verbose_eval=self.verbose_eval,
+            shuffle=self.shuffle,
+            callbacks=self.callbacks,
+        )
+
+        return cvr
+
+    def _model(self):
+        """
+        Function to train XGBoost model based on
+        the best number of boosting round.
+        """
+        model = xgb.train(
+            params=self.params,
+            dtrain=self.dtrain,
+            num_boost_round=len(self.cvr) - 1,
+            evals=self.watchlist,
+            evals_result=self.evals_result,
+            verbose_eval=self.verbose_eval,
+        )
+
+        return model
+
+    def _freq(self):
+        """
+        Function to calculate feature frequency
+        based on final pruned features.
+        """
+
+        unique_elements, counts_elements = np.unique(
+            self.pruned_features, return_counts=True
+        )
+        counts_elements = [float(i) for i in list(counts_elements)]
+        feature_frequency = pd.DataFrame(
+            data={"Feature": list(unique_elements), "Frequency": counts_elements}
+        )
+        feature_frequency["Frequency (%)"] = round(
+            (feature_frequency["Frequency"] / float(self.n_splits * self.n_iter) * 100),
+            ndigits=2,
+        )
+        feature_frequency_ = feature_frequency.sort_values(
+            by=["Frequency", "Frequency (%)"], ascending=[False, False]
+        ).reset_index(drop=True)
+
+        return feature_frequency_
