@@ -275,182 +275,6 @@ class GLMNetCVRegressor:
             else:
                 self.max_features = max_features
 
-    def _dtrain(self, X_train, y_train):
-        """
-        Function to preprocess X_train, y_train data as
-        Pandas DataFrame for the sake of postprocessing.
-
-        Parameters
-        ----------
-        X_train: numpy.array or Pandas DataFrame
-            Training features data
-
-        y_train: numpy.array[float] or list[float]
-            List of training ground truth values
-        """
-        if isinstance(X_train, np.ndarray):
-            self.X_train = pd.DataFrame(
-                X_train, columns=[f"F_{i}" for i in range(X_train.shape[1])]
-            )
-        elif isinstance(X_train, pd.DataFrame):
-            self.X_train = X_train
-        else:
-            raise TypeError(
-                "The input X_train must be numpy array or pandas DataFrame."
-            )
-
-        if isinstance(y_train, np.ndarray) or isinstance(y_train, list):
-            self.y_train = y_train
-        else:
-            raise TypeError("The input y_train must be numpy array or list.")
-
-        return self.X_train, self.y_train
-
-    def _dtest(self, X_test, y_test=None):
-        """
-        Function to preprocess X_test, y_test data as
-        Pandas DataFrame for the sake of postprocessing.
-        Note that y_test is optional since it might not
-        be available while validating the model.
-
-        Parameters
-        ----------
-        X_test: numpy.array or Pandas DataFrame
-            Testing features data
-
-        y_test: numpy.array[float] or list[float]
-            List of testing ground truth values
-        """
-        if isinstance(X_test, np.ndarray):
-            self.X_test = pd.DataFrame(
-                X_test, columns=[f"F_{i}" for i in range(X_test.shape[1])]
-            )
-        elif isinstance(X_test, pd.DataFrame):
-            self.X_test = X_test
-        else:
-            raise TypeError("The input X_test must be numpy array or pandas DataFrame.")
-
-        if y_test is None:
-            self.y_test = None
-        elif isinstance(y_test, np.ndarray) or isinstance(y_test, list):
-            self.y_test = y_test
-        else:
-            raise TypeError("The input y_test must be numpy array or list.")
-
-        return self.X_test, self.y_test
-
-    def _model(self):
-        """
-        Function to initialize a ElasticNet model.
-        """
-
-        model = glmnet.ElasticNet(
-            alpha=self.alpha,
-            n_lambda=self.n_lambda,
-            min_lambda_ratio=self.min_lambda_ratio,
-            lambda_path=self.lambda_path,
-            standardize=self.scale,
-            fit_intercept=self.fit_intercept,
-            cut_point=self.cut_point,
-            n_splits=self.n_splits,
-            scoring=self.metric,
-            n_jobs=-1,
-            tol=self.tol,
-            max_iter=self.max_iter,
-            random_state=self.random_state,
-            max_features=self.max_features,
-            verbose=False,
-        )
-
-        return model
-
-    def _coeff_to_df(self):
-        """
-        Function to return the non-zero coeff for the best lambda as Pandas DataFrame.
-        """
-        dct = self._coeff_to_dict()
-
-        return (
-            pd.DataFrame(data=dct.items(), columns=["feature", "coeff"])
-            .sort_values(by="coeff", ascending=False)
-            .reset_index(drop=True)
-        )
-
-    def _coeff_to_dict(self):
-        """
-        Function to return the non-zero coeff for the best lambda as dict.
-        """
-        idx = list(np.nonzero(np.reshape(self.model_.coef_, (1, -1)))[1])
-        dct = dict(
-            zip(
-                [self.X_train_.columns.tolist()[i] for i in idx],
-                [
-                    self.model_.coef_.reshape(-1, self.model_.coef_.shape[-1])[0][i]
-                    for i in idx
-                ],
-            )
-        )
-
-        return dct
-
-    def _results(self):
-        """
-        Function to return model's results as a nested dictionary.
-        """
-        results = {}
-        results["coeff"] = self._coeff_to_dict()
-        results["coeff_path"] = dict(
-            zip(
-                [f"{col}" for col in self.X_train_.columns.tolist()],
-                (
-                    self.model_.coef_path_.reshape(-1, self.model_.coef_path_.shape[-1])
-                ).tolist(),
-            )
-        )
-        results["cv_standard_error"] = self.model_.cv_standard_error_.tolist()
-        results["cv_mean_score"] = self.model_.cv_mean_score_.tolist()
-        results["lambda_path"] = self.model_.lambda_path_.tolist()
-        results["lambda_best"] = self.model_.lambda_best_[0]
-        results["lambda_max"] = self.model_.lambda_max_
-        results["n_lambda"] = self.model_.n_lambda_
-        results["intercept"] = self.model_.intercept_
-        results["intercept_path"] = self.model_.intercept_path_.tolist()[0]
-        results["params"] = self.model_.get_params()
-        results["module"] = self.model_.__module__
-
-        return results
-
-    def _cv_results(self):
-        """
-        Function to return model's results as a Pandas DataFrame.
-        """
-        df = pd.DataFrame(
-            (self.model_.coef_path_.reshape(-1, self.model_.coef_path_.shape[-1])).T,
-            columns=[f"{col}_coeff_path" for col in self.X_train_.columns.tolist()],
-        )
-        df["intercept_path"] = (
-            self.model_.intercept_path_.reshape(
-                -1, self.model_.intercept_path_.shape[-1]
-            )
-        ).T
-        df["lambda_path"] = self.model_.lambda_path_
-        df["cv_standard_error"] = self.model_.cv_standard_error_
-        df["cv_mean_score"] = self.model_.cv_standard_error_
-
-        return df
-
-    def _prep_attributes(self):
-        """
-        Function to run all the model's attributes while fitting.
-        """
-        self.coeff_ = self._coeff_to_df()
-        self.results_ = self._results()
-        self.cv_results_ = self._cv_results()
-        self.intercept_ = self.model_.intercept_
-        self.params_ = self.model_.get_params()
-
-        return None
-
     def fit(self, X_train, y_train):
         """
         Function to initialize a ElasticNet model using (X, y).
@@ -703,3 +527,179 @@ class GLMNetCVRegressor:
             save_path=save_path,
             **self.results_,
         )
+
+    def _dtrain(self, X_train, y_train):
+        """
+        Function to preprocess X_train, y_train data as
+        Pandas DataFrame for the sake of postprocessing.
+
+        Parameters
+        ----------
+        X_train: numpy.array or Pandas DataFrame
+            Training features data
+
+        y_train: numpy.array[float] or list[float]
+            List of training ground truth values
+        """
+        if isinstance(X_train, np.ndarray):
+            self.X_train = pd.DataFrame(
+                X_train, columns=[f"F_{i}" for i in range(X_train.shape[1])]
+            )
+        elif isinstance(X_train, pd.DataFrame):
+            self.X_train = X_train
+        else:
+            raise TypeError(
+                "The input X_train must be numpy array or pandas DataFrame."
+            )
+
+        if isinstance(y_train, np.ndarray) or isinstance(y_train, list):
+            self.y_train = y_train
+        else:
+            raise TypeError("The input y_train must be numpy array or list.")
+
+        return self.X_train, self.y_train
+
+    def _dtest(self, X_test, y_test=None):
+        """
+        Function to preprocess X_test, y_test data as
+        Pandas DataFrame for the sake of postprocessing.
+        Note that y_test is optional since it might not
+        be available while validating the model.
+
+        Parameters
+        ----------
+        X_test: numpy.array or Pandas DataFrame
+            Testing features data
+
+        y_test: numpy.array[float] or list[float]
+            List of testing ground truth values
+        """
+        if isinstance(X_test, np.ndarray):
+            self.X_test = pd.DataFrame(
+                X_test, columns=[f"F_{i}" for i in range(X_test.shape[1])]
+            )
+        elif isinstance(X_test, pd.DataFrame):
+            self.X_test = X_test
+        else:
+            raise TypeError("The input X_test must be numpy array or pandas DataFrame.")
+
+        if y_test is None:
+            self.y_test = None
+        elif isinstance(y_test, np.ndarray) or isinstance(y_test, list):
+            self.y_test = y_test
+        else:
+            raise TypeError("The input y_test must be numpy array or list.")
+
+        return self.X_test, self.y_test
+
+    def _model(self):
+        """
+        Function to initialize a ElasticNet model.
+        """
+
+        model = glmnet.ElasticNet(
+            alpha=self.alpha,
+            n_lambda=self.n_lambda,
+            min_lambda_ratio=self.min_lambda_ratio,
+            lambda_path=self.lambda_path,
+            standardize=self.scale,
+            fit_intercept=self.fit_intercept,
+            cut_point=self.cut_point,
+            n_splits=self.n_splits,
+            scoring=self.metric,
+            n_jobs=-1,
+            tol=self.tol,
+            max_iter=self.max_iter,
+            random_state=self.random_state,
+            max_features=self.max_features,
+            verbose=False,
+        )
+
+        return model
+
+    def _coeff_to_df(self):
+        """
+        Function to return the non-zero coeff for the best lambda as Pandas DataFrame.
+        """
+        dct = self._coeff_to_dict()
+
+        return (
+            pd.DataFrame(data=dct.items(), columns=["feature", "coeff"])
+            .sort_values(by="coeff", ascending=False)
+            .reset_index(drop=True)
+        )
+
+    def _coeff_to_dict(self):
+        """
+        Function to return the non-zero coeff for the best lambda as dict.
+        """
+        idx = list(np.nonzero(np.reshape(self.model_.coef_, (1, -1)))[1])
+        dct = dict(
+            zip(
+                [self.X_train_.columns.tolist()[i] for i in idx],
+                [
+                    self.model_.coef_.reshape(-1, self.model_.coef_.shape[-1])[0][i]
+                    for i in idx
+                ],
+            )
+        )
+
+        return dct
+
+    def _results(self):
+        """
+        Function to return model's results as a nested dictionary.
+        """
+        results = {}
+        results["coeff"] = self._coeff_to_dict()
+        results["coeff_path"] = dict(
+            zip(
+                [f"{col}" for col in self.X_train_.columns.tolist()],
+                (
+                    self.model_.coef_path_.reshape(-1, self.model_.coef_path_.shape[-1])
+                ).tolist(),
+            )
+        )
+        results["cv_standard_error"] = self.model_.cv_standard_error_.tolist()
+        results["cv_mean_score"] = self.model_.cv_mean_score_.tolist()
+        results["lambda_path"] = self.model_.lambda_path_.tolist()
+        results["lambda_best"] = self.model_.lambda_best_[0]
+        results["lambda_max"] = self.model_.lambda_max_
+        results["n_lambda"] = self.model_.n_lambda_
+        results["intercept"] = self.model_.intercept_
+        results["intercept_path"] = self.model_.intercept_path_.tolist()[0]
+        results["params"] = self.model_.get_params()
+        results["module"] = self.model_.__module__
+
+        return results
+
+    def _cv_results(self):
+        """
+        Function to return model's results as a Pandas DataFrame.
+        """
+        df = pd.DataFrame(
+            (self.model_.coef_path_.reshape(-1, self.model_.coef_path_.shape[-1])).T,
+            columns=[f"{col}_coeff_path" for col in self.X_train_.columns.tolist()],
+        )
+        df["intercept_path"] = (
+            self.model_.intercept_path_.reshape(
+                -1, self.model_.intercept_path_.shape[-1]
+            )
+        ).T
+        df["lambda_path"] = self.model_.lambda_path_
+        df["cv_standard_error"] = self.model_.cv_standard_error_
+        df["cv_mean_score"] = self.model_.cv_standard_error_
+
+        return df
+
+    def _prep_attributes(self):
+        """
+        Function to run all the model's attributes while fitting.
+        """
+        self.coeff_ = self._coeff_to_df()
+        self.results_ = self._results()
+        self.cv_results_ = self._cv_results()
+        self.intercept_ = self.model_.intercept_
+        self.params_ = self.model_.get_params()
+
+        return None
