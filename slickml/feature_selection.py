@@ -347,7 +347,7 @@ class XGBoostFeatureSelector:
             ext_cv_test2 = []
 
             # update random state
-            self.random_state_ = self.random_state * iteration
+            self.random_state_ = self.random_state + iteration
 
             # adding noise to data
             X_permuted = noisy_features(X=self.X, random_state=self.random_state_)
