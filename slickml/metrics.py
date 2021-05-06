@@ -420,7 +420,7 @@ class BinaryClassificationMetrics:
         metrics_df = pd.DataFrame(
             data=self.metrics_dict_,
             index=[
-                f"""Threshold = {self.threshold:.3f} | Average =
+                f"""Threshold = {self.threshold:.{self.precision_digits}f} | Average =
                 {self.average_method.title()}"""
             ],
         )
