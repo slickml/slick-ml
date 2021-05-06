@@ -26,7 +26,7 @@ solutions for a given problem with minimal code.
 
 ## Installation
 
-First, install Python 3.6 from https://www.python.org, and then run:
+First, install Python version >=3.6 from https://www.python.org, and then run:
 
 ```
 pip install slickml

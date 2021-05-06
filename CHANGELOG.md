@@ -4,13 +4,15 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 
+## Version 0.1.2 - 2021-04-17
+
 ### Fixed
 * [#63](https://github.com/slickml/slick-ml/pull/63) fixed bugs in RegressionMetrics plotting. Now, the text label positions are dynamic and invariat of the data. Additionally, fixed the bug in coef. shapes in `GLMNet` classes. 
 
 ### Updated
 * [#61](https://github.com/slickml/slick-ml/pull/61) updated `metrics.py` attributes API to end with under-score
 * [#63](https://github.com/slickml/slick-ml/pull/63) updated all docstrings based on Scikit-Learn API
-
+* [#64](https://github.com/slickml/slick-ml/pull/64) updated `setup.py` with dynamic version and install requirements
 
 ### Added
 * [#60](https://github.com/slickml/slick-ml/pull/60) added `CHANGELOG.md`
