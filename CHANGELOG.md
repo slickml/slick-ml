@@ -4,7 +4,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 ### Fixed
-* [#66](https://github.com/slickml/slick-ml/pull/66) fixed bugs in feature selection and metrics. 
+* [#66](https://github.com/slickml/slick-ml/pull/66) fixed bugs in feature selection algorithm. 
+* [#67](https://github.com/slickml/slick-ml/pull/67) fixed bugs in metrics. 
 
 ### Updated
 * [#66](https://github.com/slickml/slick-ml/pull/66) updated the order of the functions inside each class.
