@@ -251,6 +251,7 @@ def plot_xfs_feature_frequency(
     markerfacecolor=None,
     markeredgewidth=None,
     fontsize=None,
+    save_path=None
 ):
     """Function to plot selected features frequency.
     This function is a helper function based on the features_frequency
@@ -289,6 +290,10 @@ def plot_xfs_feature_frequency(
 
     fontsize: int or float, optional, (default=12)
         Fontsize for xlabel and ylabel, and ticks parameters
+        
+    save_path: str, optional (default=None)
+        The full or relative path to save the plot including the image format.
+        For example "myplot.png" or "../../myplot.pdf"        
 
     Returns None
     """
@@ -382,11 +387,15 @@ def plot_xfs_feature_frequency(
     ax.set_ylabel("Feature", fontsize=fontsize)
     ax.set_title("Important Features Frequency", fontsize=fontsize)
     ax.tick_params(axis="both", which="major", labelsize=fontsize)
+    
+    if save_path:
+        plt.savefig(save_path, bbox_inches="tight", dpi=200)
+        
     plt.show()
 
 
 def plot_xfs_cv_results(
-    figsize=None, int_color=None, ext_color=None, sharex=False, sharey=False, **kwargs
+    figsize=None, int_color=None, ext_color=None, sharex=False, sharey=False, save_path=None, **kwargs
 ):
     """Function to plot the cross-validation results ofXGBoostFeatureSelector.
     It visualizes the internal and external performance during the
@@ -411,6 +420,10 @@ def plot_xfs_cv_results(
 
     sharey: bool, optional, (default=False)
         Flag to share "Y" axis for each row of subplots
+        
+    save_path: str, optional (default=None)
+        The full or relative path to save the plot including the image format.
+        For example "myplot.png" or "../../myplot.pdf"          
 
     kwargs: dict()
         Plotting object plotting_cv_
@@ -457,6 +470,10 @@ def plot_xfs_cv_results(
     ax4.set(
         title=f"External {kwargs['n_splits']}-Folds CV {kwargs['eval_metric']} - Test"
     )
+    
+    if save_path:
+        plt.savefig(save_path, bbox_inches="tight", dpi=200)
+        
     plt.show()
 
 
@@ -470,6 +487,7 @@ def plot_xgb_cv_results(
     train_std_color=None,
     test_color=None,
     test_std_color=None,
+    save_path=None
 ):
     """Function to plot cv results of XGBoostCVClassifier.
 
@@ -502,6 +520,10 @@ def plot_xgb_cv_results(
 
     test_std_color: str, optional, (default="#D0AAF3")
         Color of the edge color of the testing std bars
+        
+    save_path: str, optional (default=None)
+        The full or relative path to save the plot including the image format.
+        For example "myplot.png" or "../../myplot.pdf"        
 
     Returns None
     """
@@ -596,6 +618,9 @@ def plot_xgb_cv_results(
     ax.set_title(f"""{metric} Evolution vs Boosting Rounds""", fontsize=12)
     ax.tick_params(axis="both", which="major", labelsize=12)
     ax.legend(loc=0, prop={"size": 12}, framealpha=0.0)
+    
+    if save_path:
+        plt.savefig(save_path, bbox_inches="tight", dpi=200)     
 
     plt.show()
 
@@ -610,6 +635,7 @@ def plot_xgb_feature_importance(
     markerfacecolor=None,
     markeredgewidth=None,
     fontsize=None,
+    save_path=None
 ):
     """Function to plot XGBoost feature importance.
     This function is a helper function based on the feature_importance_
@@ -645,6 +671,10 @@ def plot_xgb_feature_importance(
 
     fontsize: int or float, optional, (default=12)
         Fontsize for xlabel and ylabel, and ticks parameters
+        
+    save_path: str, optional (default=None)
+        The full or relative path to save the plot including the image format.
+        For example "myplot.png" or "../../myplot.pdf"            
 
     Returns None
     """
@@ -746,6 +776,10 @@ def plot_xgb_feature_importance(
     ax.set_title("Feature Importance", fontsize=fontsize)
     ax.set(xlim=[None, feature_importance[colx].max() * 1.13])
     ax.tick_params(axis="both", which="major", labelsize=fontsize)
+    
+    if save_path:
+        plt.savefig(save_path, bbox_inches="tight", dpi=200) 
+        
     plt.show()
 
 
@@ -765,6 +799,7 @@ def plot_shap_summary(
     class_names=None,
     class_inds=None,
     color_bar_label=None,
+    save_path=None
 ):
     """Function to plot shap summary plot.
     This function is a helper function to plot the shap summary plot
@@ -822,6 +857,10 @@ def plot_shap_summary(
 
     color_bar_label: str, optional, (default="Feature Value")
         Label for color bar
+        
+    save_path: str, optional (default=None)
+        The full or relative path to save the plot including the image format.
+        For example "myplot.png" or "../../myplot.pdf"          
 
     Returns None
     """
@@ -878,6 +917,10 @@ def plot_shap_summary(
         class_inds=class_inds,
         color_bar_label=color_bar_label,
     )
+    
+    if save_path:
+        plt.savefig(save_path, bbox_inches="tight", dpi=200)
+        
     plt.show()
 
 
@@ -896,6 +939,7 @@ def plot_shap_waterfall(
     max_display=None,
     title=None,
     fontsize=None,
+    save_path=None
 ):
     """Function to plot shap summary plot.
     This function is a helper function to plot the shap summary plot
@@ -949,6 +993,10 @@ def plot_shap_waterfall(
 
     fontsize: int or float, optional, (default=12)
         Fontsize for xlabel and ylabel, and ticks parameters
+        
+    save_path: str, optional (default=None)
+        The full or relative path to save the plot including the image format.
+        For example "myplot.png" or "../../myplot.pdf"           
 
     Returns None
     """
@@ -1089,11 +1137,14 @@ def plot_shap_waterfall(
         title=title,
     )
     ax2.set(xlabel="Composition Ratio (%)")
+    
+    if save_path:
+        plt.savefig(save_path, bbox_inches="tight", dpi=200)     
 
     plt.show()
 
 
-def plot_regression_metrics(figsize=None, **kwargs):
+def plot_regression_metrics(figsize=None, save_path=None, **kwargs):
     """Function to plot regression metrics.
     This function is a helper function based on the plotting_dict
     attribute of the RegressionMetrics class.
@@ -1102,6 +1153,10 @@ def plot_regression_metrics(figsize=None, **kwargs):
     ----------
     figsize: tuple, optional, (default=(12, 12))
         Figure size
+        
+    save_path: str, optional (default=None)
+        The full or relative path to save the plot including the image format.
+        For example "myplot.png" or "../../myplot.pdf"           
 
     Returns None
     """
@@ -1277,6 +1332,9 @@ def plot_regression_metrics(figsize=None, **kwargs):
 
     ax6.tick_params(axis="both", which="major", labelsize=12)
     ax6.legend(prop={"size": 12}, loc=4, framealpha=0.0)
+    
+    if save_path:
+        plt.savefig(save_path, bbox_inches="tight", dpi=200)    
 
     plt.show()
 

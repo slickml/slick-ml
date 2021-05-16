@@ -900,7 +900,7 @@ class RegressionMetrics:
 
         return plotting_dict
 
-    def plot(self, figsize=None):
+    def plot(self, figsize=None, save_path=None):
         """
         Function to plot binary classification metrics.
         This function is a helper function based on the plotting_dict
@@ -910,6 +910,10 @@ class RegressionMetrics:
         ----------
         figsize: tuple, optional, (default=(12, 12))
             Figure size
+            
+        save_path: str, optional (default=None)
+            The full or relative path to save the plot including the image format.
+            For example "myplot.png" or "../../myplot.pdf"             
         """
 
-        plot_regression_metrics(figsize, **self.plotting_dict_)
+        plot_regression_metrics(figsize=figsize, save_path=save_path, **self.plotting_dict_)

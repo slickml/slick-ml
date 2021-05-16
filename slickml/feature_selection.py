@@ -572,6 +572,7 @@ class XGBoostFeatureSelector:
         markerfacecolor=None,
         markeredgewidth=None,
         fontsize=None,
+        save_path=None
     ):
 
         """Function to plot selected features frequency.
@@ -614,20 +615,21 @@ class XGBoostFeatureSelector:
         """
 
         plot_xfs_feature_frequency(
-            self.feature_frequency_,
-            figsize,
-            freq_pct,
-            color,
-            marker,
-            markersize,
-            markeredgecolor,
-            markerfacecolor,
-            markeredgewidth,
-            fontsize,
+            freq=self.feature_frequency_,
+            figsize=figsize,
+            freq_pct=freq_pct,
+            color=color,
+            marker=marker,
+            markersize=markersize,
+            markeredgecolor=markeredgecolor,
+            markerfacecolor=markerfacecolor,
+            markeredgewidth=markeredgewidth,
+            fontsize=fontsize,
+            save_path=save_path
         )
 
     def plot_cv_results(
-        self, figsize=None, int_color=None, ext_color=None, sharex=False, sharey=False
+        self, figsize=None, int_color=None, ext_color=None, sharex=False, sharey=False, save_path=None
     ):
         """Function to plot the cross-validation results of
         XGBoostFeatureSelector. It visualizes the internal
@@ -654,13 +656,22 @@ class XGBoostFeatureSelector:
 
         sharey: bool, optional, (default=False)
             Flag to share "Y" axis for each row of subplots
+            
+        save_path: str, optional (default=None)
+            The full or relative path to save the plot including the image format.
+            For example "myplot.png" or "../../myplot.pdf"                
 
         kwargs: dict
             Plotting object plotting_cv_
         """
 
         plot_xfs_cv_results(
-            figsize, int_color, ext_color, sharex, sharey, **self.plotting_cv_
+            figsize=figsize,
+            int_color=int_color,
+            ext_color=ext_color, 
+            sharex=sharex, sharey=sharey,
+            save_path=save_path,
+            **self.plotting_cv_
         )
 
     def get_xgb_params(self):
