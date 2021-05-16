@@ -178,24 +178,16 @@ let others know that you are working on it. Whether the contributions consists o
 levels. The SlickML community goals are to be helpful and effective.
 
 ## Citing SlickML
-If you use SlickML in academic work, please consider citing
-https://doi.org/10.1117/12.2304418 .
+If you use SlickML in academic work, please consider citing it.
 
 ### Bibtex Entry:
 ```bib
-@inproceedings{tahmassebi2018ideeple,
-  title={ideeple: Deep learning in a flash},
-  author={Tahmassebi, Amirhessam},
-  booktitle={Disruptive Technologies in Information Sciences},
-  volume={10652},
-  pages={106520S},
-  year={2018},
-  organization={International Society for Optics and Photonics}
+@software{slickml2020,
+  title={SlickML: Slick Machine Learning in Python},
+  author={Tahmassebi, Amirhessam and Smith, Trace},
+  url={https://github.com/slickml/slick-ml},
+  version={0.1.3},
+  year={2021},
 }
 ```
-### APA Entry:
-
-Tahmassebi, A. (2018, May). ideeple: Deep learning in a flash. In Disruptive
-Technologies in Information Sciences (Vol. 10652, p. 106520S). International
-Society for Optics and Photonics.
 

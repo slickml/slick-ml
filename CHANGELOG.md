@@ -3,12 +3,22 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
+
+
+## Version 0.1.3 - 2021-05-15
+
 ### Fixed
 * [#66](https://github.com/slickml/slick-ml/pull/66) fixed bugs in feature selection algorithm. 
 * [#67](https://github.com/slickml/slick-ml/pull/67) fixed bugs in metrics. 
 
 ### Updated
 * [#66](https://github.com/slickml/slick-ml/pull/66) updated the order of the functions inside each class.
+* [#68](https://github.com/slickml/slick-ml/pull/68) updated `save_path` in plotting functions.
+* [#68](https://github.com/slickml/slick-ml/pull/68) updated `bibtex` citations to software.
+
+### Added
+* [#68](https://github.com/slickml/slick-ml/pull/68) added directories for `JOSS` and `NeurIPS` papers.
+
 
 ## Version 0.1.2 - 2021-04-17
 
