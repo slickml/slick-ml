@@ -17,7 +17,7 @@ warnings.filterwarnings("ignore")
 display(HTML("<style>.container { width:95% !important; }</style>"))
 
 
-def plot_binary_classification_metrics(figsize=None, **kwargs):
+def plot_binary_classification_metrics(figsize=None, save_path=None, **kwargs):
     """
     Function to plot binary classification metrics.
     This function is a helper function based on the plotting_dict
@@ -27,6 +27,10 @@ def plot_binary_classification_metrics(figsize=None, **kwargs):
     ----------
     figsize: tuple, optional, (default=(12, 12))
         Figure size
+        
+    save_path: str, optional (default=None)
+        The full or relative path to save the plot including the image format.
+        For example "myplot.png" or "../../myplot.pdf"        
 
     Returns None
     """
@@ -229,6 +233,9 @@ def plot_binary_classification_metrics(figsize=None, **kwargs):
             horizontalalignment="left",
             verticalalignment="bottom",
         )
+        
+    if save_path:
+        plt.savefig(save_path, bbox_inches="tight", dpi=200)        
 
     plt.show()
 
@@ -1319,7 +1326,7 @@ def plot_glmnet_cv_results(
         tick_params, and legend are resized with 0.85, 0.85, 0.75,
         and 0.85 fraction of title fontsize, respectively.
 
-    grid : bool, optional (default=True)
+    grid: bool, optional (default=True)
         Whether to show (x,y) grid on the plot.
 
     legend: bool, optional (default=True)
