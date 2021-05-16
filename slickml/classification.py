@@ -311,7 +311,7 @@ class XGBoostClassifier:
         markerfacecolor=None,
         markeredgewidth=None,
         fontsize=None,
-        save_path=None
+        save_path=None,
     ):
 
         """Function to plot XGBoost feature importance.
@@ -348,10 +348,10 @@ class XGBoostClassifier:
 
         fontsize: int or float, optional, (default=12)
             Fontsize for xlabel and ylabel, and ticks parameters
-            
+
         save_path: str, optional (default=None)
             The full or relative path to save the plot including the image format.
-            For example "myplot.png" or "../../myplot.pdf"            
+            For example "myplot.png" or "../../myplot.pdf"
         """
 
         plot_xgb_feature_importance(
@@ -364,7 +364,7 @@ class XGBoostClassifier:
             markerfacecolor=markerfacecolor,
             markeredgewidth=markeredgewidth,
             fontsize=fontsize,
-            save_path=save_path
+            save_path=save_path,
         )
 
     def plot_shap_summary(
@@ -383,7 +383,7 @@ class XGBoostClassifier:
         class_names=None,
         class_inds=None,
         color_bar_label=None,
-        save_path=None
+        save_path=None,
     ):
         """Function to plot shap summary plot.
         This function is a helper function to plot the shap summary plot
@@ -440,10 +440,10 @@ class XGBoostClassifier:
 
         color_bar_label: str, optional, (default="Feature Value")
             Label for color bar
-            
+
         save_path: str, optional (default=None)
             The full or relative path to save the plot including the image format.
-            For example "myplot.png" or "../../myplot.pdf"             
+            For example "myplot.png" or "../../myplot.pdf"
         """
 
         # define tree explainer
@@ -477,7 +477,7 @@ class XGBoostClassifier:
             class_names=class_names,
             class_inds=class_inds,
             color_bar_label=color_bar_label,
-            save_path=save_path
+            save_path=save_path,
         )
 
     def plot_shap_waterfall(
@@ -495,7 +495,7 @@ class XGBoostClassifier:
         max_display=None,
         title=None,
         fontsize=None,
-        save_path=None
+        save_path=None,
     ):
         """Function to plot shap waterfall plot.
         This function is a helper function to plot the shap waterfall plot
@@ -549,10 +549,10 @@ class XGBoostClassifier:
 
         fontsize: int or float, optional, (default=12)
             Fontsize for xlabel and ylabel, and ticks parameters
-            
+
         save_path: str, optional (default=None)
             The full or relative path to save the plot including the image format.
-            For example "myplot.png" or "../../myplot.pdf"            
+            For example "myplot.png" or "../../myplot.pdf"
         """
 
         # define tree explainer
@@ -585,7 +585,7 @@ class XGBoostClassifier:
             max_display=max_display,
             title=title,
             fontsize=fontsize,
-            save_path=save_path
+            save_path=save_path,
         )
 
     def _dtrain(self, X_train, y_train):
@@ -1044,7 +1044,7 @@ class XGBoostCVClassifier(XGBoostClassifier):
         train_std_color=None,
         test_color=None,
         test_std_color=None,
-        save_path=None
+        save_path=None,
     ):
         """
         Function to plot the results of xgboost.cv() process and evolution
@@ -1079,10 +1079,10 @@ class XGBoostCVClassifier(XGBoostClassifier):
 
         test_std_color: str, optional, (default="#D0AAF3")
             Color of the edge color of the testing std bars
-            
+
         save_path: str, optional (default=None)
             The full or relative path to save the plot including the image format.
-            For example "myplot.png" or "../../myplot.pdf"              
+            For example "myplot.png" or "../../myplot.pdf"
         """
 
         plot_xgb_cv_results(
@@ -1095,7 +1095,7 @@ class XGBoostCVClassifier(XGBoostClassifier):
             train_std_color=train_std_color,
             test_color=test_color,
             test_std_color=test_std_color,
-            save_path=save_path
+            save_path=save_path,
         )
 
     def _cv(self):

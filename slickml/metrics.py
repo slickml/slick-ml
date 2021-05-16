@@ -545,15 +545,15 @@ class BinaryClassificationMetrics:
         ----------
         figsize: tuple, optional, (default=(12, 12))
             Figure size
-            
+
         save_path: str, optional (default=None)
             The full or relative path to save the plot including the image format.
-            For example "myplot.png" or "../../myplot.pdf"            
+            For example "myplot.png" or "../../myplot.pdf"
         """
 
-        plot_binary_classification_metrics(figsize=figsize,
-                                           save_path=save_path,
-                                           **self.plotting_dict_)
+        plot_binary_classification_metrics(
+            figsize=figsize, save_path=save_path, **self.plotting_dict_
+        )
 
 
 class RegressionMetrics:
@@ -910,10 +910,12 @@ class RegressionMetrics:
         ----------
         figsize: tuple, optional, (default=(12, 12))
             Figure size
-            
+
         save_path: str, optional (default=None)
             The full or relative path to save the plot including the image format.
-            For example "myplot.png" or "../../myplot.pdf"             
+            For example "myplot.png" or "../../myplot.pdf"
         """
 
-        plot_regression_metrics(figsize=figsize, save_path=save_path, **self.plotting_dict_)
+        plot_regression_metrics(
+            figsize=figsize, save_path=save_path, **self.plotting_dict_
+        )
