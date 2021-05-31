@@ -592,7 +592,7 @@ def plot_xgb_cv_results(
 
     # update metrics capitalizations for title/labels
     metric = cv_results.columns.tolist()[0].split("-")[1]
-    metrics = ["AUC", "AUCPR", "Error", "LogLoss"]
+    metrics = ["AUC", "AUCPR", "Error", "LogLoss", "MAE", "RMSE", "RMSLE"]
     for m in metrics:
         if m.lower() == metric:
             metric = m
