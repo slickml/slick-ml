@@ -1,11 +1,11 @@
 from bayes_opt import BayesianOptimization
 import pandas as pd
 import xgboost as xgb
-from slickml.classification import XGBoostCVClassifier
-
 from hyperopt.pyll.stochastic import sample
-from slickml.classification import XGBoostClassifier
 from hyperopt import fmin, Trials, tpe, STATUS_OK, STATUS_FAIL
+
+from slickml.classification import XGBoostClassifier, XGBoostCVClassifier
+
 
 
 class XGBoostClassifierBayesianOpt(XGBoostCVClassifier):
