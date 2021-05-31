@@ -157,7 +157,10 @@ class XGBoostClassifier:
             if not isinstance(metrics, str):
                 raise TypeError("The input metrics must be a str dtype.")
             else:
-                self.metrics = metrics
+                if metric in ["auc", "aucpr", "error", "logloss"]:
+                    self.metrics = metrics
+                else:
+                    raise ValueError("The input metric value is not valid.")
 
         if not isinstance(sparse_matrix, bool):
             raise TypeError("The input sparse_matrix must have bool dtype.")
