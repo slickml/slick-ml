@@ -157,7 +157,7 @@ class XGBoostClassifier:
             if not isinstance(metrics, str):
                 raise TypeError("The input metrics must be a str dtype.")
             else:
-                if metric in ["auc", "aucpr", "error", "logloss"]:
+                if metrics in ["auc", "aucpr", "error", "logloss"]:
                     self.metrics = metrics
                 else:
                     raise ValueError("The input metric value is not valid.")
@@ -832,8 +832,8 @@ class XGBoostCVClassifier(XGBoostClassifier):
 
     cv_results_: Pandas DataFrame()
         Return a Pandas DataFrame() of the mean value of the metrics
-
-        n n-folds cross-validation for each boosting round
+        in n-folds cross-validation for each boosting round
+        
     scaler_: StandardScaler object
         Returns the scaler object if any of scale_mean or scale_std
         was passed True.
