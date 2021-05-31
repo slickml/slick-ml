@@ -1203,20 +1203,18 @@ def plot_regression_metrics(figsize=None, save_path=None, **kwargs):
         ylabel="Predicted Values",
         title="Actual-Predicted",
     )
-    ax1_ylim = max(max(kwargs["y_pred"]), max(kwargs["y_true"]))
     ax1.tick_params(axis="both", which="major", labelsize=12)
-
     ax1.text(
-        0.05 * min(kwargs["y_true"]),
-        0.93 * ax1_ylim,
+        0.05 ,
+        0.93 ,
         f"MAPE = {kwargs['mape']:.3f}",
         fontsize=12,
         transform=ax1.transAxes,
     )
 
     ax1.text(
-        0.05 * min(kwargs["y_true"]),
-        0.86 * ax1_ylim,
+        0.05 ,
+        0.86 ,
         f"$R^2$ = {kwargs['r2']:.3f}",
         fontsize=12,
         transform=ax1.transAxes,
