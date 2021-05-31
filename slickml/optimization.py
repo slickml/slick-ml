@@ -7,7 +7,6 @@ from hyperopt import fmin, Trials, tpe, STATUS_OK, STATUS_FAIL
 from slickml.classification import XGBoostClassifier, XGBoostCVClassifier
 
 
-
 class XGBoostClassifierBayesianOpt(XGBoostCVClassifier):
     """XGBoost Hyper-Parameters Tunning using Bayesian Optimization.
     This is wrapper using Bayesian Optimization to tune the parameters

@@ -1205,16 +1205,16 @@ def plot_regression_metrics(figsize=None, save_path=None, **kwargs):
     )
     ax1.tick_params(axis="both", which="major", labelsize=12)
     ax1.text(
-        0.05 ,
-        0.93 ,
+        0.05,
+        0.93,
         f"MAPE = {kwargs['mape']:.3f}",
         fontsize=12,
         transform=ax1.transAxes,
     )
 
     ax1.text(
-        0.05 ,
-        0.86 ,
+        0.05,
+        0.86,
         f"$R^2$ = {kwargs['r2']:.3f}",
         fontsize=12,
         transform=ax1.transAxes,
