@@ -1153,9 +1153,9 @@ class GLMNetCVClassifier:
         determining lambda_best_ and lambda_max_. If non-zero, must be
         at least 3.
 
-    metric: str or callable, optional (default="roc_auc")
+    metric: str or callable, optional (default="auc")
         Metric used for model selection during cross validation.
-        Valid options are "accuracy", "roc_auc", "average_precision",
+        Valid options are "accuracy", "roc_auc" (alias = "auc"), "average_precision",
         "precision", "recall". Alternatively, supply a function or callable
         object with the following signature "scorer(estimator, X, y)".
         Note, the metric function affects the selection of "lambda_best_" and
@@ -1327,6 +1327,8 @@ class GLMNetCVClassifier:
                     "recall",
                 ]:
                     self.metric = metric
+                elif metric == "auc":
+                    self.metric = "roc_auc"
                 else:
                     raise ValueError("The input metric value is not valid.")
 
