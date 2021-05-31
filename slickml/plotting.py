@@ -592,7 +592,7 @@ def plot_xgb_cv_results(
 
     # update metrics capitalizations for title/labels
     metric = cv_results.columns.tolist()[0].split("-")[1]
-    metrics = ["AUC", "AUCPR", "Error", "LogLoss"]
+    metrics = ["AUC", "AUCPR", "Error", "LogLoss", "MAE", "RMSE", "RMSLE"]
     for m in metrics:
         if m.lower() == metric:
             metric = m
@@ -773,9 +773,12 @@ def plot_xgb_feature_importance(
         markeredgewidth=markeredgewidth,
     )
 
+    # find max value
+    max_val = feature_importance[colx].max()
+
     # put importance values on the plot
     for index, value in enumerate(feature_importance[colx]):
-        ax.text(value + 10, index * 1.01, f"{value:.2f}")
+        ax.text(value + 0.05 * max_val, index * 1.01, f"{value:.2f}")
 
     ax.set_xlabel(f"{' '.join(colx.split('_')).title()}", fontsize=fontsize)
     ax.set_ylabel(f"{coly.title()}", fontsize=fontsize)
@@ -1200,20 +1203,18 @@ def plot_regression_metrics(figsize=None, save_path=None, **kwargs):
         ylabel="Predicted Values",
         title="Actual-Predicted",
     )
-    ax1_ylim = max(max(kwargs["y_pred"]), max(kwargs["y_true"]))
     ax1.tick_params(axis="both", which="major", labelsize=12)
-
     ax1.text(
-        0.05 * min(kwargs["y_true"]),
-        0.93 * ax1_ylim,
+        0.05,
+        0.93,
         f"MAPE = {kwargs['mape']:.3f}",
         fontsize=12,
         transform=ax1.transAxes,
     )
 
     ax1.text(
-        0.05 * min(kwargs["y_true"]),
-        0.86 * ax1_ylim,
+        0.05,
+        0.86,
         f"$R^2$ = {kwargs['r2']:.3f}",
         fontsize=12,
         transform=ax1.transAxes,

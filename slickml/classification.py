@@ -157,7 +157,10 @@ class XGBoostClassifier:
             if not isinstance(metrics, str):
                 raise TypeError("The input metrics must be a str dtype.")
             else:
-                self.metrics = metrics
+                if metrics in ["auc", "aucpr", "error", "logloss"]:
+                    self.metrics = metrics
+                else:
+                    raise ValueError("The input metric value is not valid.")
 
         if not isinstance(sparse_matrix, bool):
             raise TypeError("The input sparse_matrix must have bool dtype.")
@@ -829,8 +832,8 @@ class XGBoostCVClassifier(XGBoostClassifier):
 
     cv_results_: Pandas DataFrame()
         Return a Pandas DataFrame() of the mean value of the metrics
+        in n-folds cross-validation for each boosting round
 
-        n n-folds cross-validation for each boosting round
     scaler_: StandardScaler object
         Returns the scaler object if any of scale_mean or scale_std
         was passed True.
@@ -1153,9 +1156,9 @@ class GLMNetCVClassifier:
         determining lambda_best_ and lambda_max_. If non-zero, must be
         at least 3.
 
-    metric: str or callable, optional (default="roc_auc")
+    metric: str or callable, optional (default="auc")
         Metric used for model selection during cross validation.
-        Valid options are "accuracy", "roc_auc", "average_precision",
+        Valid options are "accuracy", "roc_auc" (alias = "auc"), "average_precision",
         "precision", "recall". Alternatively, supply a function or callable
         object with the following signature "scorer(estimator, X, y)".
         Note, the metric function affects the selection of "lambda_best_" and
@@ -1327,6 +1330,8 @@ class GLMNetCVClassifier:
                     "recall",
                 ]:
                     self.metric = metric
+                elif metric == "auc":
+                    self.metric = "roc_auc"
                 else:
                     raise ValueError("The input metric value is not valid.")
 
