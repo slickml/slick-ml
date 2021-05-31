@@ -5,6 +5,21 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## Unreleased
 
 
+## Version 0.1.4 - 2021-05-31
+
+### Fixed
+* [#70](https://github.com/slickml/slick-ml/pull/70) fixed bugs in `plot_xgb_cv_results`. 
+
+
+### Updated
+* [#70](https://github.com/slickml/slick-ml/pull/70) updated metrics initialization in `XGBoostClassifier` and `XGBoostCVClassifier`.
+* [#70](https://github.com/slickml/slick-ml/pull/70) updated notebook examples to go over each class separetely.
+
+### Added
+* [#70](https://github.com/slickml/slick-ml/pull/70) added `XGBoostRegressor` and `XGBoostCVRegressor` classes.
+* [#70](https://github.com/slickml/slick-ml/pull/70) added `NeurIPS 2021` submission pdf.
+
+
 ## Version 0.1.3 - 2021-05-15
 
 ### Fixed
