@@ -17,8 +17,6 @@ from slickml.plotting import (
 )
 
 
-
-
 class XGBoostRegressor:
     """XGBoost Regressor.
     This is wrapper using XGBoost regressor to train a XGBoost
@@ -701,7 +699,6 @@ class XGBoostRegressor:
         return df
 
 
-
 class XGBoostCVRegressor(XGBoostRegressor):
     """XGBoost CV Regressor.
     This is subclass of XGBoostRegressor to run xgboost.cv()
@@ -734,7 +731,7 @@ class XGBoostCVRegressor(XGBoostRegressor):
 
     random_state: int, optional (default=1367)
         Random seed
-        
+
     shuffle: bool, optional (default=True)
         Flag to shuffle data to have the ability of building
         stratified folds in xgboost.cv()
@@ -796,7 +793,7 @@ class XGBoostCVRegressor(XGBoostRegressor):
     cv_results_: Pandas DataFrame()
         Return a Pandas DataFrame() of the mean value of the metrics
         in n-folds cross-validation for each boosting round
-        
+
     scaler_: StandardScaler object
         Returns the scaler object if any of scale_mean or scale_std
         was passed True.
@@ -900,7 +897,6 @@ class XGBoostCVRegressor(XGBoostRegressor):
                 raise TypeError("The input random_state must have integer dtype.")
             else:
                 self.random_state = random_state
-
 
         if not isinstance(shuffle, bool):
             raise TypeError("The input shuffle must have bool dtype.")
@@ -1082,7 +1078,6 @@ class XGBoostCVRegressor(XGBoostRegressor):
         )
         return model
 
-    
 
 class GLMNetCVRegressor:
     """GLMNet CV Regressor.

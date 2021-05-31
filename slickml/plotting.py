@@ -772,10 +772,10 @@ def plot_xgb_feature_importance(
         markerfacecolor=markerfacecolor,
         markeredgewidth=markeredgewidth,
     )
-    
+
     # find max value
     max_val = feature_importance[colx].max()
-    
+
     # put importance values on the plot
     for index, value in enumerate(feature_importance[colx]):
         ax.text(value + 0.05 * max_val, index * 1.01, f"{value:.2f}")

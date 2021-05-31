@@ -833,7 +833,7 @@ class XGBoostCVClassifier(XGBoostClassifier):
     cv_results_: Pandas DataFrame()
         Return a Pandas DataFrame() of the mean value of the metrics
         in n-folds cross-validation for each boosting round
-        
+
     scaler_: StandardScaler object
         Returns the scaler object if any of scale_mean or scale_std
         was passed True.
