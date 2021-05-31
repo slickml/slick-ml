@@ -9,6 +9,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
 * [#70](https://github.com/slickml/slick-ml/pull/70) fixed bugs in `plot_xgb_cv_results`. 
+* [#70](https://github.com/slickml/slick-ml/pull/70) fixed bugs in `plot_regression_metrics`. 
 
 
 ### Updated
