@@ -4,6 +4,11 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 
+### Updated
+* [#71](https://github.com/slickml/slick-ml/pull/71) updated optimization examples.
+
+### Added
+* [#71](https://github.com/slickml/slick-ml/pull/71) added `XGBoostRegressorBayesianOpt` and `XGBoostRegressorHyperOpt` classes in optimization. 
 
 ## Version 0.1.4 - 2021-05-31
 
