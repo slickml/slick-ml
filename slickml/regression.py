@@ -35,7 +35,7 @@ class XGBoostRegressor:
         Metric used for evaluation at cross-validation
         using xgboost.cv(). Please note that this is different
         than eval_metric that needs to be passed to params dict.
-        Possible values are "rmse", "rmse", "mae"
+        Possible values are "rmse", "rmsle", "mae"
 
     sparse_matrix: bool, optional (default=False)
         Flag to convert data to sparse matrix with csr format.
