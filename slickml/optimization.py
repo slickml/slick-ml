@@ -624,7 +624,8 @@ class XGBoostClassifierHyperOpt(XGBoostClassifier):
         """
 
         return self.trials
-    
+
+
 class XGBoostRegressorBayesianOpt(XGBoostCVRegressor):
     """XGBoost Hyper-Parameters Tunning using Bayesian Optimization.
     This is wrapper using Bayesian Optimization to tune the parameters
@@ -634,18 +635,18 @@ class XGBoostRegressorBayesianOpt(XGBoostCVRegressor):
     the optimizier objective is always to maximize the target. Therefore,
     in case of using a metric such as logloss or error, the negative value
     of the metric will be maximized.
-    
+
     Parameters
     ----------
     n_iter: int, optional (default=5)
         Number of iteration rounds for hyper-parameters tuning
-        
+
     init_points: int, optional (default=5)
         Number of initial points to initialize the optimizer
-        
+
     acq: str, optional (default="ei")
         Type of acquisition function such as expected improvement (ei)
-        
+
     pbounds: dict, optional
         Set of parameters boundaries for Bayesian Optimization
         (default={"max_depth" : (2, 7),
@@ -656,85 +657,85 @@ class XGBoostRegressorBayesianOpt(XGBoostCVRegressor):
                   "gamma" : (0, 1),
                   "reg_alpha" : (0, 1),
                   "reg_lambda" : (0, 1)})
-                  
+
     num_boost_round: int, optional (default=200)
         Number of boosting round at each fold of xgboost.cv()
-        
+
     n_splits: int, optional (default=4)
         Number of folds for cross-validation
-        
+
     metrics: str or tuple[str], optional (default=("rmse"))
         Metric used for evaluation at cross-validation
         using xgboost.cv(). Please note that this is different
         than eval_metric that needs to be passed to params dict.
         Possible values are "rmse", "rmsle", "mae"
-        
+
     objective: str, optional (default="reg:squarederror")
         Type of objective function regression;
         Other options for objective: "reg:logistic", "reg:squaredlogerror"
-        
+
     early_stopping_rounds: int, optional (default=20)
         The criterion to early abort the xgboost.cv() phase
         if the test metric is not improved
-        
+
     random_state: int, optional (default=1367)
         Random seed
-        
+
     shuffle: bool, optional (default=True)
         Flag to shuffle data to have the ability of building
         stratified folds in xgboost.cv()
-        
+
     sparse_matrix: bool, optional (default=False)
         Flag to convert data to sparse matrix with csr format.
         This would increase the speed of feature selection for
         relatively large datasets
-        
+
     scale_mean: bool, optional (default=False)
         Flag to center the data before scaling. This flag should be
         False when using sparse_matrix=True, since it centering the data
         would decrease the sparsity and in practice it does not make any
         sense to use sparse matrix method and it would make it worse.
-        
+
     scale_std: bool, optional (default=False)
         Flag to scale the data to unit variance
         (or equivalently, unit standard deviation)
-        
+
     importance_type: str, optional (default="total_gain")
         Importance type of xgboost.train() with possible values
         "weight", "gain", "total_gain", "cover", "total_cover"
-        
+
     verbose: bool, optional (default=True)
         Flag to show the Bayesian Optimization progress at each iteration
-        
+
     Attributes
     ----------
     scaler_: StandardScaler object
         Returns the scaler object if any of scale_mean or scale_std
         was passed True.
-        
+
     X_train_: pandas.DataFrame
         Returns scaled training data set that passed if if any of
         scale_mean or scale_std was passed as True, else X_train.
-        
+
     d_train_: xgboost.DMatrix object
         Returns the xgboost.DMatrix(X_train_, y_train)
-        
+
     optimizer_: Bayesian Optimiziation object
         Returns the fitted optimizer on (X_train_, y_train)
-        
+
     optimization_results_: Optimization results Pandas DataFrame()
         Returns all the optimization results including target and params
-        
+
     best_params_: Tuned xgboost params dict
         Returns the tuned params dict
-        
+
     best_performance_: Target value and tuned params Pandas DataFrame()
         Return the dataframe of the best performance
-        
+
     fit(X_train, y_train): instance method
         Returns None and applies the optimization process using
         the (X_train, y_train) set using xgboost.cv() and Bayesian Opt
-        
+
     plot_optimization_results(): instance method
         Plot all the optimization results
     """
@@ -968,9 +969,7 @@ class XGBoostRegressorBayesianOpt(XGBoostCVRegressor):
         """
         Function to plot the optimization results.
         """
-        pass    
-
-
+        pass
 
 
 class XGBoostRegressorHyperOpt(XGBoostRegressor):
@@ -1219,4 +1218,3 @@ class XGBoostRegressorHyperOpt(XGBoostRegressor):
         """
 
         return self.trials
-    
