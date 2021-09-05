@@ -5,6 +5,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## Unreleased
 
 ### Updated
+* [#74](https://github.com/slickml/slick-ml/pull/74) updated `requirements.txt` to the latest versions.
 * [#71](https://github.com/slickml/slick-ml/pull/71) updated optimization examples.
 
 ### Added
