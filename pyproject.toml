@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "slickML" 
+name = "slick-ml" 
 version = "0.1.0"
 description = "toolbox for rapidly developing Data Science solutions"  
 authors = ["Trace Smith <tsmith5151@gmail.com>", "Amir Tahmassebi <amir.benny@gmail.com>"]
