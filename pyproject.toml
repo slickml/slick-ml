@@ -3,6 +3,9 @@ name = "slick-ml"
 version = "0.1.0"
 description = "toolbox for rapidly developing Data Science solutions"  
 authors = ["Trace Smith <tsmith5151@gmail.com>", "Amir Tahmassebi <amir.benny@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+homepage = "http://www.slickml.com" 
 
 [tool.poetry.dependencies]
 python = "^3.7.1" 
