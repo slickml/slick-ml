@@ -1,0 +1,31 @@
+name: CI/CD Workflow 
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - '**.md'
+  pull_request:
+    paths-ignore:
+      - '**.md'
+jobs:
+  run:
+    name: Run Automation Checks
+    runs-on: ${{ matrix.operating-system }}
+    strategy:
+      matrix:
+        operating-system: [ubuntu-latest]
+        python-version: [3.8.1]
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v2
+    - name: Setup Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install dependencies 
+      run: | 
+        make install
+    - name: Run Checks
+      run: |
+        make checks  
