@@ -1,11 +1,6 @@
   
 PROJECT = "slick-ml" 
 SHELL := /bin/bash
-EXEC := poetry run
-
-install:
-	pip install poetry
-	poetry install 
 
 format:
 	@${EXEC} black .
