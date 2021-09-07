@@ -13,3 +13,4 @@ exclude =
     .github
 	.ipynb_checkpoints
     docs/conf.py
+	Makefile
