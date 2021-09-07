@@ -10,7 +10,7 @@ ModelWithData = namedtuple("ModelWithData", ["model", "matrix", "features", "tar
 
 
 def get_params():
-    """ Model Parameters """
+    """Model Parameters"""
     params = {
         "eval_metric": "auc",
         "tree_method": "hist",
@@ -62,7 +62,7 @@ def xgb_classifier():
 
 @pytest.mark.model
 def test_model(xgb_classifier) -> None:
-    """ Test Classification Model"""
+    """Test Classification Model"""
 
     # xgb model
     model = xgb_classifier.model

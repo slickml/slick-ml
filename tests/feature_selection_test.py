@@ -1,4 +1,4 @@
 def test_main() -> None:
-    """ Test Example"""
+    """Test Example"""
     x = "test"
     assert x == "test"
