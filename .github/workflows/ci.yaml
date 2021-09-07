@@ -2,7 +2,7 @@ name: CI/CD Workflow
 on:
   push:
     branches:
-      - main
+      - feature/cicd
     paths-ignore:
       - '**.md'
   pull_request:
