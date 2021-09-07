@@ -45,7 +45,7 @@ LICENSE = "MIT"
 PYTHON_REQUIRES = ">=3.6"
 PACKAGES = setuptools.find_packages()
 VERSION = get_version("slickml/__init__.py")
-INSTALL_REQUIRES = get_install_requirements("requirements.txt"),
+INSTALL_REQUIRES = (get_install_requirements("requirements.txt"),)
 # ==============================================================================
 # Setup
 # ==============================================================================
