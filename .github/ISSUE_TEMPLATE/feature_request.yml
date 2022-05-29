@@ -1,0 +1,48 @@
+name: Feature Request
+description: Request a new feature ...
+title: "[FEATURE]: "
+labels: ["enhancement"]
+assignees:
+  - amirhessam88
+  - Tsmith5151
+body:
+  - type: markdown
+    attributes:
+      value: |
+        The SlickML🧞 team members appreciate your time to fill out this feature request ...
+
+  - type: input
+    id: contact
+    attributes:
+      label: Contact Details [Optional]
+      description: How can we get in touch with you if we need more info?
+      placeholder: your-email@example.com
+    validations:
+      required: false
+
+  - type: textarea
+    id: feature-description
+    attributes:
+      label: Describe the feature you are interested in ...
+      description: A clear and concise description of what you would like to be implemented ...
+      placeholder: "The functionality that can be added to SlickML🧞 can be ..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: feature-problem
+    attributes:
+      label: Is your feature request related to a problem?
+      description: Please describe the problem in details and how do you solve your current problem with the current implementation of SlickML🧞 ...
+      placeholder: "I'm always frustrated when ..."
+    validations:
+      required: false
+
+  - type: textarea
+    id: feature-solution
+    attributes:
+      label: Any other comments?
+      description: Add any other context about the feature here ...
+      placeholder: "This is (also) related to issue #42."
+    validations:
+      required: false

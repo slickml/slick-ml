@@ -1,13 +1,13 @@
-name: CI/CD Workflow 
+name: Build, Format, Lint, Test
 on:
   push:
     branches:
-      - main 
+      - main
     paths-ignore:
-      - '**.md'
+      - "**.md"
   pull_request:
     paths-ignore:
-      - '**.md'
+      - "**.md"
 jobs:
   run:
     name: Run Automation Checks
@@ -15,17 +15,17 @@ jobs:
     strategy:
       matrix:
         operating-system: [ubuntu-latest]
-        python-version: [3.8.1]
+        python-version: [3.9.7]
     steps:
-    - name: Checkout Code
-      uses: actions/checkout@v2
-    - name: Setup Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
-      with:
-        python-version: ${{ matrix.python-version }}
-    - name: Install dependencies 
-      run: | 
-        make install
-    - name: Run Checks
-      run: |
-        make checks  
+      - name: Checkout Code
+        uses: actions/checkout@v2
+      - name: Setup Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: |
+          make install
+      - name: Run Checks
+        run: |
+          make checks
