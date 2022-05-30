@@ -54,7 +54,7 @@ jobs:
       #----------------------------------------------
       #  -----  Integration test suite  -----
       #----------------------------------------------
-      # TODO(amir): de-dup the `source .venv/bin/activate` or `source $VENV` command
+      # TODO(amir): de-dup the `source .venv/bin/activate` (`source $VENV`) command
       - name: Lint
         run: |
           source $VENV
