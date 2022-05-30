@@ -66,3 +66,16 @@ jobs:
         run: |
           source $VENV
           poetry build
+      #----------------------------------------------
+      #  ---  Upload test coverage to Codecov  ---
+      #----------------------------------------------
+      - name: Codecov Badge
+        uses: codecov/codecov-action@v2
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          directory: ./xmlcov/
+          fail_ci_if_error: true
+          files: ./xmlcov/coverage.xml
+          flags: unittests
+          name: codecov-umbrella
+          verbose: true
