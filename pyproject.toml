@@ -51,7 +51,7 @@ exclude = [
 
 
 [tool.poetry.dependencies]
-python = ">=3.8,<3.10"
+python = ">=3.8,<3.11"
 
 # --- pythonic-dev ---
 pydantic = "^1.9.1"

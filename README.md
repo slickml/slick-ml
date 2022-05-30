@@ -26,7 +26,7 @@ Data Scientists with a toolbox to quickly prototype solutions for a given proble
 
 
 ## 🛠 Installation
-To begin with, install [Python version >=3.8,<3.10](https://www.python.org) and simply run 🏃‍♀️ :
+To begin with, install [Python version >=3.8,<3.11](https://www.python.org) and simply run 🏃‍♀️ :
 ```console
 pip install slickml
 ```
