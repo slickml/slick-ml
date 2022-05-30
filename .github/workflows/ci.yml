@@ -32,7 +32,6 @@ jobs:
         run: |
           poetry install -vv
           source .venv/bin/activate
-
       #----------------------------------------------
       # -----  install & configure poetry  -----
       #----------------------------------------------
