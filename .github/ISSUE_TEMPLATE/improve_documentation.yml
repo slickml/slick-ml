@@ -1,4 +1,4 @@
-name: Improve Documentation
+name: Documentation Improvements
 description: Improve documentation ...
 title: "[DOCUMENTATION]: "
 labels: ["documentation"]
@@ -34,10 +34,10 @@ body:
       required: true
 
   - type: textarea
-    id: feature-solution
+    id: improvement-solution
     attributes:
       label: Any other comments?
-      description: Add any other context about the feature here ...
+      description: Add any other context about the improvements here ...
       placeholder: "This is (also) related to issue #42."
     validations:
       required: false
