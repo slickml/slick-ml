@@ -69,7 +69,7 @@ jobs:
       #----------------------------------------------
       #  ---  Upload test coverage to Codecov  ---
       #----------------------------------------------
-      - name: Codecov Badge
+      - name: Codecov
         uses: codecov/codecov-action@v2
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
