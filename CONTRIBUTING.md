@@ -53,7 +53,7 @@ Please note that before starting any major work, open an issue describing what y
 
 ### 🐍 🥷 Environment Management
 
-- To begin with, install a [Python version >=3.8,<3.10](https://www.python.org).
+- To begin with, install a [Python version >=3.8,<3.11](https://www.python.org).
 - A working [Fortran Compiler](https://gcc.gnu.org/install/) (`gfortran`) is also required. If you do not have `gcc` installed, the following commands depending on your operating system will take care of this requirement. Please note that installing `gcc` sometimes might take couple minutes ⏳ 🤦‍♂️.
   ```console
   # Mac Users
