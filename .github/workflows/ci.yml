@@ -1,24 +1,18 @@
 name: build
-on:
-  push:
-    branches:
-      - master
-    paths-ignore:
-      - "**.md"
-  pull_request:
-    paths-ignore:
-      - "**.md"
+
+on: pull_request
+
 jobs:
   ci:
     #----------------------------------------------
-    # -----  setup operating system  -----
+    # -----  setup operating system (os)  -----
     #----------------------------------------------
-    runs-on: ${{ matrix.operating-system }}
+    runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
-        operating-system: [ubuntu-latest]
-        python-version: [3.9.7]
+        os: [ubuntu-latest]
+        python-version: [3.8, 3.9]
     steps:
       #----------------------------------------------
       # ----- check-out repo and set-up python -----
@@ -42,16 +36,11 @@ jobs:
       #  -----  install dependencies  -----
       #----------------------------------------------
       - name: Install Dependencies
-        run: poetry install -vv --no-root
+        run: poetry install -vv
       #----------------------------------------------
-      # -----  install slickml  -----
+      #  -----  Integration test suite  -----
       #----------------------------------------------
-      - name: Install SlickML
-        run: poetry install
-      #----------------------------------------------
-      #  -----  run test suite  -----
-      #----------------------------------------------
-      - name: Run Test Suite
+      - name: Integration Test Suite
         run: |
           source .venv/bin/activate
           poe check
