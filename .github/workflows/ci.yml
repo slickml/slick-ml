@@ -44,26 +44,26 @@ jobs:
         uses: actions/cache@v2
         with:
           path: .venv
-          key: venv-${{ runner.os }}-${{ hashFiles('**/poetry.lock') }}
+          key: venv-${{ runner.os }}-${{ hashFiles("**/poetry.lock") }}
       #----------------------------------------------
       #  -----  install dependencies  -----
       #----------------------------------------------
       - name: Install Dependencies
         run: poetry install -vv
-        if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
+        if: steps.cached-poetry-dependencies.outputs.cache-hit != "true"
       #----------------------------------------------
       #  -----  Integration test suite  -----
       #----------------------------------------------
       # TODO(amir): de-dup the `source .venv/bin/activate` (`source $VENV`) command
       - name: Lint
         run: |
-          source .venv/bin/activate
+          source $VENV
           poe check
       - name: Test
         run: |
-          source .venv/bin/activate
+          source $VENV
           poe test
       - name: Build
         run: |
-          source .venv/bin/activate
+          source $VENV
           poetry build
