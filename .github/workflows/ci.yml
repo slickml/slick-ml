@@ -35,7 +35,6 @@ jobs:
           virtualenvs-create: true
           virtualenvs-in-project: true
           installer-parallel: true
-        run: poetry --version
       #----------------------------------------------
       #  -----  load cached dependencies  -----
       #----------------------------------------------
