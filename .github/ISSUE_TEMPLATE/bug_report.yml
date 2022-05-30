@@ -5,6 +5,10 @@ labels: ["bug"]
 assignees:
   - amirhessam88
   - Tsmith5151
+  - eitanlees
+  - mkohram
+  - b-mohebali
+  - nicholasjma
 body:
   - type: markdown
     attributes:
