@@ -73,6 +73,8 @@ jobs:
       #  ---  Upload test coverage to Codecov  ---
       #----------------------------------------------
       - name: Codecov
+        # TODO(amir): only run code coverage with one Python Version; the rest is not needed
+        if: ${{ matrix.python-version == '3.9' && matrix.os == 'ubuntu-latest' }}
         uses: codecov/codecov-action@v2
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
