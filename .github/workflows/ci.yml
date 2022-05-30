@@ -1,4 +1,4 @@
-name: ci
+name: build
 on:
   push:
     branches:
@@ -39,8 +39,13 @@ jobs:
       #----------------------------------------------
       #  -----  install dependencies  -----
       #----------------------------------------------
-      - name: Install SlickML Dependencies
+      - name: Install Dependencies
         run: poetry install -vv --no-root
+      #----------------------------------------------
+      # -----  install slickml  -----
+      #----------------------------------------------
+      - name: Install SlickML
+        run: poetry install
       #----------------------------------------------
       #  -----  run test suite  -----
       #----------------------------------------------
