@@ -1,0 +1,57 @@
+name: Bug Report
+description: File a bug report
+title: "[BUG]: "
+labels: ["bug"]
+assignees:
+  - amirhessam88
+  - Tsmith5151
+body:
+  - type: markdown
+    attributes:
+      value: |
+        The SlickML🧞 team members appreciate your time to fill out this issue ...
+
+  - type: input
+    id: contact
+    attributes:
+      label: Contact Details [Optional]
+      description: How can we get in touch with you if we need more info?
+      placeholder: your-email@example.com
+    validations:
+      required: false
+
+  - type: dropdown
+    id: system-information
+    attributes:
+      label: What Operating System (OS) are you using?
+      multiple: true
+      options:
+        - Mac
+        - Linux
+        - Windows
+    validations:
+      required: true
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      placeholder: Please explain what heppened and what you expect to happen; the more details the better ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant Logs/Tracebacks
+      description: Please copy & paste what you see as log / error / traceback here. This will be automatically formatted into code via shell, so no need for backticks ...
+      render: shell
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Code of Conduct
+      description: By submitting this issue, you agree to follow our [Code of Conduct](https://github.com/slickml/slick-ml/blob/master/CODE_OF_CONDUCT.md)
+      options:
+        - label: I agree to follow this project's Code of Conduct
+          required: true

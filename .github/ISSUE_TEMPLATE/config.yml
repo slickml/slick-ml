@@ -1,0 +1,6 @@
+# reference: https://docs.github.com/en/communities/using-templates-to-encourage-useful-issues-and-pull-requests
+blank_issues_enabled: true
+contact_links:
+  - name: SlickML Community Support
+    url: https://join.slack.com/t/slickml/shared_invite/zt-19taay0zn-V7R4jKNsO3n76HZM5mQfZA
+    about: Please ask and answer questions here.

@@ -1,15 +1,21 @@
 [flake8]
-max-line-length = 88
-ignore = C901, E501, E203, W503
-per-file-ignores =
-    setup.py: E302
+max-line-length = 100
+ignore = C901, E501, E203, W503, E402
 exclude =
-    .git
-    __pycache__
-    .venv
-    .pytest_cache
     .vscode
     .github
-	.ipynb_checkpoints
-    docs/conf.py
-	Makefile
+    .ipynb_checkpoints
+    .git,
+    __pycache__,
+    docs/conf.py,
+    old,
+    build,
+    dist,
+    .venv,
+    .venv/*,
+    **/.venv/,
+    .pytest_cache,
+    .tox,
+    .python-version,
+    conftest.py,
+    Makefile

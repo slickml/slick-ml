@@ -1,20 +1,20 @@
+import glmnet
 import numpy as np
 import pandas as pd
 import shap
-import glmnet
 import xgboost as xgb
 from sklearn.preprocessing import StandardScaler
 
 from slickml.formatting import Color
-from slickml.utilities import df_to_csr
 from slickml.plotting import (
-    plot_xgb_cv_results,
-    plot_xgb_feature_importance,
+    plot_glmnet_coeff_path,
+    plot_glmnet_cv_results,
     plot_shap_summary,
     plot_shap_waterfall,
-    plot_glmnet_cv_results,
-    plot_glmnet_coeff_path,
+    plot_xgb_cv_results,
+    plot_xgb_feature_importance,
 )
+from slickml.utilities import df_to_csr
 
 
 class XGBoostRegressor:
@@ -578,9 +578,7 @@ class XGBoostRegressor:
         elif isinstance(X_train, pd.DataFrame):
             self.X_train = X_train
         else:
-            raise TypeError(
-                "The input X_train must be numpy array or pandas DataFrame."
-            )
+            raise TypeError("The input X_train must be numpy array or pandas DataFrame.")
 
         if isinstance(y_train, np.ndarray) or isinstance(y_train, list):
             self.y_train = y_train
@@ -593,9 +591,7 @@ class XGBoostRegressor:
             )
 
         if self.scale_mean or self.scale_std:
-            self.scaler_ = StandardScaler(
-                with_mean=self.scale_mean, with_std=self.scale_std
-            )
+            self.scaler_ = StandardScaler(with_mean=self.scale_mean, with_std=self.scale_std)
             self.X_train_ = pd.DataFrame(
                 self.scaler_.fit_transform(self.X_train),
                 columns=self.X_train.columns.tolist(),
@@ -633,9 +629,7 @@ class XGBoostRegressor:
             List of testing/validation ground truth binary values [0, 1]
         """
         if isinstance(X_test, np.ndarray):
-            self.X_test = pd.DataFrame(
-                X_test, columns=[f"F_{i}" for i in range(X_test.shape[1])]
-            )
+            self.X_test = pd.DataFrame(X_test, columns=[f"F_{i}" for i in range(X_test.shape[1])])
         elif isinstance(X_test, pd.DataFrame):
             self.X_test = X_test
         else:
@@ -884,9 +878,7 @@ class XGBoostCVRegressor(XGBoostRegressor):
             self.early_stopping_rounds = 20
         else:
             if not isinstance(early_stopping_rounds, int):
-                raise TypeError(
-                    "The input early_stopping_rounds must have integer dtype."
-                )
+                raise TypeError("The input early_stopping_rounds must have integer dtype.")
             else:
                 self.early_stopping_rounds = early_stopping_rounds
 
@@ -1365,9 +1357,7 @@ class GLMNetCVRegressor:
 
         # train model
         if self.sparse_matrix:
-            self.model_.fit(
-                df_to_csr(self.X_train_, fillna=0.0, verbose=False), self.y_train_
-            )
+            self.model_.fit(df_to_csr(self.X_train_, fillna=0.0, verbose=False), self.y_train_)
         else:
             self.model_.fit(self.X_train_, self.y_train_)
 
@@ -1618,9 +1608,7 @@ class GLMNetCVRegressor:
         elif isinstance(X_train, pd.DataFrame):
             self.X_train = X_train
         else:
-            raise TypeError(
-                "The input X_train must be numpy array or pandas DataFrame."
-            )
+            raise TypeError("The input X_train must be numpy array or pandas DataFrame.")
 
         if isinstance(y_train, np.ndarray) or isinstance(y_train, list):
             self.y_train = y_train
@@ -1645,9 +1633,7 @@ class GLMNetCVRegressor:
             List of testing ground truth values
         """
         if isinstance(X_test, np.ndarray):
-            self.X_test = pd.DataFrame(
-                X_test, columns=[f"F_{i}" for i in range(X_test.shape[1])]
-            )
+            self.X_test = pd.DataFrame(X_test, columns=[f"F_{i}" for i in range(X_test.shape[1])])
         elif isinstance(X_test, pd.DataFrame):
             self.X_test = X_test
         else:
@@ -1707,10 +1693,7 @@ class GLMNetCVRegressor:
         dct = dict(
             zip(
                 [self.X_train_.columns.tolist()[i] for i in idx],
-                [
-                    self.model_.coef_.reshape(-1, self.model_.coef_.shape[-1])[0][i]
-                    for i in idx
-                ],
+                [self.model_.coef_.reshape(-1, self.model_.coef_.shape[-1])[0][i] for i in idx],
             )
         )
 
@@ -1725,9 +1708,7 @@ class GLMNetCVRegressor:
         results["coeff_path"] = dict(
             zip(
                 [f"{col}" for col in self.X_train_.columns.tolist()],
-                (
-                    self.model_.coef_path_.reshape(-1, self.model_.coef_path_.shape[-1])
-                ).tolist(),
+                (self.model_.coef_path_.reshape(-1, self.model_.coef_path_.shape[-1])).tolist(),
             )
         )
         results["cv_standard_error"] = self.model_.cv_standard_error_.tolist()
@@ -1752,9 +1733,7 @@ class GLMNetCVRegressor:
             columns=[f"{col}_coeff_path" for col in self.X_train_.columns.tolist()],
         )
         df["intercept_path"] = (
-            self.model_.intercept_path_.reshape(
-                -1, self.model_.intercept_path_.shape[-1]
-            )
+            self.model_.intercept_path_.reshape(-1, self.model_.intercept_path_.shape[-1])
         ).T
         df["lambda_path"] = self.model_.lambda_path_
         df["cv_standard_error"] = self.model_.cv_standard_error_

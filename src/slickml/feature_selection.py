@@ -1,13 +1,14 @@
 import gc
+
 import numpy as np
 import pandas as pd
 import xgboost as xgb
 from sklearn.model_selection import StratifiedKFold
 
 from slickml.feature_engineering import noisy_features
-from slickml.utilities import df_to_csr
-from slickml.plotting import plot_xfs_feature_frequency, plot_xfs_cv_results
 from slickml.formatting import Color
+from slickml.plotting import plot_xfs_cv_results, plot_xfs_feature_frequency
+from slickml.utilities import df_to_csr
 
 
 class XGBoostFeatureSelector:
@@ -190,9 +191,7 @@ class XGBoostFeatureSelector:
             self.early_stopping_rounds = 20
         else:
             if not isinstance(early_stopping_rounds, int):
-                raise TypeError(
-                    "The input early_stopping_rounds must have integer dtype."
-                )
+                raise TypeError("The input early_stopping_rounds must have integer dtype.")
             else:
                 self.early_stopping_rounds = early_stopping_rounds
 
@@ -223,9 +222,7 @@ class XGBoostFeatureSelector:
             self.nth_noise_threshold = 1
         else:
             if not isinstance(nth_noise_threshold, int):
-                raise TypeError(
-                    "The input nth_noise_threshold must have integer dtype."
-                )
+                raise TypeError("The input nth_noise_threshold must have integer dtype.")
             else:
                 self.nth_noise_threshold = nth_noise_threshold
 
@@ -406,9 +403,7 @@ class XGBoostFeatureSelector:
 
                 # feature gain
                 feature_gain = self._xgb_imp_to_df()
-                self.feature_importance_[
-                    f"model_iter{iteration+1}_fold{ijk}"
-                ] = feature_gain
+                self.feature_importance_[f"model_iter{iteration+1}_fold{ijk}"] = feature_gain
 
                 # check wheather noisy feature is selected
                 if feature_gain["feature"].str.contains("noisy").sum() != 0:
@@ -435,12 +430,8 @@ class XGBoostFeatureSelector:
                 ]
 
                 # appending temp eval results
-                ext_cv_train2.append(
-                    self.evals_result["train"][self.params["eval_metric"]][-1]
-                )
-                ext_cv_test2.append(
-                    self.evals_result["eval"][self.params["eval_metric"]][-1]
-                )
+                ext_cv_train2.append(self.evals_result["train"][self.params["eval_metric"]][-1])
+                ext_cv_test2.append(self.evals_result["eval"][self.params["eval_metric"]][-1])
 
                 print(
                     Color.BOLD
@@ -791,9 +782,7 @@ class XGBoostFeatureSelector:
         based on final pruned features.
         """
 
-        unique_elements, counts_elements = np.unique(
-            self.pruned_features, return_counts=True
-        )
+        unique_elements, counts_elements = np.unique(self.pruned_features, return_counts=True)
         counts_elements = [float(i) for i in list(counts_elements)]
         feature_frequency = pd.DataFrame(
             data={"Feature": list(unique_elements), "Frequency": counts_elements}

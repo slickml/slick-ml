@@ -1,0 +1,145 @@
+####################################################################################################
+####### PLEASE READ THE CONTRIBUTING DOCUMENT FIRST BEFORE APPLYING ANY CHANGES TO THIS FILE #######
+########################################### SLICKML TEAM ###########################################
+####################################################################################################
+
+[tool.poetry]
+name = "slickml"
+version = "0.2.0-beta"
+description = "SlickML: Slick Machine Learning in Python"
+license = "MIT"
+authors = [
+    "Amirhessam Tahmassebi <admin@slickml.com>",
+]
+maintainers = [
+    "Amirhessam Tahmassebi <admin@slickml.com>",
+]
+readme = "README.md"
+homepage = "https://www.slickml.com"
+repository = "https://github.com/slickml/slick-ml"
+# TODO(amir): update the link with html built via sphinx
+documentation = "https://github.com/slickml/slick-ml"
+keywords = [
+    "python",
+    "data-science",
+    "machine-learning",
+]
+
+classifiers = [
+    "Development Status :: 1 - Planning",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Natural Language :: English",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Typing :: Typed",
+]
+packages = [
+    { include = "slickml", from = "src" },
+]
+include = ["src/slickml", "*.md"]
+exclude = [
+    "docs",
+    "assets",
+    "tests",
+    "examples",
+]
+
+
+[tool.poetry.dependencies]
+python = ">=3.8,<3.10"
+
+# --- pythonic-dev ---
+pydantic = "^1.9.1"
+
+# --- scientific-computing ---
+numpy = "^1.22.4"
+pandas = "^1.4.2"
+scipy = "^1.8.1"
+
+# --- machine-learning ---
+scikit-learn = "^1.1.1"
+xgboost = "^1.6.1"
+glmnet = "^2.2.1"
+shap = "^0.40.0"
+
+# --- optimization ----
+bayesian-optimization = "^1.2.0"
+hyperopt = "^0.2.7"
+
+# --- visualization ---
+matplotlib = "^3.5.2"
+seaborn = "^0.11.2"
+
+
+[tool.poetry.dev-dependencies]
+
+# --- package-management ---
+pip = "^22.1.1"
+
+# --- task-management ---
+poethepoet = "^0.13.1"
+
+# --- testenv-management ---
+tox = "^3.25.0"
+
+# --- formatting ---
+isort = "^5.10.1"
+black = "^22.3.0"
+jupyter-black = "^0.3.1"
+
+# --- linting ---
+flake8 = "^4.0.1"
+mypy = "^0.950"
+
+# --- unit-testing ---
+pytest = "^7.1.2"
+pytest-cov = "^3.0.0"
+pytest-mock = "^3.7.0"
+mock = "^4.0.3"
+coverage = "^6.4"
+assertpy = "^1.1"
+
+# --- docs ----
+sphinx = "^4.5.0"
+sphinx-rtd-theme = "^1.0.0"
+sphinx-autoapi = "^1.8.4"
+myst-parser = "^0.17.2"
+
+# --- jupyter ---
+ipykernel = "^6.13.0"
+jupytext = "^1.13.8"
+
+# --- monitoring ---
+watchdog = "^2.1.7"
+
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+# -- try `poe --help` for options
+[tool.poe.tasks]
+greet = { cmd = """echo Welcome to SlickML $USER. The following commands can be used to ease the development process for you. Formatting: `poe format`, Linting: `poe check`, Testing: `poe test`, Environments Testing: `poe tox`""", help = "Runtime user greetings" }
+clean = { cmd = "rm -rf .coverage dist/ .mypy_cache/ .pytest_cache/ .tox/ htmlcov/ **/__pycache__/ **/.ipynb_checkpoints/", help = "Remove all the ignored directories/files" }
+black = { cmd = "poetry run black --line-length 100 .", help = "Format code style via black" }
+isort = { cmd = "poetry run isort --profile black .", help = "Sort imported libraries via isort" }
+flake8 = { cmd = "poetry run flake8 --verbose --benchmark --config .flake8 .", help = "Lint code via flake8" }
+mypy = { cmd = "poetry run mypy --verbose --config-file mypy.ini .", help = "Lint types via mypy" }
+test = { cmd = "poetry run python -m pytest --cov=src --cov-report=term --cov-report=html --cov-config=.coveragerc --tb=short -ra -v", help = "Run unit-tests via pytest" }
+sphinx = { cmd = "poetry run sphinx-build -b html docs/ docs/_build", help = "Build API doc via sphinx" }
+tox = { cmd = "poetry run tox -c tox.ini .", help = "Test environments via tox" }
+format = [
+    { ref = "black" },
+    { ref = "isort" },
+]
+check = [
+    { cmd = "poe black --check" },
+    { cmd = "poe isort --check-only" },
+    { ref = "flake8" },
+    { ref = "mypy" },
+]

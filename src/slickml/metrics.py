@@ -1,31 +1,31 @@
 import numpy as np
-import scipy as scp
 import pandas as pd
+import scipy as scp
 import seaborn as sns
-
+from IPython.core.display import display
 from sklearn.metrics import (
-    auc,
-    precision_recall_curve,
     accuracy_score,
-    balanced_accuracy_score,
-    fbeta_score,
-    precision_recall_fscore_support,
-    roc_auc_score,
+    auc,
     average_precision_score,
+    balanced_accuracy_score,
     confusion_matrix,
-    roc_curve,
-    r2_score,
     explained_variance_score,
+    fbeta_score,
     mean_absolute_error,
+    mean_absolute_percentage_error,
     mean_squared_error,
     mean_squared_log_error,
-    mean_absolute_percentage_error,
+    precision_recall_curve,
+    precision_recall_fscore_support,
+    r2_score,
+    roc_auc_score,
+    roc_curve,
 )
 
-from IPython.core.display import display
 from slickml.plotting import plot_binary_classification_metrics, plot_regression_metrics
 
 
+# TODO(amir): write a protocol for Metric
 class BinaryClassificationMetrics:
     """Binary Classification Metrics.
     This is wrapper to calculate all the binary classification
@@ -240,9 +240,7 @@ class BinaryClassificationMetrics:
         """
         Function to calculate accuracy score
         """
-        accuracy = accuracy_score(
-            y_true=self.y_true, y_pred=self.y_pred_, normalize=True
-        )
+        accuracy = accuracy_score(y_true=self.y_true, y_pred=self.y_pred_, normalize=True)
 
         return accuracy
 
@@ -357,9 +355,7 @@ class BinaryClassificationMetrics:
         """
         Function to calculate confusion matrix elements: tn, fp, fn, tp
         """
-        tn, fp, fn, tp = confusion_matrix(
-            y_true=self.y_true, y_pred=self.y_pred_
-        ).ravel()
+        tn, fp, fn, tp = confusion_matrix(y_true=self.y_true, y_pred=self.y_pred_).ravel()
 
         return tn, fp, fn, tp
 
@@ -461,9 +457,7 @@ class BinaryClassificationMetrics:
         cm = sns.light_palette("blue", as_cmap=True)
 
         if self.display_df:
-            display(
-                metrics_df.style.background_gradient(cmap=cm).set_table_styles(styles)
-            )
+            display(metrics_df.style.background_gradient(cmap=cm).set_table_styles(styles))
 
         return metrics_df
 
@@ -702,9 +696,7 @@ class RegressionMetrics:
         """
         Function to calculate R^2 score
         """
-        r2 = r2_score(
-            y_true=self.y_true, y_pred=self.y_pred, multioutput=self.multioutput
-        )
+        r2 = r2_score(y_true=self.y_true, y_pred=self.y_pred, multioutput=self.multioutput)
 
         return r2
 
@@ -782,8 +774,7 @@ class RegressionMetrics:
             count = 0.0
             for j in range(len(self.y_true)):
                 calc_norm = np.linalg.norm(self.y_true[j] - self.y_pred[j]) / np.sqrt(
-                    np.linalg.norm(self.y_true[j]) ** 2
-                    + np.linalg.norm(self.y_pred[j]) ** 2
+                    np.linalg.norm(self.y_true[j]) ** 2 + np.linalg.norm(self.y_pred[j]) ** 2
                 )
                 if calc_norm < deviation[i]:
                     count += 1
@@ -868,9 +859,7 @@ class RegressionMetrics:
         cm = sns.light_palette("blue", as_cmap=True)
 
         if self.display_df:
-            display(
-                metrics_df.style.background_gradient(cmap=cm).set_table_styles(styles)
-            )
+            display(metrics_df.style.background_gradient(cmap=cm).set_table_styles(styles))
 
         return metrics_df
 
@@ -916,6 +905,4 @@ class RegressionMetrics:
             For example "myplot.png" or "../../myplot.pdf"
         """
 
-        plot_regression_metrics(
-            figsize=figsize, save_path=save_path, **self.plotting_dict_
-        )
+        plot_regression_metrics(figsize=figsize, save_path=save_path, **self.plotting_dict_)

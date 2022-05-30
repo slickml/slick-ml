@@ -1,3 +1,4 @@
+# TODO(amir): move `Color` to Enum
 class Color:
     """Colors for foreground and background."""
 

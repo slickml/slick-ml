@@ -1,11 +1,13 @@
-from bayes_opt import BayesianOptimization
 import pandas as pd
 import xgboost as xgb
+from bayes_opt import BayesianOptimization
+from hyperopt import STATUS_FAIL, STATUS_OK, Trials, fmin, tpe
 from hyperopt.pyll.stochastic import sample
-from hyperopt import fmin, Trials, tpe, STATUS_OK, STATUS_FAIL
 
 from slickml.classification import XGBoostClassifier, XGBoostCVClassifier
-from slickml.regression import XGBoostRegressor, XGBoostCVRegressor
+from slickml.regression import XGBoostCVRegressor, XGBoostRegressor
+
+# TODO(amir): write a protocol for Optimizer
 
 
 class XGBoostClassifierBayesianOpt(XGBoostCVClassifier):
@@ -288,9 +290,7 @@ class XGBoostClassifierBayesianOpt(XGBoostCVClassifier):
         )
 
         # maximizing xgb_bo
-        self.optimizer_.maximize(
-            init_points=self.init_points, n_iter=self.n_iter, acq=self.acq
-        )
+        self.optimizer_.maximize(init_points=self.init_points, n_iter=self.n_iter, acq=self.acq)
 
         # initiate the results
         self.optimization_results_ = self.get_optimization_results()
@@ -498,9 +498,7 @@ class XGBoostClassifierHyperOpt(XGBoostClassifier):
             self.early_stopping_rounds = 20
         else:
             if not isinstance(early_stopping_rounds, int):
-                raise TypeError(
-                    "The input early_stopping_rounds must have integer dtype."
-                )
+                raise TypeError("The input early_stopping_rounds must have integer dtype.")
             else:
                 self.early_stopping_rounds = early_stopping_rounds
 
@@ -894,9 +892,7 @@ class XGBoostRegressorBayesianOpt(XGBoostCVRegressor):
         )
 
         # maximizing xgb_bo
-        self.optimizer_.maximize(
-            init_points=self.init_points, n_iter=self.n_iter, acq=self.acq
-        )
+        self.optimizer_.maximize(init_points=self.init_points, n_iter=self.n_iter, acq=self.acq)
 
         # initiate the results
         self.optimization_results_ = self.get_optimization_results()
@@ -1098,9 +1094,7 @@ class XGBoostRegressorHyperOpt(XGBoostRegressor):
             self.early_stopping_rounds = 20
         else:
             if not isinstance(early_stopping_rounds, int):
-                raise TypeError(
-                    "The input early_stopping_rounds must have integer dtype."
-                )
+                raise TypeError("The input early_stopping_rounds must have integer dtype.")
             else:
                 self.early_stopping_rounds = early_stopping_rounds
 

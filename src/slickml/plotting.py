@@ -1,14 +1,13 @@
-import numpy as np
-import matplotlib.pyplot as plt
+import warnings
+
 import matplotlib as mpl
+import matplotlib.pyplot as plt
+import numpy as np
+import scipy as scp
 import seaborn as sns
 import shap
-import scipy as scp
+from IPython.core.display import HTML, display
 from sklearn.metrics import accuracy_score
-
-
-from IPython.core.display import display, HTML
-import warnings
 
 sns.set_style("ticks")
 mpl.rcParams["axes.linewidth"] = 2
@@ -17,6 +16,7 @@ warnings.filterwarnings("ignore")
 display(HTML("<style>.container { width:95% !important; }</style>"))
 
 
+# TODO(amir): write plot interface
 def plot_binary_classification_metrics(figsize=None, save_path=None, **kwargs):
     """
     Function to plot binary classification metrics.
@@ -44,12 +44,8 @@ def plot_binary_classification_metrics(figsize=None, save_path=None, **kwargs):
         raise TypeError("Only tuple and list types are allowed for figsize.")
 
     # prepare thresholds for plotting
-    thr_set1 = np.arange(
-        min(kwargs["roc_thresholds"]), max(kwargs["roc_thresholds"]), 0.01
-    )
-    thr_set2 = np.arange(
-        min(kwargs["pr_thresholds"]), max(kwargs["pr_thresholds"]), 0.01
-    )
+    thr_set1 = np.arange(min(kwargs["roc_thresholds"]), max(kwargs["roc_thresholds"]), 0.01)
+    thr_set2 = np.arange(min(kwargs["pr_thresholds"]), max(kwargs["pr_thresholds"]), 0.01)
     f1_list = [
         2
         * (kwargs["precision_list"][i] * kwargs["recall_list"][i])
@@ -470,12 +466,8 @@ def plot_xfs_cv_results(
     sns.distplot(kwargs["ext_cv_test"], color=ext_color, ax=ax4, axlabel="")
     ax1.set(title=f"Internal {kwargs['n_splits']}-Folds CV {kwargs['metric']} - Train")
     ax2.set(title=f"Internal {kwargs['n_splits']}-Folds CV {kwargs['metric']} - Test")
-    ax3.set(
-        title=f"External {kwargs['n_splits']}-Folds CV {kwargs['eval_metric']} - Train"
-    )
-    ax4.set(
-        title=f"External {kwargs['n_splits']}-Folds CV {kwargs['eval_metric']} - Test"
-    )
+    ax3.set(title=f"External {kwargs['n_splits']}-Folds CV {kwargs['eval_metric']} - Train")
+    ax4.set(title=f"External {kwargs['n_splits']}-Folds CV {kwargs['eval_metric']} - Test")
 
     if save_path:
         plt.savefig(save_path, bbox_inches="tight", dpi=200)
@@ -760,9 +752,7 @@ def plot_xgb_feature_importance(
     )
 
     fig, ax = plt.subplots(figsize=figsize)
-    ax.hlines(
-        y=feature_importance[coly], xmin=0, xmax=feature_importance[colx], color=color
-    )
+    ax.hlines(y=feature_importance[coly], xmin=0, xmax=feature_importance[colx], color=color)
     ax.plot(
         feature_importance[colx],
         feature_importance[coly].values,
@@ -1295,9 +1285,7 @@ def plot_regression_metrics(figsize=None, save_path=None, **kwargs):
     )
 
     ax5.set_xticks([0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4])
-    ax5.set_xticklabels(
-        ["Less", 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, "More"], rotation=30
-    )
+    ax5.set_xticklabels(["Less", 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, "More"], rotation=30)
 
     ax5.set(
         ylabel="Frequency",
@@ -1310,7 +1298,7 @@ def plot_regression_metrics(figsize=None, save_path=None, **kwargs):
     ax5.text(
         0.65,
         ax5_ylim,
-        fr"""$\mu$ = {kwargs['mean_y_ratio']:.3f}""",
+        rf"""$\mu$ = {kwargs['mean_y_ratio']:.3f}""",
         fontsize=12,
     )
     ax5.text(
@@ -1493,7 +1481,7 @@ def plot_glmnet_cv_results(
     if ylabel is None:
         if kwargs["params"]["scoring"] is None:
             if kwargs["module"] == "glmnet.linear":
-                ylabel = fr"""{kwargs["params"]["n_splits"]}-Folds CV Mean $R^2$"""
+                ylabel = rf"""{kwargs["params"]["n_splits"]}-Folds CV Mean $R^2$"""
             elif kwargs["module"] == "glmnet.logistic":
                 ylabel = f"""{kwargs["params"]["n_splits"]}-Folds CV Mean ACCURACY"""
         else:
@@ -1505,7 +1493,7 @@ def plot_glmnet_cv_results(
 
     # initializing title
     if title is None:
-        title = fr"""Best $\lambda$ = {kwargs["lambda_best"]:.3f} with {len(kwargs["coeff"])} Features"""
+        title = rf"""Best $\lambda$ = {kwargs["lambda_best"]:.3f} with {len(kwargs["coeff"])} Features"""
     elif isinstance(title, str):
         title = title
     else:
@@ -1541,9 +1529,7 @@ def plot_glmnet_cv_results(
         label=r"best $\lambda$",
     )
 
-    ax.set_ylim(
-        [min(kwargs["cv_mean_score"]) - 0.05, max(kwargs["cv_mean_score"]) + 0.05]
-    )
+    ax.set_ylim([min(kwargs["cv_mean_score"]) - 0.05, max(kwargs["cv_mean_score"]) + 0.05])
     ax.set_xlabel(xlabel, fontsize=fontsize * 0.85)
     ax.set_ylabel(
         ylabel,
@@ -1687,7 +1673,7 @@ def plot_glmnet_coeff_path(
 
     # initializing title
     if title is None:
-        title = fr"""Best $\lambda$ = {kwargs["lambda_best"]:.3f} with {len(kwargs["coeff"])} Features"""
+        title = rf"""Best $\lambda$ = {kwargs["lambda_best"]:.3f} with {len(kwargs["coeff"])} Features"""
     elif isinstance(title, str):
         title = title
     else:

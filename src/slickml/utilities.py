@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 
 
+# TODO(amir): update typing + docstring
 def join_dictionaries(dict1, dict2):
     """Join two dictionaries.
     Function to join two input dictionaries. For the pairs
@@ -90,9 +91,7 @@ def pd_explode(df, column):
     df_ = df.copy()
     vals = df_[column].values.tolist()
     rs = [len(r) for r in vals]
-    a = np.repeat(
-        df_[[col for col in df_.columns.tolist() if col != column]].values, rs, axis=0
-    )
+    a = np.repeat(df_[[col for col in df_.columns.tolist() if col != column]].values, rs, axis=0)
     return pd.DataFrame(np.column_stack((a, np.concatenate(vals))), columns=df_.columns)
 
 
@@ -124,6 +123,6 @@ def pd_struct_explode(df, column):
         .replace("''", "'")
     )
     rs = [[d[key] for key in keys] for d in dicts]
-    return pd.concat(
-        [pd.DataFrame(rs, columns=keys), df_.drop([column], axis=1)], axis=1
-    ).loc[:, eval(column_names)]
+    return pd.concat([pd.DataFrame(rs, columns=keys), df_.drop([column], axis=1)], axis=1).loc[
+        :, eval(column_names)
+    ]

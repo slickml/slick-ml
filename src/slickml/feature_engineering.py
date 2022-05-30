@@ -29,9 +29,7 @@ def noisy_features(X, random_state=None, prefix=None):
     elif isinstance(X_, list):
         df_ = pd.DataFrame(X_, columns=[f"F_{i}" for i in range(len(X_[0]))])
     else:
-        raise TypeError(
-            "Only numpy arrays, list of list, and pandas DataFrames are allowed"
-        )
+        raise TypeError("Only numpy arrays, list of list, and pandas DataFrames are allowed")
 
     if random_state is None:
         random_state = 1367
