@@ -1,3 +1,6 @@
+# TODO(amir): figure out how to cache the dependencies; so we can tease apart the jobs
+# https://github.com/actions/setup-python#caching-packages-dependencies
+# https://stackoverflow.com/questions/62977821/how-to-cache-poetry-install-for-github-actions
 name: build
 
 on: pull_request
@@ -18,30 +21,44 @@ jobs:
       # ----- check-out repo and set-up python -----
       #----------------------------------------------
       - name: Checkout Repository
-        uses: actions/checkout@v2
-      - name: Setup Python v${{ matrix.python-version }}
-        uses: actions/setup-python@v2
+        uses: actions/checkout@v3
+      - name: Setup Poetry & Python v${{ matrix.python-version }}
+        run: pipx install poetry
+        uses: actions/setup-python@v3
         with:
           python-version: ${{ matrix.python-version }}
+          cache: "poetry"
+      - name: Install Dependencies
+        run: |
+          poetry install -vv
+          source .venv/bin/activate
+
       #----------------------------------------------
       # -----  install & configure poetry  -----
       #----------------------------------------------
-      - name: Install Poetry
-        uses: snok/install-poetry@v1
-        with:
-          virtualenvs-create: true
-          virtualenvs-in-project: true
-          installer-parallel: true
+      # - name: Install Poetry
+      #   uses: snok/install-poetry@v1
+      #   with:
+      #     virtualenvs-create: true
+      #     virtualenvs-in-project: true
+      #     installer-parallel: true
       #----------------------------------------------
       #  -----  install dependencies  -----
       #----------------------------------------------
-      - name: Install Dependencies
-        run: poetry install -vv
+      # - name: Install Dependencies
+      #   run: poetry install -vv
       #----------------------------------------------
       #  -----  Integration test suite  -----
       #----------------------------------------------
-      - name: Integration Test Suite
-        run: |
-          source .venv/bin/activate
-          poe check
-          poe test
+      - name: lint
+        run: poe check
+      - name: test
+        run: poe test
+      - name: build
+        run: poetry build
+      # - name: Integration Test Suite
+      #   run: |
+      #     source .venv/bin/activate
+      #     poe check
+      #     poe test
+      #     poetry build
