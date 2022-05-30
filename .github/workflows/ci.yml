@@ -57,13 +57,13 @@ jobs:
       # TODO(amir): de-dup the `source .venv/bin/activate` (`source $VENV`) command
       - name: Lint
         run: |
-          source $VENV
+          source .venv/bin/activate
           poe check
       - name: Test
         run: |
-          source $VENV
+          source .venv/bin/activate
           poe test
       - name: Build
         run: |
-          source $VENV
+          source .venv/bin/activate
           poetry build
