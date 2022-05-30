@@ -32,6 +32,7 @@ classifiers = [
     "Programming Language :: Python :: 3 :: Only",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
     "Natural Language :: English",
@@ -125,12 +126,12 @@ build-backend = "poetry.core.masonry.api"
 # -- try `poe --help` for options
 [tool.poe.tasks]
 greet = { cmd = """echo Welcome to SlickML $USER. The following commands can be used to ease the development process for you. Formatting: `poe format`, Linting: `poe check`, Testing: `poe test`, Environments Testing: `poe tox`""", help = "Runtime user greetings" }
-clean = { cmd = "rm -rf .coverage dist/ .mypy_cache/ .pytest_cache/ .tox/ htmlcov/ **/__pycache__/ **/.ipynb_checkpoints/", help = "Remove all the ignored directories/files" }
+clean = { cmd = "rm -rf .coverage dist/ .mypy_cache/ .pytest_cache/ .tox/ htmlcov/ xmlcov/ **/__pycache__/ **/.ipynb_checkpoints/", help = "Remove all the ignored directories/files" }
 black = { cmd = "poetry run black --line-length 100 .", help = "Format code style via black" }
 isort = { cmd = "poetry run isort --profile black .", help = "Sort imported libraries via isort" }
 flake8 = { cmd = "poetry run flake8 --verbose --benchmark --config .flake8 .", help = "Lint code via flake8" }
 mypy = { cmd = "poetry run mypy --verbose --config-file mypy.ini .", help = "Lint types via mypy" }
-test = { cmd = "poetry run python -m pytest --cov=src --cov-report=term --cov-report=html --cov-config=.coveragerc --tb=short -ra -v", help = "Run unit-tests via pytest" }
+test = { cmd = "poetry run python -m pytest --cov=src --cov-report=term --cov-report=html --cov-report=xml --cov-config=.coveragerc --tb=short -ra -v", help = "Run unit-tests via pytest" }
 sphinx = { cmd = "poetry run sphinx-build -b html docs/ docs/_build", help = "Build API doc via sphinx" }
 tox = { cmd = "poetry run tox -c tox.ini .", help = "Test environments via tox" }
 format = [
