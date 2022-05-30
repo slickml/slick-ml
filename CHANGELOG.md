@@ -15,11 +15,11 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 
 ### Updated
-- [#76](https://github.com/slickml/slick-ml/pull/76) updated `.flake8`, `.gitingore` entries, `ISSUE_TEMPLATES`, `README.md`, `CONTRIBUTING.md`, `assets/`, `examples/` formats, and `src/` style.
+- [#77](https://github.com/slickml/slick-ml/pull/77) updated `.flake8`, `.gitingore` entries, `ISSUE_TEMPLATES`, `README.md`, `CONTRIBUTING.md`, `assets/`, `examples/` formats, and `src/` style, `ci.yml` workflow.
 
 ### Added
-- [#76](https://github.com/slickml/slick-ml/pull/76) added poetry essentials and essentials based on [#72](https://github.com/slickml/slick-ml/pull/72) and removed all `setup.py` essentials.
-- [#76](https://github.com/slickml/slick-ml/pull/76) added `tox`, `mypy`, `pytest-cov`, `sphinx-auto-api-doc`.
+- [#77](https://github.com/slickml/slick-ml/pull/77) added poetry essentials and essentials based on [#72](https://github.com/slickml/slick-ml/pull/72) and removed all `setup.py` essentials.
+- [#77](https://github.com/slickml/slick-ml/pull/77) added `tox`, `mypy`, `pytest-cov`, `sphinx-auto-api-doc`.
 
 
 ## Version 0.1.5 - 2021-09-06
