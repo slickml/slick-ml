@@ -3,7 +3,10 @@
 # https://stackoverflow.com/questions/62977821/how-to-cache-poetry-install-for-github-actions
 name: build
 
-on: pull_request
+on:
+  push:
+    branches: ["master"]
+  pull_request:
 
 jobs:
   ci:
