@@ -22,7 +22,7 @@ jobs:
       #----------------------------------------------
       - name: Checkout Repository
         uses: actions/checkout@v2
-      - name: Setup Python ${{ matrix.python-version }}
+      - name: Setup Python v${{ matrix.python-version }}
         uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-version }}
@@ -39,12 +39,13 @@ jobs:
       #----------------------------------------------
       #  -----  install dependencies  -----
       #----------------------------------------------
-      - name: Install dependencies
+      - name: Install SlickML Dependencies
         run: poetry install -vv --no-root
       #----------------------------------------------
       #  -----  run test suite  -----
       #----------------------------------------------
-      - name: Run tests
+      - name: Run Test Suite
         run: |
+          source .venv/bin/activate
           poe check
           poe test
