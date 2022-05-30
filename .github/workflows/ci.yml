@@ -10,6 +10,9 @@ on:
       - "**.md"
 jobs:
   ci:
+    #----------------------------------------------
+    # -----  setup operating system  -----
+    #----------------------------------------------
     runs-on: ${{ matrix.operating-system }}
     strategy:
       fail-fast: false
@@ -18,7 +21,7 @@ jobs:
         python-version: [3.9.7]
     steps:
       #----------------------------------------------
-      #       check-out repo and set-up python
+      # ----- check-out repo and set-up python -----
       #----------------------------------------------
       - name: Checkout Repository
         uses: actions/checkout@v2
@@ -26,7 +29,6 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-version }}
-
       #----------------------------------------------
       # -----  install & configure poetry  -----
       #----------------------------------------------

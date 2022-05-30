@@ -13,13 +13,15 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## Version 0.2.0-beta - 2022-05-29
 
 ### Fixed
-
+- [#78](https://github.com/slickml/slick-ml/pull/78) `build` badge using GitHub actions and removed the `travis-ci` badge and dependencies.
+- 
 ### Updated
 - [#77](https://github.com/slickml/slick-ml/pull/77) updated `.flake8`, `.gitingore` entries, `ISSUE_TEMPLATES`, `README.md`, `CONTRIBUTING.md`, `assets/`, `examples/` formats, and `src/` style, `ci.yml` workflow.
 
 ### Added
 - [#77](https://github.com/slickml/slick-ml/pull/77) added poetry essentials and essentials based on [#72](https://github.com/slickml/slick-ml/pull/72) and removed all `setup.py` essentials.
-- [#77](https://github.com/slickml/slick-ml/pull/77) added `tox`, `mypy`, `pytest-cov`, `sphinx-auto-api-doc`.
+- [#77](https://github.com/slickml/slick-ml/pull/77) added `tox`, `mypy`, `pytest-cov`.
+- [#77](https://github.com/slickml/slick-ml/pull/77) added `sphinx-auto-api-doc` based on [#32](https://github.com/slickml/slick-ml/pull/32). 
 
 
 ## Version 0.1.5 - 2021-09-06
