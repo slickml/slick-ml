@@ -1,3 +1,6 @@
+# reference: https://github.com/snok/install-poetry
+# https://github.com/actions/setup-python#caching-packages-dependencies
+# https://stackoverflow.com/questions/62977821/how-to-cache-poetry-install-for-github-actions
 name: build
 
 on: pull_request
@@ -12,7 +15,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        python-version: [3.8, 3.9]
+        python-version: ["3.8", "3.9", "3.10"]
     steps:
       #----------------------------------------------
       # ----- check-out repo and set-up python -----
@@ -32,16 +35,35 @@ jobs:
           virtualenvs-create: true
           virtualenvs-in-project: true
           installer-parallel: true
+        run: poetry --version
+      #----------------------------------------------
+      #  -----  load cached dependencies  -----
+      #----------------------------------------------
+      - name: Load Cached venv
+        id: cached-poetry-dependencies
+        uses: actions/cache@v2
+        with:
+          path: .venv
+          key: venv-${{ runner.os }}-${{ hashFiles('**/poetry.lock') }}
       #----------------------------------------------
       #  -----  install dependencies  -----
       #----------------------------------------------
       - name: Install Dependencies
         run: poetry install -vv
+        if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
       #----------------------------------------------
       #  -----  Integration test suite  -----
       #----------------------------------------------
-      - name: Integration Test Suite
+      # TODO(amir): de-dup the `source .venv/bin/activate` or `source $VENV` command
+      - name: Lint
         run: |
-          source .venv/bin/activate
+          source $VENV
           poe check
+      - name: Test
+        run: |
+          source $VENV
           poe test
+      - name: Build
+        run: |
+          source $VENV
+          poetry build
