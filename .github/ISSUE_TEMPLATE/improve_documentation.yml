@@ -13,7 +13,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        The SlickML🧞 team members appreciate your time to fill out this documentation improvement ...
+        The SlickML🧞 core team appreciate your time to fill out this documentation improvement ...
 
   - type: input
     id: contact
