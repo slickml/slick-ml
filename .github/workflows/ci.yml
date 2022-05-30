@@ -43,13 +43,13 @@ jobs:
         uses: actions/cache@v2
         with:
           path: .venv
-          key: venv-${{ runner.os }}-${{ hashFiles("**/poetry.lock") }}
+          key: venv-${{ runner.os }}-${{ hashFiles('**/poetry.lock') }}
       #----------------------------------------------
       #  -----  install dependencies  -----
       #----------------------------------------------
       - name: Install Dependencies
         run: poetry install -vv
-        if: steps.cached-poetry-dependencies.outputs.cache-hit != "true"
+        if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
       #----------------------------------------------
       #  -----  Integration test suite  -----
       #----------------------------------------------
