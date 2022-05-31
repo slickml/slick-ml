@@ -60,7 +60,7 @@ Please note that before starting any major work, open an issue describing what y
   brew install gcc
 
   # Linux Users
-  sudo apt install build-essential       
+  sudo apt install build-essential gfortran
   ```
 - All developments are done via [*python-poetry*](https://python-poetry.org/). To begin with, first install `poetry` following the [*installation documentation*](https://python-poetry.org/docs/#installation) depending on your operating system.
 - You can also easily [*manage your Python environments*](https://python-poetry.org/docs/managing-environments#managing-environments) and easily switch between environments via `poetry`.
