@@ -37,7 +37,7 @@ pip install slickml
 brew install gcc
 
 # Linux Users
-sudo apt install build-essential       
+sudo apt install build-essential gfortran
 ```
 
 ### 🐍 Python Virtual Environments
