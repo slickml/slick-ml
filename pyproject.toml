@@ -55,78 +55,82 @@ exclude = [
 python = ">=3.8,<3.11"
 
 # --- pythonic-dev ---
-pydantic = "^1.9.1"
+pydantic = "^1.9"
 
 # --- scientific-computing ---
-numpy = "^1.22.4"
-pandas = "^1.4.2"
-scipy = "^1.8.1"
+numpy = "^1.22"
+pandas = "^1.4"
+scipy = "^1.8"
 
 # --- machine-learning ---
-scikit-learn = "^1.1.1"
-xgboost = "^1.6.1"
-glmnet = "^2.2.1"
-shap = "^0.40.0"
+scikit-learn = "^1.1"
+xgboost = "^1.6"
+glmnet = "^2.2"
+shap = "^0.40"
 
 # --- optimization ----
-bayesian-optimization = "^1.2.0"
-hyperopt = "^0.2.7"
+bayesian-optimization = "^1.2"
+hyperopt = "^0.2"
 
 # --- visualization ---
-matplotlib = "^3.5.2"
-seaborn = "^0.11.2"
+matplotlib = "^3.5"
+seaborn = "^0.11"
 
 
 [tool.poetry.dev-dependencies]
 
 # --- package-management ---
-pip = "^22.1.1"
+pip = "^22.1"
 
 # --- task-management ---
-poethepoet = "^0.13.1"
+poethepoet = "^0.13"
 
 # --- testenv-management ---
-tox = "^3.25.0"
+tox = "^3.25"
 
 # --- formatting ---
-isort = "^5.10.1"
-black = "^22.3.0"
-jupyter-black = "^0.3.1"
+add-trailing-comma = "^2.2"
+isort = "^5.10"
+black = "^22.3"
+jupyter-black = "^0.3"
 
 # --- linting ---
-flake8 = "^4.0.1"
+flake8 = "^4.0"
+flake8-commas = "^2.1"
 mypy = "^0.950"
 
 # --- unit-testing ---
-pytest = "^7.1.2"
-pytest-cov = "^3.0.0"
-pytest-mock = "^3.7.0"
-mock = "^4.0.3"
+pytest = "^7.1"
+pytest-cov = "^3.0"
+pytest-mock = "^3.7"
+mock = "^4.0"
 coverage = "^6.4"
 assertpy = "^1.1"
 
 # --- docs ----
-sphinx = "^4.5.0"
-sphinx-rtd-theme = "^1.0.0"
-sphinx-autoapi = "^1.8.4"
-myst-parser = "^0.17.2"
+sphinx = "^4.5"
+sphinx-rtd-theme = "^1.0"
+sphinx-autoapi = "^1.8"
+myst-parser = "^0.17"
 
 # --- jupyter ---
-ipykernel = "^6.13.0"
-jupytext = "^1.13.8"
+ipykernel = "^6.13"
+jupytext = "^1.13"
 
 # --- monitoring ---
-watchdog = "^2.1.7"
+watchdog = "^2.1"
 
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
 
+
 # -- try `poe --help` for options
 [tool.poe.tasks]
 greet = { cmd = """echo Welcome to SlickML $USER. The following commands can be used to ease the development process for you. Formatting: `poe format`, Linting: `poe check`, Testing: `poe test`, Environments Testing: `poe tox`""", help = "Runtime user greetings" }
 clean = { cmd = "rm -rf .coverage dist/ .mypy_cache/ .pytest_cache/ .tox/ htmlcov/ xmlcov/ **/__pycache__/ **/.ipynb_checkpoints/", help = "Remove all the ignored directories/files" }
+add-trailing-comma = { cmd = "poetry run add-trailing-comma src/**/*.py tests/**/*.py", help = "Format code style via add-trailing-comma" }
 black = { cmd = "poetry run black --line-length 100 .", help = "Format code style via black" }
 isort = { cmd = "poetry run isort --profile black .", help = "Sort imported libraries via isort" }
 flake8 = { cmd = "poetry run flake8 --verbose --benchmark --config .flake8 .", help = "Lint code via flake8" }
@@ -135,8 +139,9 @@ test = { cmd = "poetry run python -m pytest --cov=src --cov-report=term --cov-re
 sphinx = { cmd = "poetry run sphinx-build -b html docs/ docs/_build", help = "Build API doc via sphinx" }
 tox = { cmd = "poetry run tox -c tox.ini .", help = "Test environments via tox" }
 format = [
-    { ref = "black" },
+    { ref = "add-trailing-comma" },
     { ref = "isort" },
+    { ref = "black" },
 ]
 check = [
     { cmd = "poe black --check" },
