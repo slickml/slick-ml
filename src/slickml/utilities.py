@@ -124,5 +124,6 @@ def pd_struct_explode(df, column):
     )
     rs = [[d[key] for key in keys] for d in dicts]
     return pd.concat([pd.DataFrame(rs, columns=keys), df_.drop([column], axis=1)], axis=1).loc[
-        :, eval(column_names)
+        :,
+        eval(column_names),
     ]

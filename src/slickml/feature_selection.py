@@ -334,7 +334,7 @@ class XGBoostFeatureSelector:
                 + f"Iteration {iteration + 1}"
                 + Color.END
                 + Color.BOLD
-                + " *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*"
+                + " *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*",
             )
 
             # results at each iteration
@@ -416,17 +416,18 @@ class XGBoostFeatureSelector:
 
                 # subsetting features for > gain_threshold
                 gain_subset = feature_gain.loc[
-                    feature_gain[self.importance_type] > gain_threshold, "feature"
+                    feature_gain[self.importance_type] > gain_threshold,
+                    "feature",
                 ].values.tolist()
                 for c in gain_subset:
                     self.pruned_features.append(c)
 
                 # appending final eval results
                 self.cv_results_["ext_cv_train"] += [
-                    self.evals_result["train"][self.params["eval_metric"]][-1]
+                    self.evals_result["train"][self.params["eval_metric"]][-1],
                 ]
                 self.cv_results_["ext_cv_test"] += [
-                    self.evals_result["eval"][self.params["eval_metric"]][-1]
+                    self.evals_result["eval"][self.params["eval_metric"]][-1],
                 ]
 
                 # appending temp eval results
@@ -452,7 +453,7 @@ class XGBoostFeatureSelector:
                     + f"{self.evals_result['eval'][self.params['eval_metric']][-1]:.3f}"
                     + Color.END
                     + Color.BOLD
-                    + " *-*-*-*-*-*-*-*-*-*-*-*"
+                    + " *-*-*-*-*-*-*-*-*-*-*-*",
                 )
                 # free memory here at each fold
                 del (
@@ -499,7 +500,7 @@ class XGBoostFeatureSelector:
                 + f"{np.std(int_cv_test2):.3f}"
                 + Color.END
                 + Color.BOLD
-                + " *-*-*"
+                + " *-*-*",
             )
 
             #  print external eval_metric results
@@ -528,7 +529,7 @@ class XGBoostFeatureSelector:
                 + f"{np.std(ext_cv_test2):.3f}"
                 + Color.END
                 + Color.BOLD
-                + " *-*-*\n"
+                + " *-*-*\n",
             )
 
             # free memory here at iteration
@@ -785,14 +786,15 @@ class XGBoostFeatureSelector:
         unique_elements, counts_elements = np.unique(self.pruned_features, return_counts=True)
         counts_elements = [float(i) for i in list(counts_elements)]
         feature_frequency = pd.DataFrame(
-            data={"Feature": list(unique_elements), "Frequency": counts_elements}
+            data={"Feature": list(unique_elements), "Frequency": counts_elements},
         )
         feature_frequency["Frequency (%)"] = round(
             (feature_frequency["Frequency"] / float(self.n_splits * self.n_iter) * 100),
             ndigits=2,
         )
         feature_frequency_ = feature_frequency.sort_values(
-            by=["Frequency", "Frequency (%)"], ascending=[False, False]
+            by=["Frequency", "Frequency (%)"],
+            ascending=[False, False],
         ).reset_index(drop=True)
 
         return feature_frequency_

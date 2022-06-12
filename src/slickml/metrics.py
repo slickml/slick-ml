@@ -249,7 +249,9 @@ class BinaryClassificationMetrics:
         Function to calculate balanced accuracy score
         """
         balanced_accuracy = balanced_accuracy_score(
-            y_true=self.y_true, y_pred=self.y_pred_, adjusted=False
+            y_true=self.y_true,
+            y_pred=self.y_pred_,
+            adjusted=False,
         )
 
         return balanced_accuracy
@@ -258,7 +260,8 @@ class BinaryClassificationMetrics:
         """
         Function to calculate the roc curve elements: fpr, tpr, thresholds"""
         fpr_list, tpr_list, roc_thresholds = roc_curve(
-            y_true=self.y_true, y_score=self.y_pred_proba
+            y_true=self.y_true,
+            y_score=self.y_pred_proba,
         )
 
         return fpr_list, tpr_list, roc_thresholds
@@ -283,7 +286,8 @@ class BinaryClassificationMetrics:
         precision_list, recall_list, pr_thresholds
         """
         precision_list, recall_list, pr_thresholds = precision_recall_curve(
-            y_true=self.y_true, probas_pred=self.y_pred_proba
+            y_true=self.y_true,
+            probas_pred=self.y_pred_proba,
         )
 
         return precision_list, recall_list, pr_thresholds
@@ -417,7 +421,7 @@ class BinaryClassificationMetrics:
             data=self.metrics_dict_,
             index=[
                 f"""Threshold = {self.threshold:.{self.precision_digits}f} | Average =
-                {self.average_method.title()}"""
+                {self.average_method.title()}""",
             ],
         )
         metrics_df = metrics_df.reindex(
@@ -437,7 +441,7 @@ class BinaryClassificationMetrics:
                 "TN",
                 "FP",
                 "FN",
-            ]
+            ],
         )
 
         # Set CSS properties
@@ -546,7 +550,9 @@ class BinaryClassificationMetrics:
         """
 
         plot_binary_classification_metrics(
-            figsize=figsize, save_path=save_path, **self.plotting_dict_
+            figsize=figsize,
+            save_path=save_path,
+            **self.plotting_dict_,
         )
 
 
@@ -705,7 +711,9 @@ class RegressionMetrics:
         Function to calculate explained variance score
         """
         ev = explained_variance_score(
-            y_true=self.y_true, y_pred=self.y_pred, multioutput=self.multioutput
+            y_true=self.y_true,
+            y_pred=self.y_pred,
+            multioutput=self.multioutput,
         )
 
         return ev
@@ -715,7 +723,9 @@ class RegressionMetrics:
         Function to calculate mean-absolute-error
         """
         mae = mean_absolute_error(
-            y_true=self.y_true, y_pred=self.y_pred, multioutput=self.multioutput
+            y_true=self.y_true,
+            y_pred=self.y_pred,
+            multioutput=self.multioutput,
         )
 
         return mae
@@ -725,7 +735,9 @@ class RegressionMetrics:
         Function to calculate mean-squared-error
         """
         mse = mean_squared_error(
-            y_true=self.y_true, y_pred=self.y_pred, multioutput=self.multioutput
+            y_true=self.y_true,
+            y_pred=self.y_pred,
+            multioutput=self.multioutput,
         )
 
         return mse
@@ -738,7 +750,9 @@ class RegressionMetrics:
             msle = None
         else:
             msle = mean_squared_log_error(
-                y_true=self.y_true, y_pred=self.y_pred, multioutput=self.multioutput
+                y_true=self.y_true,
+                y_pred=self.y_pred,
+                multioutput=self.multioutput,
             )
 
         return msle
@@ -748,7 +762,9 @@ class RegressionMetrics:
         Function to calculate mean-absolute-percentage-error
         """
         mape = mean_absolute_percentage_error(
-            y_true=self.y_true, y_pred=self.y_pred, multioutput=self.multioutput
+            y_true=self.y_true,
+            y_pred=self.y_pred,
+            multioutput=self.multioutput,
         )
 
         return mape
@@ -774,7 +790,7 @@ class RegressionMetrics:
             count = 0.0
             for j in range(len(self.y_true)):
                 calc_norm = np.linalg.norm(self.y_true[j] - self.y_pred[j]) / np.sqrt(
-                    np.linalg.norm(self.y_true[j]) ** 2 + np.linalg.norm(self.y_pred[j]) ** 2
+                    np.linalg.norm(self.y_true[j]) ** 2 + np.linalg.norm(self.y_pred[j]) ** 2,
                 )
                 if calc_norm < deviation[i]:
                     count += 1
@@ -839,7 +855,7 @@ class RegressionMetrics:
                 "REC AUC",
                 "Coeff. of Variation",
                 "Mean of Variation",
-            ]
+            ],
         )
 
         # Set CSS properties

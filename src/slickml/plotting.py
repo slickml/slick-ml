@@ -458,7 +458,11 @@ def plot_xfs_cv_results(
         raise TypeError("Only str type is allowed for ext_color.")
 
     fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(
-        2, 2, figsize=figsize, sharex=sharex, sharey=sharey
+        2,
+        2,
+        figsize=figsize,
+        sharex=sharex,
+        sharey=sharey,
     )
     sns.distplot(kwargs["int_cv_train"], color=int_color, ax=ax1, axlabel="")
     sns.distplot(kwargs["int_cv_test"], color=int_color, ax=ax2, axlabel="")
@@ -748,7 +752,7 @@ def plot_xgb_feature_importance(
 
     # reindex feature importance
     feature_importance = feature_importance.reindex(
-        index=[idx for idx in range(len(feature_importance) - 1, -1, -1)]
+        index=[idx for idx in range(len(feature_importance) - 1, -1, -1)],
     )
 
     fig, ax = plt.subplots(figsize=figsize)

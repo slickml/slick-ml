@@ -573,7 +573,8 @@ class XGBoostRegressor:
         """
         if isinstance(X_train, np.ndarray):
             self.X_train = pd.DataFrame(
-                X_train, columns=[f"F_{i}" for i in range(X_train.shape[1])]
+                X_train,
+                columns=[f"F_{i}" for i in range(X_train.shape[1])],
             )
         elif isinstance(X_train, pd.DataFrame):
             self.X_train = X_train
@@ -587,7 +588,7 @@ class XGBoostRegressor:
 
         if self.sparse_matrix and self.scale_mean:
             raise ValueError(
-                "The scale_mean should be False in conjuction of using sparse_matrix=True."
+                "The scale_mean should be False in conjuction of using sparse_matrix=True.",
             )
 
         if self.scale_mean or self.scale_std:
@@ -956,7 +957,7 @@ class XGBoostCVRegressor(XGBoostRegressor):
                 + f"{self.cv_results_.iloc[-1][3]:.3f}"
                 + Color.END
                 + Color.BOLD
-                + " *-*"
+                + " *-*",
             )
 
         # train best model
@@ -1273,7 +1274,7 @@ class GLMNetCVRegressor:
 
         if self.sparse_matrix and self.scale:
             raise ValueError(
-                "The scale should be False in conjuction of using sparse_matrix=True to maintain sparsity."
+                "The scale should be False in conjuction of using sparse_matrix=True to maintain sparsity.",
             )
 
         if not isinstance(fit_intercept, bool):
@@ -1603,7 +1604,8 @@ class GLMNetCVRegressor:
         """
         if isinstance(X_train, np.ndarray):
             self.X_train = pd.DataFrame(
-                X_train, columns=[f"F_{i}" for i in range(X_train.shape[1])]
+                X_train,
+                columns=[f"F_{i}" for i in range(X_train.shape[1])],
             )
         elif isinstance(X_train, pd.DataFrame):
             self.X_train = X_train
@@ -1694,7 +1696,7 @@ class GLMNetCVRegressor:
             zip(
                 [self.X_train_.columns.tolist()[i] for i in idx],
                 [self.model_.coef_.reshape(-1, self.model_.coef_.shape[-1])[0][i] for i in idx],
-            )
+            ),
         )
 
         return dct
@@ -1709,7 +1711,7 @@ class GLMNetCVRegressor:
             zip(
                 [f"{col}" for col in self.X_train_.columns.tolist()],
                 (self.model_.coef_path_.reshape(-1, self.model_.coef_path_.shape[-1])).tolist(),
-            )
+            ),
         )
         results["cv_standard_error"] = self.model_.cv_standard_error_.tolist()
         results["cv_mean_score"] = self.model_.cv_mean_score_.tolist()
