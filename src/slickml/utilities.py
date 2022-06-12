@@ -40,38 +40,6 @@ def join_dictionaries(dict1, dict2):
     return dictionary
 
 
-def memory_use_csr(csr):
-    """Memory use in bytes by sparse matrix in csr format.
-
-    Parameters
-    ----------
-    csr: sparse matric in csr format
-    """
-    return csr.data.nbytes + csr.indptr.nbytes + csr.indices.nbytes
-
-
-def df_to_csr(df, fillna=0.0, verbose=False):
-    """Convert pandas.DataFrame to a sparse csr matrix.
-
-    Parameters
-    ----------
-    df: pandas.DataFrame
-        Input feautres
-
-    fillna: Value to fill null values, (default=0.0)
-        Note: csr matrices assume the values have float dtype.
-
-    verbose: Flag to show the memory usage of csr matrix, (default=False)
-    """
-    df_ = df.copy()
-    csr = df_.astype(pd.SparseDtype("float", fillna)).sparse.to_coo().tocsr()
-    if verbose:
-        df_.info(memory_usage="deep")
-        print(f"CSR Memory Usage: {memory_use_csr(csr)/2**20:.3} MB")
-
-    return csr
-
-
 def pd_explode(df, column):
     """Function to explodes a column into columnar format.
 
