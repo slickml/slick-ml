@@ -14,7 +14,7 @@ from slickml.plotting import (
     plot_xgb_cv_results,
     plot_xgb_feature_importance,
 )
-from slickml.utilities import df_to_csr
+from slickml.utils import df_to_csr
 
 
 class XGBoostRegressor:

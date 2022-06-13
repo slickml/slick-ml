@@ -1,6 +1,6 @@
 import importlib.resources as pkg_resources
 import json
-from typing import Any, Dict, Tuple
+from typing import Any, Dict, Optional, Tuple
 
 import numpy as np
 import pandas as pd
@@ -60,17 +60,49 @@ def _captured_log(capsys) -> Tuple[str]:
     return (captured.out, captured.err)
 
 
-def _dummy_pandas_dataframe() -> pd.DataFrame:
-    """Returns a pandas DataFrame with random numbers with shape of (100, 1) and one column "foo".
+def _dummy_pandas_dataframe(
+    size: Optional[int] = 100,
+    random_state: Optional[int] = 1367,
+) -> pd.DataFrame:
+    """Returns a dummy pandas DataFrame.
+
+    The DataFrame shape is (size, 4), two features ("feature_1", "feature_2"), and two targets
+    ("binary_target", "multi_target").
+
+    Parameters
+    ----------
+    size : Optional[int], optional
+        Number of samples, by default 100
+
+    random_state : Optional[int], optional
+        Random seed, by default 1367
 
     Returns
     -------
     pd.DataFrame
     """
+    np.random.seed(
+        seed=random_state,
+    )
     return pd.DataFrame(
         {
-            "foo": np.random.random_sample(
-                size=100,
+            "feature_1": np.random.random_sample(
+                size=size,
+            ),
+            "feature_2": np.random.random_sample(
+                size=size,
+            ),
+            "binary_target": np.random.randint(
+                low=0,
+                high=2,
+                size=size,
+                dtype=int,
+            ),
+            "multi_target": np.random.randint(
+                low=0,
+                high=3,
+                size=size,
+                dtype=int,
             ),
         },
     )
@@ -84,6 +116,9 @@ def _dummy_sparse_matrix() -> csr_matrix:
            [0., 0., 3.],
            [4., 5., 6.]])
 
+    Returns
+    -------
+    csr_matrix
     """
     row = np.array([0, 0, 1, 2, 2, 2])
     col = np.array([0, 2, 2, 0, 1, 2])

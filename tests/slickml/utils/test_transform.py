@@ -5,15 +5,18 @@ import numpy as np
 import pandas as pd
 import pytest
 from assertpy import assert_that
+from pytest import CaptureFixture
 from scipy.sparse import csr_matrix
 
-from slickml.utils import df_to_csr, memory_use_csr
+from slickml.utils import add_noisy_features, df_to_csr, memory_use_csr
 from tests.utils import (
     _captured_log,
     _dummy_pandas_dataframe,
     _dummy_sparse_matrix,
     _ids,
 )
+
+_FLOATING_POINT_THRESHOLD = 1e-5
 
 
 def test_df_to_csr__passes__with_default_inputs() -> None:
@@ -23,11 +26,11 @@ def test_df_to_csr__passes__with_default_inputs() -> None:
 
     assert_that(csr).is_instance_of(csr_matrix)
     assert_that(csr.shape).is_equal_to(df.shape)
-    assert_that(csr.data.shape).is_equal_to(df["foo"].shape)
-    assert_that(all(csr.data == df["foo"].values)).is_true()
+    assert_that(csr.data.shape[0]).is_equal_to(np.count_nonzero(df))
+    assert_that(all(csr.data == df.values.flatten()[np.flatnonzero(df.values)])).is_true()
 
 
-def test_df_to_csr__when__verbose_is_true(capsys) -> None:
+def test_df_to_csr__passes__when_verbose_is_true(capsys: CaptureFixture) -> None:
     """Validates if the logged memory usage in standard output is accurate."""
     df = _dummy_pandas_dataframe()
     csr = df_to_csr(df, verbose=True)
@@ -36,12 +39,14 @@ def test_df_to_csr__when__verbose_is_true(capsys) -> None:
     assert_that(error).is_empty()
     assert_that(output).is_not_empty()
     assert_that(
-        _captured_memory_use_from_stdout(
-            captured_output=output,
-            index=-2,
-        )
-        - np.round(memory_use_csr(csr) / 2**20, 5),
-    ).is_less_than(0.000001)
+        np.abs(
+            _captured_memory_use_from_stdout(
+                captured_output=output,
+                index=-2,
+            )
+            - memory_use_csr(csr) / 2**20,
+        ),
+    ).is_less_than(_FLOATING_POINT_THRESHOLD)
     assert_that(
         _captured_memory_use_from_stdout(
             captured_output=output,
@@ -49,11 +54,14 @@ def test_df_to_csr__when__verbose_is_true(capsys) -> None:
         ),
     ).is_instance_of(float)
     assert_that(
-        _captured_memory_use_from_stdout(
-            captured_output=output,
-            index=-3,
+        np.abs(
+            _captured_memory_use_from_stdout(
+                captured_output=output,
+                index=-3,
+            )
+            - memory_use_csr(csr),
         ),
-    ).is_equal_to(memory_use_csr(csr))
+    ).is_less_than(_FLOATING_POINT_THRESHOLD)
     assert_that(
         _captured_memory_use_from_stdout(
             captured_output=output,
@@ -61,11 +69,14 @@ def test_df_to_csr__when__verbose_is_true(capsys) -> None:
         ),
     ).is_instance_of(float)
     assert_that(
-        _captured_memory_use_from_stdout(
-            captured_output=output,
-            index=-4,
+        np.abs(
+            _captured_memory_use_from_stdout(
+                captured_output=output,
+                index=-4,
+            )
+            - df.memory_usage().sum() / 2**10,
         ),
-    ).is_equal_to(df.memory_usage().sum())
+    ).is_less_than(_FLOATING_POINT_THRESHOLD * 1e4)
     assert_that(
         _captured_memory_use_from_stdout(
             captured_output=output,
@@ -116,18 +127,64 @@ def test_df_to_csr__fails__with_invalid_inputs(kwargs: Dict[str, Any]) -> None:
     ],
     ids=_ids,
 )
-def test_memory_use_csr__fails_with_invalid_inputs(kwargs: Dict[str, Any]) -> None:
+def test_memory_use_csr__fails__with_invalid_inputs(kwargs: Dict[str, Any]) -> None:
+    """Validates that getting the memory usage info cannot be done with invalid inputs."""
     with pytest.raises(TypeError):
         memory_use_csr(**kwargs)
 
 
-def test_memory_use_csr__passes_with_default_inputs() -> None:
+def test_memory_use_csr__passes__with_default_inputs() -> None:
+    """Validates that memory usage info with default inputs is accurate."""
     mem = memory_use_csr(
         csr=_dummy_sparse_matrix(),
     )
 
     assert_that(mem).is_instance_of(int)
     assert_that(mem).is_equal_to(88)
+
+
+@pytest.mark.parametrize(
+    "kwargs",
+    [
+        {
+            "X": pd.DataFrame({"foo": [1, 2, 3, 4, 5]}),
+        },
+        {
+            "X": np.array([[1, 2, 3, 4, 5]]),
+        },
+    ],
+    ids=_ids,
+)
+def test_add_noisy_features__passes__with_default_inputs(kwargs: Dict[str, Any]) -> None:
+    """Validates that noisy features are getting augmented successfully."""
+    df_noisy = add_noisy_features(**kwargs)
+
+    assert_that(df_noisy).is_instance_of(pd.DataFrame)
+    assert_that(df_noisy).is_not_empty()
+    assert_that(df_noisy.shape[0]).is_equal_to(kwargs["X"].shape[0])
+    assert_that(df_noisy.shape[1]).is_equal_to(kwargs["X"].shape[1] * 2)
+    assert_that(df_noisy.sum().sum()).is_equal_to(kwargs["X"].sum().sum() * 2)
+
+
+@pytest.mark.parametrize(
+    "kwargs",
+    [
+        {"X": [42]},
+        {
+            "X": pd.DataFrame({"foo": [42]}),
+            "random_state": "one",
+        },
+        {
+            "X": pd.DataFrame({"foo": [42]}),
+            "prefix": 42,
+        },
+    ],
+    ids=_ids,
+)
+def test_add_noisy_features__fails__with_invalid_inputs(kwargs: Dict[str, Any]) -> None:
+    """Validates that noisy features cannot be added with invalid inputs."""
+    with pytest.raises(TypeError):
+        add_noisy_features(**kwargs)
 
 
 def _captured_memory_use_from_stdout(

@@ -1,5 +1,6 @@
-from typing import Optional
+from typing import Optional, Union
 
+import numpy as np
 import pandas as pd
 from scipy.sparse import csr_matrix
 
@@ -66,11 +67,9 @@ def df_to_csr(
     >>> import pandas as pd
     >>> from slickml.utils import df_to_csr
     >>> csr = df_to_csr(
-    ...     df=pd.DataFrame(
-    ...         {
-    ...             "foo": [42],
-    ...         },
-    ...     )
+    ...     df=pd.DataFrame({"foo": [0, 1, 0, 1]}),
+    ...     fillna=0.0,
+    ...     verbose=True,
     ... )
     """
     # TODO(amir): currently `pydantic.validate_arguments` is in beta version and they dont support
@@ -104,3 +103,85 @@ def df_to_csr(
         print(f"CSR memory usage: {memory_use_csr(csr)/2**20:.5f} MB")
 
     return csr
+
+
+def add_noisy_features(
+    X: Union[pd.DataFrame, np.ndarray],
+    *,
+    random_state: Optional[int] = 1367,
+    prefix: Optional[str] = "noisy",
+) -> pd.DataFrame:
+    """Creates a new feature matrix augmented with noisy features via permutation.
+
+    The main goal of this algorithm to augment permutated records as noisy features to explore the
+    stability of any trained models. In principle, we are permutating the target classes. The input
+    data with a shape of (n, m) would be transformed into an output data with a shape of (n, 2m).
+
+    Parameters
+    ----------
+    X : Union[pd.DataFrame, np.ndarray]
+        Input features
+
+    random_state : Optional[int], optional
+        Random seed for randomizing the permutations and reproducibility, by default 1367
+
+    prefix : Optional[str], optional
+        Prefix string that will be added to the noisy features' names, by default "noisy"
+
+    Returns
+    -------
+    pd.DataFrame
+        Transformed feature matrix with noisy features and shape of (n, 2m)
+
+    Examples
+    --------
+    >>> import pandas as pd
+    >>> from slickml.utils import add_noisy_features
+    >>> csr = add_noisy_features(
+    ...     df=pd.DataFrame({"foo": [1, 2, 3, 4, 5]}),
+    ...     random_state=1367,
+    ...     prefix="noisy",
+    ... )
+    """
+    if not isinstance(random_state, int):
+        raise TypeError("The input random_state must have int dtype.")
+    if not isinstance(prefix, str):
+        raise TypeError("The input prefix must have str dtype.")
+    # TODO(amir): figure out how to ditch `.copy()` across package
+    X_ = X.copy()
+    if isinstance(X_, np.ndarray):
+        df_ = pd.DataFrame(
+            data=X_,
+            columns=[f"F_{i}" for i in range(X_.shape[1])],
+        )
+    elif isinstance(X_, pd.DataFrame):
+        df_ = X_
+    else:
+        raise TypeError("The input X must have pd.DataFrame or np.ndarray dtype.")
+
+    np.random.seed(
+        seed=random_state,
+    )
+    df = df_.copy().reset_index(
+        drop=True,
+    )
+    noisy_df = df_.copy()
+    noisy_cols = {col: f"{prefix}_{col}" for col in noisy_df.columns.tolist()}
+    noisy_df.rename(
+        columns=noisy_cols,
+        inplace=True,
+    )
+    noisy_df = noisy_df.reindex(
+        np.random.permutation(
+            noisy_df.index,
+        ),
+    )
+    return pd.concat(
+        [
+            df,
+            noisy_df.reset_index(
+                drop=True,
+            ),
+        ],
+        axis=1,
+    )
