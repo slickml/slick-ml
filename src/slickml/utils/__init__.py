@@ -22,7 +22,7 @@ Examples
 >>> import pandas as pd
 >>> from slickml.utils import df_to_csr
 >>> csr = df_to_csr(
-...     df=pd.DataFrame({"foo": [42]}),
+...     df=pd.DataFrame({"foo": [0, 1, 0, 1]}),
 ...     fillna=0.0,
 ...     verbose=True,
 ... )
@@ -39,11 +39,30 @@ Examples
 >>> csr = csr_matrix((3, 4), dtype=np.int8)
 >>> mem = memory_use_csr(csr=csr)
 
+
+```add_noisy_features`
+
+Creates a new feature matrix augmented with noisy features via permutation. The main goal of this
+algorithm is to augment permutated records as noisy features to explore the stability of any trained
+model. In principle, we are permutating the target classes. The input data with a shape of (n, m)
+would be transformed into an output data with a shape of (n, 2m).
+
+Examples
+--------
+>>> import pandas as pd
+>>> from slickml.utils import add_noisy_features
+>>> csr = add_noisy_features(
+...     df=pd.DataFrame({"foo": [1, 2, 3, 4, 5]}),
+...     random_state=1367,
+...     prefix="noisy",
+... )
+
 """
 
-from slickml.utils._transform import df_to_csr, memory_use_csr
+from slickml.utils._transform import add_noisy_features, df_to_csr, memory_use_csr
 
 __all__ = [
     "memory_use_csr",
     "df_to_csr",
+    "add_noisy_features",
 ]

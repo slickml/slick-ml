@@ -31,14 +31,20 @@ def _get_invalid_dependencies() -> List[str]:
 class TestImports:
     """Validates required and not-required dependencies imports."""
 
-    @pytest.mark.parametrize("package", _get_valid_dependencies())
-    def test_required_dependencies__import_successfully(self, package: str) -> None:
+    @pytest.mark.parametrize(
+        "package",
+        _get_valid_dependencies(),
+    )
+    def test_imports__passes__with_valid_dependencies(self, package: str) -> None:
         """Validates all the required dependencies are imported successfully."""
         assert_that(__import__(package)).is_true()
         assert_that(__import__(package)).is_not_none()
 
-    @pytest.mark.parametrize("package", _get_invalid_dependencies())
-    def test_invalid_dependencies__import_unsuccessfully(self, package: str) -> None:
+    @pytest.mark.parametrize(
+        "package",
+        _get_invalid_dependencies(),
+    )
+    def test_imports__fails__with_invalid_dependencies(self, package: str) -> None:
         """Validates that not-required / not-availabe dependencies cannot be imported."""
         with pytest.raises(ModuleNotFoundError):
             __import__(package)

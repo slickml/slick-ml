@@ -5,10 +5,9 @@ import pandas as pd
 import xgboost as xgb
 from sklearn.model_selection import StratifiedKFold
 
-from slickml.feature_engineering import noisy_features
 from slickml.formatting import Color
 from slickml.plotting import plot_xfs_cv_results, plot_xfs_feature_frequency
-from slickml.utilities import df_to_csr
+from slickml.utils import add_noisy_features, df_to_csr
 
 
 class XGBoostFeatureSelector:
@@ -347,7 +346,7 @@ class XGBoostFeatureSelector:
             self.random_state_ = self.random_state + iteration
 
             # adding noise to data
-            X_permuted = noisy_features(X=self.X, random_state=self.random_state_)
+            X_permuted = add_noisy_features(X=self.X, random_state=self.random_state_)
             cols = X_permuted.columns.tolist()
             Xval = X_permuted.values
 
