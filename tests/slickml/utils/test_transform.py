@@ -15,6 +15,8 @@ from tests.utils import (
     _ids,
 )
 
+_TOLERANCE_THRESHOLD = 1e-5
+
 
 def test_df_to_csr__passes__with_default_inputs() -> None:
     """Validates conversion of a pandas DataFrame into CSR matrix with default inputs."""
@@ -23,8 +25,8 @@ def test_df_to_csr__passes__with_default_inputs() -> None:
 
     assert_that(csr).is_instance_of(csr_matrix)
     assert_that(csr.shape).is_equal_to(df.shape)
-    assert_that(csr.data.shape).is_equal_to(df["foo"].shape)
-    assert_that(all(csr.data == df["foo"].values)).is_true()
+    assert_that(csr.data.shape[0]).is_equal_to(np.count_nonzero(df))
+    assert_that(all(csr.data == df.values.flatten()[np.flatnonzero(df.values)])).is_true()
 
 
 def test_df_to_csr__when__verbose_is_true(capsys) -> None:
@@ -36,12 +38,14 @@ def test_df_to_csr__when__verbose_is_true(capsys) -> None:
     assert_that(error).is_empty()
     assert_that(output).is_not_empty()
     assert_that(
-        _captured_memory_use_from_stdout(
-            captured_output=output,
-            index=-2,
-        )
-        - np.round(memory_use_csr(csr) / 2**20, 5),
-    ).is_less_than(0.000001)
+        np.abs(
+            _captured_memory_use_from_stdout(
+                captured_output=output,
+                index=-2,
+            )
+            - memory_use_csr(csr) / 2**20,
+        ),
+    ).is_less_than(_TOLERANCE_THRESHOLD)
     assert_that(
         _captured_memory_use_from_stdout(
             captured_output=output,
@@ -49,11 +53,14 @@ def test_df_to_csr__when__verbose_is_true(capsys) -> None:
         ),
     ).is_instance_of(float)
     assert_that(
-        _captured_memory_use_from_stdout(
-            captured_output=output,
-            index=-3,
+        np.abs(
+            _captured_memory_use_from_stdout(
+                captured_output=output,
+                index=-3,
+            )
+            - memory_use_csr(csr),
         ),
-    ).is_equal_to(memory_use_csr(csr))
+    ).is_less_than(_TOLERANCE_THRESHOLD)
     assert_that(
         _captured_memory_use_from_stdout(
             captured_output=output,
@@ -61,11 +68,14 @@ def test_df_to_csr__when__verbose_is_true(capsys) -> None:
         ),
     ).is_instance_of(float)
     assert_that(
-        _captured_memory_use_from_stdout(
-            captured_output=output,
-            index=-4,
+        np.abs(
+            _captured_memory_use_from_stdout(
+                captured_output=output,
+                index=-4,
+            )
+            - df.memory_usage().sum() / 2**10,
         ),
-    ).is_equal_to(df.memory_usage().sum())
+    ).is_less_than(_TOLERANCE_THRESHOLD * 1e4)
     assert_that(
         _captured_memory_use_from_stdout(
             captured_output=output,
