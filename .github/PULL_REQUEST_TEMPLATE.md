@@ -1,3 +1,6 @@
+<!-- Please check the contributing guidelines before opening a PR -->
+<!-- https://github.com/slickml/slick-ml/blob/master/CONTRIBUTING.md -->
+
 ## Description
 
 Resolves: #issue-number-here
