@@ -87,7 +87,11 @@ Please note that before starting any major work, open an issue describing what y
   ```console
   poe format
   ```
-- `poe format` command is essentially runs `poe black` and `poe isort` commands behind the scene in a serial fashion. You can learn more about each steps below 👇 .
+- `poe format` command is essentially runs `poe add-trailing-comma`, `poe black` and `poe isort` commands behind the scene in a serial fashion. You can learn more about each steps below 👇 .
+- Different versions of python require commas in different places. Trailing commas 🏁 is a common issue (C812) in code styles that [*add-trailing-comma*](https://github.com/asottile/add-trailing-comma) has solved it. To apply `add-trailing-comma`, simply run 🏃‍♀️ :
+  ```console
+  poe add-trailing-comma
+  ```
 - We save a lot of time ⏳ and mental energy 🔋 for more important matters by using [*black*](https://github.com/psf/black) ⬛  as our main code formatter. The only option we have specified over the default values is `line-length = 100`. To apply `black`, simply run 🏃‍♀️ :
   ```console
   poe black
@@ -104,7 +108,7 @@ Please note that before starting any major work, open an issue describing what y
   poe check
   ```
 - `poe check` command is essentially runs `poe black --check`, `poe isort --check-only`, `poe flake8`, and `poe mypy` commands behind the scene in a serial fashion. You can learn more about each steps below 👇 .
-- To lint our code base we use [*flake8*](https://flake8.pycqa.org/en/latest/) with more specification laid out in [*.flake8*](https://github.com/slickml/slick-ml/blob/master/.flake8) file. To apply `flake8` to the code base, simply run 🏃‍♀️ :
+- To lint our code base we use [*flake8*](https://flake8.pycqa.org/en/latest/) with [*flake8-commas*](https://github.com/PyCQA/flake8-commas) extension, and more specification laid out in [*.flake8*](https://github.com/slickml/slick-ml/blob/master/.flake8) file. To apply `flake8` to the code base, simply run 🏃‍♀️ :
   ```console
   poe flake8
   ```
@@ -162,6 +166,7 @@ Please note that before starting any major work, open an issue describing what y
      ```console
      poe tox
      ```
+     🔔 Sometimes, `tox` is unhappy; so, don't hesitate to run `poe tox` twice 😁 .
   8. Now, you are ready to push your changes to your forked repository.
   9.  Lastly, open a PR in our repository to the `master` branch and follow the PR template so that we can efficiently review the changes as soon as possible and get your feature/bug-fix merged.
   10. Nicely done! You are all set! You are now officially part of [SlickML contributors](https://github.com/slickml/slick-ml/graphs/contributors).

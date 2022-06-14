@@ -5,9 +5,12 @@ import pandas as pd
 import xgboost as xgb
 from sklearn.model_selection import StratifiedKFold
 
-from slickml.formatting import Color
-from slickml.plotting import plot_xfs_cv_results, plot_xfs_feature_frequency
 from slickml.utils import add_noisy_features, df_to_csr
+from slickml.utils._todo_fmt import Color
+from slickml.visualization._todo_plotting import (
+    plot_xfs_cv_results,
+    plot_xfs_feature_frequency,
+)
 
 
 class XGBoostFeatureSelector:

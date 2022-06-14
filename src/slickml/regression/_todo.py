@@ -5,8 +5,9 @@ import shap
 import xgboost as xgb
 from sklearn.preprocessing import StandardScaler
 
-from slickml.formatting import Color
-from slickml.plotting import (
+from slickml.utils import df_to_csr
+from slickml.utils._todo_fmt import Color
+from slickml.visualization._todo_plotting import (
     plot_glmnet_coeff_path,
     plot_glmnet_cv_results,
     plot_shap_summary,
@@ -14,12 +15,11 @@ from slickml.plotting import (
     plot_xgb_cv_results,
     plot_xgb_feature_importance,
 )
-from slickml.utils import df_to_csr
 
 
-class XGBoostClassifier:
-    """XGBoost Classifier.
-    This is wrapper using XGBoost classifier to train a XGBoost
+class XGBoostRegressor:
+    """XGBoost Regressor.
+    This is wrapper using XGBoost regressor to train a XGBoost
     model with using number of boosting rounds from the inputs. This
     function is pretty useful when feature selection is done and you
     want to train a model on the whole data and test on a separate
@@ -31,11 +31,11 @@ class XGBoostClassifier:
     num_boost_round: int, optional (default=200)
         Number of boosting round to train the model
 
-    metrics: str or tuple[str], optional (default=("auc"))
+    metrics: str or tuple[str], optional (default=("rmse"))
         Metric used for evaluation at cross-validation
         using xgboost.cv(). Please note that this is different
         than eval_metric that needs to be passed to params dict.
-        Possible values are "auc", "aucpr", "error", "logloss"
+        Possible values are "rmse", "rmsle", "mae"
 
     sparse_matrix: bool, optional (default=False)
         Flag to convert data to sparse matrix with csr format.
@@ -58,9 +58,9 @@ class XGBoostClassifier:
 
     params: dict, optional
         Set of parameters for evaluation of xboost.train()
-        (default={"eval_metric" : "auc",
+        (default={"eval_metric" : "rmse",
                   "tree_method": "hist",
-                  "objective" : "binary:logistic",
+                  "objective" : "reg:squarederror",
                   "learning_rate" : 0.05,
                   "max_depth": 2,
                   "min_child_weight" : 1,
@@ -70,8 +70,8 @@ class XGBoostClassifier:
                   "subsample" : 0.9,
                   "max_delta_step": 1,
                   "verbosity" : 0,
-                  "nthread" : 4,
-                  "scale_pos_weight" : 1})
+                  "nthread" : 4})
+        Other options for objective: "reg:logistic", "reg:squaredlogerror"
 
     Attributes
     ----------
@@ -108,16 +108,8 @@ class XGBoostClassifier:
         Returns None and applies the training process using
         the (X_train, y_train) set using xgboost.train()
 
-    predict_proba(X_test, y_test): instance method
-        Return the prediction probabilities for positive classes. Please note that
-        it only reports the probability of the positive class, while the sklearn
-        one returns for both and slicing like pred_proba[:, 1]
-        is needed for positive class predictions
-
-    predict(X_test, y_test, threshold=0.5): instance method
-        Return the prediction classes based on the passed threshold.
-        The default threshold is set at 0.5 while you can find the optimum thresholds
-        based on different methods using BinaryClassificationMetrics.
+    predict(X_test, y_test): instance method
+        Return the predicted target values.
 
     get_params(): instance method
         Returns params dict
@@ -152,12 +144,14 @@ class XGBoostClassifier:
                 self.num_boost_round = num_boost_round
 
         if metrics is None:
-            self.metrics = "auc"
+            self.metrics = "rmse"
         else:
             if not isinstance(metrics, str):
-                raise TypeError("The input metrics must be a str dtype.")
+                raise TypeError("The input metric must be a str dtype.")
             else:
-                if metrics in ["auc", "aucpr", "error", "logloss"]:
+                # TODO: update metric in next API update
+                # mape, mphe should be added
+                if metrics in ["rmse", "rmsle", "mae"]:
                     self.metrics = metrics
                 else:
                     raise ValueError("The input metric value is not valid.")
@@ -194,9 +188,9 @@ class XGBoostClassifier:
                 else:
                     raise ValueError("The input importance_type value is not valid.")
         params_ = {
-            "eval_metric": "auc",
+            "eval_metric": "rmse",
             "tree_method": "hist",
-            "objective": "binary:logistic",
+            "objective": "reg:squarederror",
             "learning_rate": 0.05,
             "max_depth": 2,
             "min_child_weight": 1,
@@ -207,7 +201,6 @@ class XGBoostClassifier:
             "max_delta_step": 1,
             "verbosity": 0,
             "nthread": 4,
-            "scale_pos_weight": 1,
         }
         if params is None:
             self.params = params_
@@ -259,13 +252,9 @@ class XGBoostClassifier:
 
         return self.feature_importance_
 
-    def predict_proba(self, X_test, y_test=None):
+    def predict(self, X_test, y_test=None):
         """
-        Function to return the prediction probabilities for both classes.
-        Please note that it only reports the probability of the positive class,
-        while the sklearn one returns for both and slicing like pred_proba[:, 1]
-        is needed for positive class predictions. Note that y_test is optional while
-        it might not be available in validiation.
+        Function to return the prediction of target values.
 
         Parameters
         ----------
@@ -276,31 +265,7 @@ class XGBoostClassifier:
             List of validation ground truth binary values [0, 1]
         """
         self.dtest_ = self._dtest(X_test, y_test)
-        self.y_pred_proba_ = self.model_.predict(self.dtest_, output_margin=False)
-
-        return self.y_pred_proba_
-
-    def predict(self, X_test, y_test=None, threshold=0.5):
-        """
-        Function to return the prediction classes based on the passed threshold.
-        The default threshold is set at 0.5 while you can find the optimum thresholds
-        based on different methods using BinaryClassificationMetrics.
-
-        Parameters
-        ----------
-        X_test: numpy.array or pandas.DataFrame
-            Validation features data
-
-        y_test: numpy.array[int] or list[int], optional (default=None)
-            List of validation ground truth binary values [0, 1]
-
-        threshold: float, optional (default=0.5)
-            Threshold to define classes based on probabilities.
-            predict_proba >= threshold would be defined as 1 else 0.
-        """
-        self.dtest_ = self._dtest(X_test, y_test)
-        self.y_pred_proba_ = self.model_.predict(self.dtest_, output_margin=False)
-        self.y_pred_ = [1 if p >= threshold else 0 for p in self.y_pred_proba_]
+        self.y_pred_ = self.model_.predict(self.dtest_, output_margin=False)
 
         return self.y_pred_
 
@@ -319,7 +284,7 @@ class XGBoostClassifier:
 
         """Function to plot XGBoost feature importance.
         This function is a helper function based on the feature_importance_
-        attribute of the XGBoostCVClassifier class.
+        attribute of the XGBoostRegressor class.
 
         Parameters
         ----------
@@ -729,9 +694,9 @@ class XGBoostClassifier:
         return df
 
 
-class XGBoostCVClassifier(XGBoostClassifier):
-    """XGBoost CV Classifier.
-    This is subclass of XGBoostClassifier to run xgboost.cv()
+class XGBoostCVRegressor(XGBoostRegressor):
+    """XGBoost CV Regressor.
+    This is subclass of XGBoostRegressor to run xgboost.cv()
     model with n-folds cross-validation and train model based on
     the best number of boosting round to avoid over-fitting. This
     function is pretty useful when feature selection is done and you
@@ -749,11 +714,11 @@ class XGBoostCVClassifier(XGBoostClassifier):
     n_splits: int, optional (default=4)
         Number of folds for cross-validation
 
-    metrics: str or tuple[str], optional (default=("auc"))
+    metrics: str or tuple[str], optional (default=("rmse"))
         Metric used for evaluation at cross-validation
         using xgboost.cv(). Please note that this is different
         than eval_metric that needs to be passed to params dict.
-        Possible values are "auc", "aucpr", "error", "logloss"
+        Possible values are "rmse", "rmse", "mae"
 
     early_stopping_rounds: int, optional (default=20)
         The criterion to early abort the xgboost.cv() phase
@@ -761,11 +726,6 @@ class XGBoostCVClassifier(XGBoostClassifier):
 
     random_state: int, optional (default=1367)
         Random seed
-
-    stratified: bool, optional (default=True)
-        Flag to stratificaiton of the targets to run xgboost.cv() to
-        find the best number of boosting round at each fold of
-        each iteration
 
     shuffle: bool, optional (default=True)
         Flag to shuffle data to have the ability of building
@@ -792,9 +752,9 @@ class XGBoostCVClassifier(XGBoostClassifier):
 
     params: dict, optional
         Set of parameters for evaluation of xboost.train()
-        (default={"eval_metric" : "auc",
+        (default={"eval_metric" : "rmse",
                   "tree_method": "hist",
-                  "objective" : "binary:logistic",
+                  "objective" : "reg:squarederror",
                   "learning_rate" : 0.05,
                   "max_depth": 2,
                   "min_child_weight" : 1,
@@ -804,8 +764,8 @@ class XGBoostCVClassifier(XGBoostClassifier):
                   "subsample" : 0.9,
                   "max_delta_step": 1,
                   "verbosity" : 0,
-                  "nthread" : 4,
-                  "scale_pos_weight" : 1})
+                  "nthread" : 4})
+        Other options for objective: "reg:logistic", "reg:squaredlogerror"
 
     callbacks: bool, optional (default=False)
         Flag for printing results during xgboost.cv().
@@ -857,16 +817,8 @@ class XGBoostCVClassifier(XGBoostClassifier):
         Returns None and applies the training process using
         the (X_train, y_train) set using xgboost.cv() and xgboost.train()
 
-    predict_proba(X_test, y_test): instance method
-        Return the prediction probabilities for positive classes. Please note that
-        it only reports the probability of the positive class, while the sklearn
-        one returns for both and slicing like pred_proba[:, 1]
-        is needed for positive class predictions
-
-    predict(X_test, y_test, threshold=0.5): instance method
-        Return the prediction classes based on the passed threshold.
-        The default threshold is set at 0.5 while you can find the optimum thresholds
-        based on different methods using BinaryClassificationMetrics.
+    predict(X_test, y_test): instance method
+        Return the predicted target values.
 
     get_params(): instance method
         Returns params dict
@@ -896,7 +848,6 @@ class XGBoostCVClassifier(XGBoostClassifier):
         metrics=None,
         early_stopping_rounds=None,
         random_state=None,
-        stratified=True,
         shuffle=True,
         sparse_matrix=False,
         scale_mean=False,
@@ -939,11 +890,6 @@ class XGBoostCVClassifier(XGBoostClassifier):
                 raise TypeError("The input random_state must have integer dtype.")
             else:
                 self.random_state = random_state
-
-        if not isinstance(stratified, bool):
-            raise TypeError("The input stratified must have bool dtype.")
-        else:
-            self.stratified = stratified
 
         if not isinstance(shuffle, bool):
             raise TypeError("The input shuffle must have bool dtype.")
@@ -1104,7 +1050,6 @@ class XGBoostCVClassifier(XGBoostClassifier):
             dtrain=self.dtrain_,
             num_boost_round=self.num_boost_round,
             nfold=self.n_splits,
-            stratified=self.stratified,
             metrics=self.metrics,
             early_stopping_rounds=self.early_stopping_rounds,
             seed=self.random_state,
@@ -1127,13 +1072,12 @@ class XGBoostCVClassifier(XGBoostClassifier):
         return model
 
 
-class GLMNetCVClassifier:
-    """GLMNet CV Classifier.
+class GLMNetCVRegressor:
+    """GLMNet CV Regressor.
     This is wrapper using GLM-Net to train a Regularized Linear Model
-    via logitic regression and find the optimal penalty values through
-    N-Folds cross validation. This function is pretty useful to train
-    a Logit-Net model with the ability of feature reduction. Main
-    theoretical reference:
+    and find the optimal penalty values through N-Folds cross validation.
+    This function is pretty useful to train a Elastic-Net model with
+    the ability of feature reduction. Main theoretical reference:
     (https://web.stanford.edu/~hastie/glmnet/glmnet_alpha.html)
 
     Parameters
@@ -1149,10 +1093,10 @@ class GLMNetCVClassifier:
         determining lambda_best_ and lambda_max_. If non-zero, must be
         at least 3.
 
-    metric: str or callable, optional (default="auc")
+    metric: str or callable, optional (default="r2")
         Metric used for model selection during cross validation.
-        Valid options are "accuracy", "roc_auc" (alias = "auc"), "average_precision",
-        "precision", "recall". Alternatively, supply a function or callable
+        Valid options are "r2", "mean_squared_error", "mean_absolute_error",
+        and "median_absolute_error". Alternatively, supply a function or callable
         object with the following signature "scorer(estimator, X, y)".
         Note, the metric function affects the selection of "lambda_best_" and
         "lambda_max_", fitting the same data ith different metric methods will result
@@ -1210,11 +1154,11 @@ class GLMNetCVClassifier:
     X_test_: pandas.DataFrame()
         Returns transformed testing data set.
 
-    y_train_: numpy.array[int] or list[int]
-        Returns the list of training ground truth binary values [0, 1]
+    y_train_: numpy.array[float] or list[float]
+        Returns the list of training ground truth target values
 
     y_test_: numpy.array[int] or list[int]
-        Returns the list of testing ground truth binary values [0, 1]
+        Returns the list of testing ground truth target values
 
     coeff_: pandas.DataFrame
         Return the model's non-zero coefficients
@@ -1233,17 +1177,10 @@ class GLMNetCVClassifier:
 
     fit(X_train, y_train): instance method
         Returns None and applies the training process using
-        the (X_train, y_train) set using glmnet.LogitNet()
+        the (X_train, y_train) set using glmnet.ElasticNet()
 
-    predict_proba(X_test, y_test=None): instance method
-        Return the prediction probabilities for positive classes. Please note that
-        it only reports the probability of the positive class, while the sklearn
-        one returns for both and slicing like pred_proba[:, 1]
-        is needed for positive class predictions
-
-    predict(X_test, y_test=None, threshold=0.5): instance method
-        Returns the prediction classes based on the passed threshold.
-        The default threshold is set at 0.5.
+    predict(X_test, y_test=None): instance method
+        Returns the prediction values
 
     get_params(): instance method
         Returns params dict
@@ -1310,21 +1247,18 @@ class GLMNetCVClassifier:
                 self.n_splits = n_splits
 
         if metric is None:
-            self.metric = "roc_auc"
+            self.metric = "r2"
         else:
             if not isinstance(metric, str):
                 raise TypeError("The input metric must have str dtype.")
             else:
                 if metric in [
-                    "accuracy",
-                    "roc_auc",
-                    "average_precision",
-                    "precision",
-                    "recall",
+                    "r2",
+                    "mean_squared_error",
+                    "mean_absolute_error",
+                    "median_absolute_error",
                 ]:
                     self.metric = metric
-                elif metric == "auc":
-                    self.metric = "roc_auc"
                 else:
                     raise ValueError("The input metric value is not valid.")
 
@@ -1406,7 +1340,7 @@ class GLMNetCVClassifier:
 
     def fit(self, X_train, y_train):
         """
-        Function to initialize a LogitNet model using (X, y).
+        Function to initialize a ElasticNet model using (X, y).
 
         Parameters
         ----------
@@ -1433,21 +1367,14 @@ class GLMNetCVClassifier:
 
         return None
 
-    def predict_proba(self, X_test, y_test=None, lamb=None):
+    def predict(self, X_test, lamb=None):
         """
-        Function to return the prediction probabilities for positive classes.
-        Please note that it only reports the probability of the positive class,
-        while the sklearn one returns for both and slicing like pred_proba[:, 1]
-        is needed for positive class predictions. Note that y_test is optional while
-        it might not be available in validiation.
+        Function to return the prediction values
 
         Parameters
         ----------
         X_test: numpy.array or pandas.DataFrame
             Validation features data
-
-        y_test: numpy.array[int] or list[int], optional (default=None)
-            List of validation ground truth binary values [0, 1]
 
         lamb: array, optional (default=None)
         Values with shape (n_lambda,) of lambda from lambda_path_
@@ -1457,42 +1384,7 @@ class GLMNetCVClassifier:
         values greater than max(lambda_path_) or less than  min(lambda_path_)
         will be clipped.
         """
-        self.X_test_, self.y_test_ = self._dtest(X_test, y_test)
-        if self.sparse_matrix:
-            self.y_pred_proba_ = self.model_.predict_proba(df_to_csr(self.X_test_), lamb=lamb)[:, 1]
-        else:
-            self.y_pred_proba_ = self.model_.predict_proba(self.X_test_, lamb=lamb)[:, 1]
-
-        return self.y_pred_proba_
-
-    def predict(self, X_test, y_test=None, threshold=0.5, lamb=None):
-        """
-        Function to return the prediction classes based on the passed threshold.
-        The default threshold is set at 0.5 while you can find the optimum thresholds
-        based on different methods using BinaryClassificationMetrics.
-
-        Parameters
-        ----------
-        X_test: numpy.array or pandas.DataFrame
-            Validation features data
-
-        y_test: numpy.array[int] or list[int], optional (default=None)
-            List of validation ground truth binary values [0, 1]
-
-        threshold: float, optional (default=0.5)
-            Threshold to define classes based on probabilities.
-            predict_proba >= threshold would be defined as 1 else 0.
-
-        lamb: array, optional (default=None)
-        Values with shape (n_lambda,) of lambda from lambda_path_
-        from which to make predictions. If no values are provided (None),
-        the returned predictions will be those corresponding to lambda_best_.
-        The values of lamb must also be in the range of lambda_path_,
-        values greater than max(lambda_path_) or less than  min(lambda_path_)
-        will be clipped.
-        """
-        y_pred_proba = self.predict_proba(X_test, y_test=y_test, lamb=lamb)
-        self.y_pred_ = [1 if p >= threshold else 0 for p in y_pred_proba]
+        self.y_pred_ = self.model_.predict(X_test, lamb=lamb)
 
         return self.y_pred_
 
@@ -1547,7 +1439,7 @@ class GLMNetCVClassifier:
         title=None,
         save_path=None,
     ):
-        """Function to plot GLMNetCVClassfier cross-validation results.
+        """Function to plot GLMNetCVRegressor cross-validation results.
 
         Parameters
         ----------
@@ -1633,7 +1525,7 @@ class GLMNetCVClassifier:
         yscale=None,
         save_path=None,
     ):
-        """Function to plot GLMNetCVClassfier coefficients' paths.
+        """Function to plot GLMNetCVRegressor coefficients' paths.
 
         Parameters
         ----------
@@ -1707,8 +1599,8 @@ class GLMNetCVClassifier:
         X_train: numpy.array or Pandas DataFrame
             Training features data
 
-        y_train: numpy.array[int] or list[int]
-            List of training ground truth binary values [0, 1]
+        y_train: numpy.array[float] or list[float]
+            List of training ground truth values
         """
         if isinstance(X_train, np.ndarray):
             self.X_train = pd.DataFrame(
@@ -1739,8 +1631,8 @@ class GLMNetCVClassifier:
         X_test: numpy.array or Pandas DataFrame
             Testing features data
 
-        y_test: numpy.array[int] or list[int]
-            List of testing ground truth binary values [0, 1]
+        y_test: numpy.array[float] or list[float]
+            List of testing ground truth values
         """
         if isinstance(X_test, np.ndarray):
             self.X_test = pd.DataFrame(X_test, columns=[f"F_{i}" for i in range(X_test.shape[1])])
@@ -1760,10 +1652,10 @@ class GLMNetCVClassifier:
 
     def _model(self):
         """
-        Function to initialize a LogitNet model.
+        Function to initialize a ElasticNet model.
         """
 
-        model = glmnet.LogitNet(
+        model = glmnet.ElasticNet(
             alpha=self.alpha,
             n_lambda=self.n_lambda,
             min_lambda_ratio=self.min_lambda_ratio,
@@ -1804,7 +1696,6 @@ class GLMNetCVClassifier:
             zip(
                 [self.X_train_.columns.tolist()[i] for i in idx],
                 [self.model_.coef_.reshape(-1, self.model_.coef_.shape[-1])[0][i] for i in idx],
-                #                 [self.model_.coef_[0][i] for i in idx],
             ),
         )
 

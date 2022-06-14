@@ -22,7 +22,10 @@ from sklearn.metrics import (
     roc_curve,
 )
 
-from slickml.plotting import plot_binary_classification_metrics, plot_regression_metrics
+from slickml.visualization._todo_plotting import (
+    plot_binary_classification_metrics,
+    plot_regression_metrics,
+)
 
 
 # TODO(amir): write a protocol for Metric
