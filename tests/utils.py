@@ -4,6 +4,7 @@ from typing import Any, Dict, Optional, Tuple
 
 import numpy as np
 import pandas as pd
+from pytest import CaptureFixture
 from scipy.sparse import csr_matrix
 
 from tests import resources
@@ -44,7 +45,7 @@ def _load_test_scenarios_from_json(filename: str) -> Dict[str, Any]:
     )
 
 
-def _captured_log(capsys) -> Tuple[str]:
+def _captured_log(capsys: CaptureFixture) -> Tuple[str]:
     """Returns the captured standard output/error via `pytest.capsys` _[1].
 
     References
