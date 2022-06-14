@@ -69,6 +69,8 @@ jobs:
         run: |
           source $VENV
           poetry build
+      # TODO(amir): figure out how to hook-up the `docs/` into an endpoint after refactor
+      # it only needs the `poe sphinx` command here
       #----------------------------------------------
       #  ---  Upload test coverage to Codecov  ---
       #----------------------------------------------
