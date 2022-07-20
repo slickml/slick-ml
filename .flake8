@@ -1,6 +1,26 @@
+# flake8 plugins: https://github.com/DmytroLitvinov/awesome-flake8-extensions
+# TODO(amir): add flake8-annotations once the API refactor is completed
+# TODO(amir): add flake8-annotations-coverage
+# TODO(amir): investigate flake8-annotations-complexity
+# TODO(amir): add docstring-convention = numpydoc once API refactor is done
+# TODO(amir): investigate the tim to roll out https://peps.python.org/pep-0585/
+# https://stackoverflow.com/questions/66738753/python-typing-deprecation
+# TODO(amir): investigate https://peps.python.org/pep-0563/
 [flake8]
 max-line-length = 100
-ignore = C901, E501, E203, W503, E402
+
+ignore = 
+    # TODO(amir): E501 would ignore `max-line-length = 100` rule; we have cases that max-line-length
+    # are > 100 which is mostly comments and some front-end codes in the code base
+    # E501: Line too long
+    E501,
+    # E203: Whitespace before ':'
+    E203,
+    # E402: Module level import not at top of file
+    E402,
+    # W503: Line break occurred before a binary operator
+    W503
+
 exclude =
     .vscode
     .github
@@ -11,11 +31,13 @@ exclude =
     old,
     build,
     dist,
-    .venv,
     .venv/*,
-    **/.venv/,
     .pytest_cache,
     .tox,
     .python-version,
-    conftest.py,
-    Makefile
+    .mypy_cache,
+    htmlcov/*,
+    xmlcov/*,
+    .coverage
+    
+    

@@ -7,8 +7,7 @@ from assertpy import assert_that
 
 def _get_valid_dependencies(dist_name: str = "slickml") -> List[str]:
     """Helper function to retrieve the package dependencies names from `pyproject.toml`."""
-    # map the libraries that their installation name differs from imported name
-    # TODO(amir): update glmnet once it is added
+    # map the libraries that their installation name differs from imported name (i.e. plugins)
     mapping = {
         "bayesian-optimization": "bayes_opt",
         "scikit-learn": "sklearn",

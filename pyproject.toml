@@ -54,10 +54,8 @@ exclude = [
 [tool.poetry.dependencies]
 python = ">=3.8,<3.11"
 
-# --- pythonic-dev ---
-pydantic = "^1.9"
-
 # --- scientific-computing ---
+# TODO(amir): currently numpy version "^1.23" has class with numba
 numpy = "^1.22"
 pandas = "^1.4"
 scipy = "^1.8"
@@ -81,6 +79,11 @@ seaborn = "^0.11"
 
 # --- package-management ---
 pip = "^22.1"
+# TODO(amir): remove me once the issue is resolved; currently `poetry update` job fails
+# somehow, poetry tries to downgrade `llvmlite` to version 0.34!!!
+# same for `numba`; prolly the issue is regarding `numpy` version `1.23`
+llvmlite = "^0.38"
+numba = "^0.55"
 
 # --- task-management ---
 poethepoet = "^0.13"
@@ -97,6 +100,8 @@ jupyter-black = "^0.3"
 # --- linting ---
 flake8 = "^4.0"
 flake8-commas = "^2.1"
+# TODO(amir): add flake8-annotations once the API refactor is completed
+# flake8-annotations
 mypy = "^0.950"
 
 # --- unit-testing ---

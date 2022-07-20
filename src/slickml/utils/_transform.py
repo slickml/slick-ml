@@ -4,6 +4,8 @@ import numpy as np
 import pandas as pd
 from scipy.sparse import csr_matrix
 
+from slickml.utils import check_var
+
 
 def memory_use_csr(csr: csr_matrix) -> int:
     """Memory use of a Compressed Sparse Row (CSR) matrix in bytes.
@@ -25,15 +27,15 @@ def memory_use_csr(csr: csr_matrix) -> int:
     >>> csr = csr_matrix((3, 4), dtype=np.int8)
     >>> mem = memory_use_csr(csr=csr)
     """
-    if not isinstance(csr, csr_matrix):
-        raise TypeError("The input csr must have scipy.sparse.csr_matrix dtype.")
+    check_var(
+        csr,
+        var_name="csr",
+        dtypes=csr_matrix,
+    )
 
     return csr.data.nbytes + csr.indptr.nbytes + csr.indices.nbytes
 
 
-# TODO(amir): currently `pydantic.validate_arguments` is in beta version and they dont supoort
-# pandas.core: https://pydantic-docs.helpmanual.io/usage/validation_decorator/
-# we eventually should be able to use it to decorate our functions and remove the validations pieces
 def df_to_csr(
     df: pd.DataFrame,
     *,
@@ -72,15 +74,21 @@ def df_to_csr(
     ...     verbose=True,
     ... )
     """
-    # TODO(amir): currently `pydantic.validate_arguments` is in beta version and they dont support
-    # pandas.core: https://pydantic-docs.helpmanual.io/usage/validation_decorator/
-    # we eventually should be able to use it to decorate our functions and remove the validations pieces
-    if not isinstance(df, pd.DataFrame):
-        raise TypeError("The input df must have pandas.DataFrame dtype.")
-    if not isinstance(fillna, float):
-        raise TypeError("The input fillna must have float dtype.")
-    if not isinstance(verbose, bool):
-        raise TypeError("The inpit verbose must have bool dtype.")
+    check_var(
+        df,
+        var_name="df",
+        dtypes=pd.DataFrame,
+    )
+    check_var(
+        fillna,
+        var_name="fillna",
+        dtypes=float,
+    )
+    check_var(
+        verbose,
+        var_name="verbose",
+        dtypes=bool,
+    )
 
     # TODO(amir): figure out how to ditch `.copy()` across package
     df_ = df.copy()
@@ -103,6 +111,68 @@ def df_to_csr(
         print(f"CSR memory usage: {memory_use_csr(csr)/2**20:.5f} MB")
 
     return csr
+
+
+def array_to_df(
+    X: np.ndarray,
+    prefix: Optional[str] = "F",
+    delimiter: Optional[str] = "_",
+) -> pd.DataFrame:
+    """Transforms a numpy array into a pandas DataFrame.
+
+    The `prefix` and `delimiter` along with the index of each column (0-based index) of the array
+    are used to create the columnnames of the DataFrame.
+
+    Parameters
+    ----------
+    X : np.ndarray
+        Input array
+
+    prefix : Optional[str], optional
+        Prefix string for each column name, by default "F"
+
+    delimiter : Optional[str], optional
+        Delimiter to separate prefix and index number, by default "_"
+
+    Returns
+    -------
+    pd.DataFrame
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> from slickml.utils import array_to_df
+    >>> df = array_to_df(
+    ...     X=np.array([1, 2, 3]),
+    ...     prefix="F",
+    ...     delimiter="_",
+    ... )
+
+    """
+    check_var(
+        X,
+        var_name="X",
+        dtypes=np.ndarray,
+    )
+    check_var(
+        prefix,
+        var_name="prefix",
+        dtypes=str,
+    )
+    check_var(
+        delimiter,
+        var_name="delimiter",
+        dtypes=str,
+    )
+
+    X_ = X
+    if X_.ndim == 1:
+        X_ = X_.reshape(1, -1)
+
+    return pd.DataFrame(
+        data=X_,
+        columns=[f"{prefix}{delimiter}{i}" for i in range(X_.shape[1])],
+    )
 
 
 def add_noisy_features(
@@ -143,21 +213,29 @@ def add_noisy_features(
     ...     prefix="noisy",
     ... )
     """
-    if not isinstance(random_state, int):
-        raise TypeError("The input random_state must have int dtype.")
-    if not isinstance(prefix, str):
-        raise TypeError("The input prefix must have str dtype.")
-    # TODO(amir): figure out how to ditch `.copy()` across package
-    X_ = X.copy()
-    if isinstance(X_, np.ndarray):
-        df_ = pd.DataFrame(
-            data=X_,
-            columns=[f"F_{i}" for i in range(X_.shape[1])],
+    check_var(
+        X,
+        var_name="X",
+        dtypes=(pd.DataFrame, np.ndarray),
+    )
+    check_var(
+        random_state,
+        var_name="random_state",
+        dtypes=int,
+    )
+    check_var(
+        prefix,
+        var_name="prefix",
+        dtypes=str,
+    )
+
+    df_ = X
+    if isinstance(df_, np.ndarray):
+        df_ = array_to_df(
+            df_,
+            prefix="F",
+            delimiter="_",
         )
-    elif isinstance(X_, pd.DataFrame):
-        df_ = X_
-    else:
-        raise TypeError("The input X must have pd.DataFrame or np.ndarray dtype.")
 
     np.random.seed(
         seed=random_state,
