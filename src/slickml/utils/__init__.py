@@ -40,7 +40,22 @@ Examples
 >>> mem = memory_use_csr(csr=csr)
 
 
-```add_noisy_features`
+```array_to_df```
+
+Transforms a numpy array into a pandas DataFrame.
+
+Examples
+--------
+>>> import numpy as np
+>>> from slickml.utils import array_to_df
+>>> df = array_to_df(
+...     X=np.array([1, 2, 3]),
+...     prefix="F",
+...     delimiter="_",
+... )
+
+
+```add_noisy_features```
 
 Creates a new feature matrix augmented with noisy features via permutation. The main goal of this
 algorithm is to augment permutated records as noisy features to explore the stability of any trained
@@ -57,12 +72,46 @@ Examples
 ...     prefix="noisy",
 ... )
 
+
+```check_var```
+
+Validates a variable's data type and value.
+
+Notes
+-----
+This is the main function that is being used across the API as the variable checker before any
+class/function being instantiated. This is our solution instead of using `pydantic` validator and
+root_validator due to a lot of issues (i.e. data type casting/truncation in a silence mode) that we
+have seen in our investigation. Hopefully, when `pydantic` version 2.0 is released, we can use it.
+
+Examples
+--------
+>>> from dataclasses import dataclass
+>>> from slickml.utils import check_var
+>>> @dataclass
+... class Foo:
+...    var_str: str
+...    var_float: float = 42.0
+...    var_int: int = 1367
+...    def __post_init__(self):
+...        check_var(self.var_str, var_name="var_str", dtypes=str)
+...        check_var(self.var_float, var_name="var_float", dtypes=float, values=(41, 42))
+...        check_var(self.var_str, var_name="var_str", dtypes=str, values=(1367, 1400))
+
 """
 
-from slickml.utils._transform import add_noisy_features, df_to_csr, memory_use_csr
+from slickml.utils._base import check_var
+from slickml.utils._transform import (
+    add_noisy_features,
+    array_to_df,
+    df_to_csr,
+    memory_use_csr,
+)
 
 __all__ = [
     "memory_use_csr",
     "df_to_csr",
+    "array_to_df",
     "add_noisy_features",
+    "check_var",
 ]

@@ -48,7 +48,7 @@ Please note that before starting any major work, open an issue describing what y
   18. If the implementation is easy to explain, it may be a good idea.
   19. Namespaces are one honking great idea -- let's do more of those!
 - We try to follow [*Google Python Style Guide*](https://google.github.io/styleguide/pyguide.html) as much as possible.
-- We try to maximize the use of [*pydantic*](https://pydantic-docs.helpmanual.io/) and [*Data Classes*](https://peps.python.org/pep-0557/) in our source codes and unit-tests.
+- We try to maximize the use of [*Data Classes*](https://peps.python.org/pep-0557/) in our source codes and unit-tests.
 
 
 ### 🐍 🥷 Environment Management

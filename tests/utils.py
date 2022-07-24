@@ -45,7 +45,7 @@ def _load_test_scenarios_from_json(filename: str) -> Dict[str, Any]:
     )
 
 
-def _captured_log(capsys: CaptureFixture) -> Tuple[str]:
+def _captured_log(capsys: CaptureFixture) -> Tuple[str, str]:
     """Returns the captured standard output/error via `pytest.capsys` _[1].
 
     References

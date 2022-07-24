@@ -8,7 +8,7 @@ from assertpy import assert_that
 from pytest import CaptureFixture
 from scipy.sparse import csr_matrix
 
-from slickml.utils import add_noisy_features, df_to_csr, memory_use_csr
+from slickml.utils import add_noisy_features, array_to_df, df_to_csr, memory_use_csr
 from tests.utils import (
     _captured_log,
     _dummy_pandas_dataframe,
@@ -185,6 +185,96 @@ def test_add_noisy_features__fails__with_invalid_inputs(kwargs: Dict[str, Any]) 
     """Validates that noisy features cannot be added with invalid inputs."""
     with pytest.raises(TypeError):
         add_noisy_features(**kwargs)
+
+
+@pytest.mark.parametrize(
+    "kwargs",
+    [
+        {
+            "X": [42],
+        },
+        {
+            "X": pd.DataFrame(),
+        },
+        {
+            "X": {"X": 42},
+        },
+        {
+            "X": np.array(([42])),
+            "prefix": 123,
+        },
+        {
+            "X": np.array(([42])),
+            "prefix": "123",
+            "delimiter": 123,
+        },
+    ],
+    ids=_ids,
+)
+def test_array_to_df__fails__with_invalid_inputs(kwargs: Dict[str, Any]) -> None:
+    """Validates that conversion cannot be done with invalid inputs."""
+    with pytest.raises(TypeError):
+        array_to_df(**kwargs)
+
+
+def test_array_to_df__passes__with_1d_array_and_default_inputs() -> None:
+    """Validates conversion of a 1D numpy array into a pandas DataFrame with default inputs."""
+    X = np.array([1, 2, 3])
+    df = array_to_df(X=X)
+
+    assert_that(X.ndim).is_equal_to(1)
+    assert_that(df).is_instance_of(pd.DataFrame)
+    assert_that(df.shape).is_equal_to((1, 3))
+    assert_that(df.columns.tolist()).is_equal_to(["F_0", "F_1", "F_2"])
+    assert_that(df.sum().sum()).is_equal_to(X.sum().sum())
+
+
+def test_array_to_df__passes__with_2d_array_and_default_inputs() -> None:
+    """Validates conversion of a 2D numpy array into a pandas DataFrame with default inputs."""
+    X = np.array([[1, 2, 3]])
+    df = array_to_df(X)
+
+    assert_that(X.ndim).is_equal_to(2)
+    assert_that(df).is_instance_of(pd.DataFrame)
+    assert_that(df.shape).is_equal_to((1, 3))
+    assert_that(df.columns.tolist()).is_equal_to(["F_0", "F_1", "F_2"])
+    assert_that(df.sum().sum()).is_equal_to(X.sum().sum())
+
+
+def test_array_to_df__passes__with_1d_array_and_custom_inputs() -> None:
+    """Validates conversion of a 1D numpy array into a pandas DataFrame with custom inputs."""
+    X = np.array([1, 2, 3])
+    prefix = "x"
+    delimiter = "<>"
+    df = array_to_df(
+        X=X,
+        prefix=prefix,
+        delimiter=delimiter,
+    )
+
+    assert_that(X.ndim).is_equal_to(1)
+    assert_that(df).is_instance_of(pd.DataFrame)
+    assert_that(df.shape).is_equal_to((1, 3))
+    assert_that(df.columns.tolist()).is_equal_to(["x<>0", "x<>1", "x<>2"])
+    assert_that(df.sum().sum()).is_equal_to(X.sum().sum())
+
+
+def test_array_to_df__passes__with_2d_array_and_custom_inputs() -> None:
+    """Validates conversion of a 2D numpy array into a pandas DataFrame with custom inputs."""
+    X = np.array([[1, 2, 3]])
+    prefix = "x"
+    delimiter = "<>"
+    df = array_to_df(
+        X=X,
+        prefix=prefix,
+        delimiter=delimiter,
+    )
+
+    assert_that(X.ndim).is_equal_to(2)
+    assert_that(df).is_instance_of(pd.DataFrame)
+    assert_that(df.shape).is_equal_to((1, 3))
+    assert_that(df.columns.tolist()).is_equal_to(["x<>0", "x<>1", "x<>2"])
+    assert_that(df.sum().sum()).is_equal_to(X.sum().sum())
 
 
 def _captured_memory_use_from_stdout(
