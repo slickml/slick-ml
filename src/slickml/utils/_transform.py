@@ -22,6 +22,7 @@ def memory_use_csr(csr: csr_matrix) -> int:
 
     Examples
     --------
+    >>> import numpy as np
     >>> from scipy.sparse import csr_matrix
     >>> from slickml.utils import memory_use_csr
     >>> csr = csr_matrix((3, 4), dtype=np.int8)
@@ -125,6 +126,7 @@ def df_to_csr(
 
 def array_to_df(
     X: np.ndarray,
+    *,
     prefix: Optional[str] = "F",
     delimiter: Optional[str] = "_",
 ) -> pd.DataFrame:
@@ -185,6 +187,7 @@ def array_to_df(
     )
 
 
+# TODO(amir): add functionality for List[List[float]] as the input data as well
 def add_noisy_features(
     X: Union[pd.DataFrame, np.ndarray],
     *,
@@ -217,7 +220,7 @@ def add_noisy_features(
     --------
     >>> import pandas as pd
     >>> from slickml.utils import add_noisy_features
-    >>> csr = add_noisy_features(
+    >>> df_noisy = add_noisy_features(
     ...     df=pd.DataFrame({"foo": [1, 2, 3, 4, 5]}),
     ...     random_state=1367,
     ...     prefix="noisy",
