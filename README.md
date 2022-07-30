@@ -1,16 +1,16 @@
 [![build](https://github.com/slickml/slick-ml/actions/workflows/ci.yml/badge.svg)](https://github.com/slickml/slick-ml/actions/workflows/ci.yml)
+[![docs](https://github.com/slickml/slick-ml/actions/workflows/cd.yml/badge.svg)](https://github.com/slickml/slick-ml/actions/workflows/cd.yml)
 [![codecov](https://codecov.io/gh/slickml/slick-ml/branch/master/graph/badge.svg?token=Z7XP51MB4K)](https://codecov.io/gh/slickml/slick-ml)
 [![License](https://img.shields.io/github/license/slickml/slick-ml)](https://github.com/slickml/slick-ml/blob/master/LICENSE/)
 [![PyPI - Downloads](https://img.shields.io/pypi/dm/slickml)](https://pypi.org/project/slickml/)
 ![PyPI Version](https://img.shields.io/pypi/v/slickml)
 ![Python Version](https://img.shields.io/pypi/pyversions/slickml)
-[![Issues](https://img.shields.io/github/issues/slickml/slick-ml)](https://github.com/slickml/slick-ml/issues)
 [![Forks](https://img.shields.io/github/forks/slickml/slick-ml)](https://github.com/slickml/slick-ml/network/members/)
 [![Stars](https://img.shields.io/github/stars/slickml/slick-ml)](https://github.com/slickml/slick-ml/stargazers/)
 
 
 <p align="center">
-<a href="https://www.slickml.com/">
+<a href="https://www.docs.slickml.com/">
   <img src="https://raw.githubusercontent.com/slickml/slick-ml/master/assets/designs/logo_clear.png" width="250"></img></a>
 </p>
 
@@ -20,11 +20,14 @@
 
 
 **SlickML** is an open-source machine learning library written in Python aimed
-at accelerating the experimentation time for a ML application. Data Scientist
+at accelerating the experimentation time for a ML application. Data Scientists'
 tasks can often be repetitive such as feature selection, model tuning, or
 evaluating metrics for classification and regression problems. SlickML provides
 Data Scientists with a toolbox to quickly prototype solutions for a given problem with minimal code. 
 
+
+## 📖 Documentation
+The API documentation is available at [docs.slickml.com](https://www.docs.slickml.com).
 
 ## 🛠 Installation
 To begin with, install [Python version >=3.8,<3.11](https://www.python.org) and simply run 🏃‍♀️ :
