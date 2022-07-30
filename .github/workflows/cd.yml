@@ -1,17 +1,14 @@
 ####################################################################################################
-# Continuous Integration [Lint, Test, Build] on All Pull-Requests + Push to Master
+# Continuous Deployment [API Docs Website] on Push to Master
 ####################################################################################################
 # References:
-# - https://github.com/snok/install-poetry
-# - https://github.com/actions/setup-python#caching-packages-dependencies
-# - https://stackoverflow.com/questions/62977821/how-to-cache-poetry-install-for-github-actions
+# - https://github.com/SamKirkland/FTP-Deploy-Action
 ####################################################################################################
-name: build
+name: docs
 
 on:
   push:
     branches: ["master"]
-  pull_request:
 
 jobs:
   ci:
@@ -23,7 +20,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        python-version: ["3.8", "3.9", "3.10"]
+        python-version: ["3.9"]
     steps:
       #----------------------------------------------
       # ----- check-out repo and set-up python -----
@@ -59,33 +56,19 @@ jobs:
         run: poetry install -vv
         if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
       #----------------------------------------------
-      #  -----  Integration test suite  -----
+      #  -----  Create API docs via Sphinx -----
       #----------------------------------------------
-      # TODO(amir): de-dup the `source .venv/bin/activate` (`source $VENV`) command
-      - name: Lint
+      - name: Docs
         run: |
           source $VENV
-          poe check
-      - name: Test
-        run: |
-          source $VENV
-          poe test
-      - name: Build
-        run: |
-          source $VENV
-          poetry build
+          poe sphinx
       #----------------------------------------------
-      #  ---  Upload test coverage to Codecov  ---
+      #  ---  Deploy docs to docs.slickml.com  ---
       #----------------------------------------------
-      - name: Codecov
-        # TODO(amir): only run code coverage with one Python Version; the rest is not needed
-        if: ${{ matrix.python-version == '3.9' && matrix.os == 'ubuntu-latest' }}
-        uses: codecov/codecov-action@v2
+      - name: Deploy API Docs
+        uses: SamKirkland/FTP-Deploy-Action@4.3.0
         with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          directory: ./xmlcov/
-          fail_ci_if_error: true
-          files: ./xmlcov/coverage.xml
-          flags: unittests
-          name: codecov-umbrella
-          verbose: true
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./docs/_build/

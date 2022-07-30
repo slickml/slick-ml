@@ -13,13 +13,14 @@
 # import os
 # import sys
 # sys.path.insert(0, os.path.abspath('.'))
-
+from importlib.metadata import version
 
 # -- Project information -----------------------------------------------------
+# TODO(amir): get all the info via importlib.metadata
 project = "SlickML"
 copyright = "2022, SlickML"
 author = "Amirhessam Tahmassebi"
-version = "0.2.0-beta"
+version = version("slickml")
 release = version
 language = "en"
 
