@@ -24,7 +24,7 @@ def check_var(
     dtypes : Union[type, Tuple[type]]
         Data type classes
 
-    values : Optional[Union[Any, Tuple[Any]]], optional
+    values : Union[Any, Tuple[Any]], optional
         Possible values, by default None
 
     Returns
@@ -38,6 +38,28 @@ def check_var(
 
     ValueError
         If values are invalid
+
+    Notes
+    -----
+    This is the main function that is being used across the API as the variable checker before any
+    class/function being instantiated. This is our solution instead of using `pydantic` validator
+    and root_validator due to a lot of issues (i.e. data type casting/truncation in a silence mode)
+    that we have seen in our investigation. Hopefully, when `pydantic` version 2.0 is released,
+    we can use it.
+
+    Examples
+    --------
+    >>> from dataclasses import dataclass
+    >>> from slickml.utils import check_var
+    >>> @dataclass
+    ... class Foo:
+    ...    var_str: str
+    ...    var_float: float = 42.0
+    ...    var_int: int = 1367
+    ...    def __post_init__(self):
+    ...        check_var(self.var_str, var_name="var_str", dtypes=str)
+    ...        check_var(self.var_float, var_name="var_float", dtypes=float, values=(41, 42))
+    ...        check_var(self.var_str, var_name="var_str", dtypes=str, values=(1367, 1400))
     """
 
     def _check_dtypes(

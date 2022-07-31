@@ -84,3 +84,27 @@ html_output_encoding = "utf-8"
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ["_static"]
+
+# -- Options for Auto-API-Docs -------------------------------------------------
+# Reference: https://sphinx-autoapi.readthedocs.io/en/latest/reference/config.html
+autoapi_type = "python"
+autoapi_template_dir = ""
+autoapi_file_patterns = ["*.py", "*.pyi"]
+autoapi_generate_api_docs = True
+autoapi_options = [
+    "members",
+    "undoc-members",
+    # "private-members",
+    "show-inheritance",
+    "show-module-summary",
+    "special-members",
+    "imported-members",
+]
+autoapi_ignore = ["*migrations*"]
+autoapi_add_toctree_entry = True
+autoapi_python_class_content = "class"
+autoapi_member_order = "alphabetical"
+autoapi_python_use_implicit_namespaces = False
+autoapi_prepare_jinja_env = None
+autoapi_keep_files = False
+suppress_warnings = []
