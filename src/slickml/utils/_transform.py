@@ -49,16 +49,26 @@ def df_to_csr(
     df : pd.DataFrame
         Input dataframe
 
-    fillna : Optional[float], optional
+    fillna : float, optional
         Value to fill nulls, by default 0.0
 
-    verbose : Optional[bool], optional
+    verbose : bool, optional
         Whether to show the memory usage comparison of csr matrix and pandas DataFrame, by default False
 
     Returns
     -------
     csr_matrix
         Transformed pandas DataFrame in CSR matrix format
+
+    Notes
+    -----
+    This utility function is being used across API when the `sparse_matrix=True` for all classifiers
+    and regressors. In practice, when we are dealing with sparse matrices, it does make sense to
+    employ this functionality. It should be noted that using sparse matrices when the input matrix
+    is dense would actually end up using more momory. This can be checked by passing `verbose=True`
+    or using `memory_use_csr()` function directly on top of your csr matrix. In addition, you can
+    compare the memory usage of the csr matrix with the input pandas DataFrame via
+    `df.memory_usage().sum()`.
 
     References
     ----------
@@ -128,10 +138,10 @@ def array_to_df(
     X : np.ndarray
         Input array
 
-    prefix : Optional[str], optional
+    prefix : str, optional
         Prefix string for each column name, by default "F"
 
-    delimiter : Optional[str], optional
+    delimiter : str, optional
         Delimiter to separate prefix and index number, by default "_"
 
     Returns
@@ -192,10 +202,10 @@ def add_noisy_features(
     X : Union[pd.DataFrame, np.ndarray]
         Input features
 
-    random_state : Optional[int], optional
+    random_state : int, optional
         Random seed for randomizing the permutations and reproducibility, by default 1367
 
-    prefix : Optional[str], optional
+    prefix : str, optional
         Prefix string that will be added to the noisy features' names, by default "noisy"
 
     Returns
