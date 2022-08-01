@@ -114,7 +114,7 @@ class RegressionMetrics:
 
     Methods
     -------
-    plot(figsize=(12, 12), save_path=None, display_plot=True)
+    plot(figsize=(12, 12), save_path=None, display_plot=False)
         Plots regression metrics
 
     Examples
@@ -193,7 +193,7 @@ class RegressionMetrics:
         self,
         figsize: Optional[Tuple[float, float]] = (12, 16),
         save_path: Optional[str] = None,
-        display_plot: Optional[bool] = True,
+        display_plot: Optional[bool] = False,
     ) -> Figure:
         """Plots regression metrics.
 
@@ -207,7 +207,7 @@ class RegressionMetrics:
             "myplot.png" or "../../myplot.pdf", by default None
 
         display_plot : bool, optional
-            Whether to show the plot, by default True
+            Whether to show the plot, by default False
 
         Returns
         -------

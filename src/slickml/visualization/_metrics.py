@@ -26,7 +26,7 @@ warnings.filterwarnings("ignore")
 def plot_regression_metrics(
     figsize: Optional[Tuple[float, float]] = (12, 16),
     save_path: Optional[str] = None,
-    display_plot: Optional[bool] = True,
+    display_plot: Optional[bool] = False,
     **kwargs: Dict[str, Any],
 ) -> Figure:
     """Visualizes regression metrics using `plotting_dict_` attribute of `RegressionMetrics`.
@@ -41,7 +41,7 @@ def plot_regression_metrics(
         "myplot.png" or "../../myplot.pdf", by default None
 
     display_plot : bool, optional
-        Whether to show the plot, by default True
+        Whether to show the plot, by default False
 
     **kwargs : Dict[str, Any]
         Key-value pairs of regression metrics plot
@@ -303,4 +303,7 @@ def plot_regression_metrics(
         plt.show()
 
     # TODO(amir): investigate the options to return axes as well if needed
+    # TODO(amir): investigate a better option for `plt.show()`; currently, no matter what the
+    # figure is being shown when returning `fig`; what would be a global pattern here that can be
+    # tested as well? Should we sacrifice the testing part here?
     return fig
