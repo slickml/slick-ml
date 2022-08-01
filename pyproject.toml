@@ -139,7 +139,7 @@ clean = { cmd = "rm -rf .coverage dist/ .mypy_cache/ .pytest_cache/ .tox/ htmlco
 add-trailing-comma = { cmd = "poetry run add-trailing-comma --exit-zero-even-if-changed src/**/*.py tests/**/*.py", help = "Format code style via add-trailing-comma" }
 black = { cmd = "poetry run black --line-length 100 .", help = "Format code style via black" }
 isort = { cmd = "poetry run isort --profile black .", help = "Sort imported libraries via isort" }
-flake8 = { cmd = "poetry run flake8 --verbose --benchmark --config .flake8 .", help = "Lint code via flake8" }
+flake8 = { cmd = "poetry run flake8 --verbose --benchmark --color always --config .flake8 .", help = "Lint code via flake8" }
 mypy = { cmd = "poetry run mypy --verbose --config-file mypy.ini .", help = "Lint types via mypy" }
 test = { cmd = "poetry run python -m pytest --cov=src --cov-report=term --cov-report=html --cov-report=xml --cov-config=.coveragerc --tb=short -ra -v", help = "Run unit-tests via pytest" }
 sphinx = { cmd = "poetry run sphinx-build -b html docs/ docs/_build", help = "Build API docs via sphinx" }
