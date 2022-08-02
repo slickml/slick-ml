@@ -55,7 +55,7 @@ exclude = [
 python = ">=3.8,<3.11"
 
 # --- scientific-computing ---
-# TODO(amir): currently numpy version "^1.23" has class with numba
+# TODO(amir): currently numpy version "^1.23" has clash with numba since shap still uses numba
 numpy = "^1.22"
 pandas = "^1.4"
 scipy = "^1.9"
@@ -65,7 +65,7 @@ statsmodels = "^0.13"
 scikit-learn = "^1.1"
 xgboost = "^1.6"
 glmnet = "^2.2"
-shap = "^0.40"
+shap = "^0.41"
 
 # --- optimization ----
 bayesian-optimization = "^1.2"
@@ -82,7 +82,7 @@ seaborn = "^0.11"
 pip = "^22.2"
 # TODO(amir): remove me once the issue is resolved; currently `poetry update` job fails
 # somehow, poetry tries to downgrade `llvmlite` to version 0.34!!!
-# same for `numba`; prolly the issue is regarding `numpy` version `1.23`
+# same for `numba`; prolly the issue is regarding `numpy` version `1.23` and `shap`
 llvmlite = "^0.38"
 numba = "^0.55"
 
@@ -102,7 +102,18 @@ jupyter-black = "^0.3"
 flake8 = "^5.0"
 flake8-commas = "^2.1"
 # TODO(amir): add flake8-annotations once the API refactor is completed
-# flake8-annotations
+# - flake8-annotations==2.9.0
+# - flake8-broken-line==0.4.0
+# - flake8-bugbear==22.7.1
+# - flake8-comprehensions==3.10.0
+# - flake8-eradicate==1.2.1
+# - flake8-quotes==3.3.1
+# - flake8-simplify==0.19.3
+# - flake8-tidy-imports==4.8.0
+# - flake8-type-checking==2.1.0
+# - flake8-typing-imports==1.12.0
+# - flake8-use-fstring==1.4
+# - pep8-naming==0.13.1
 mypy = "^0.971"
 
 # --- unit-testing ---

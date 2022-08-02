@@ -5,6 +5,7 @@ from typing import Any, Dict, List, Optional, Tuple, Union
 # TODO(amir): figure out a way to extend validations (i.e. when we are validating list[values])
 # currently, the values cannot be done for iterable i.e. tuple, list, and dict
 # the easy way to pull it off is a for loop
+# TODO(amir): we might wanna add `NotImplementedError` exception as well somehow!
 def check_var(
     var: Any,
     *,
