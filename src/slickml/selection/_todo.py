@@ -5,8 +5,7 @@ import pandas as pd
 import xgboost as xgb
 from sklearn.model_selection import StratifiedKFold
 
-from slickml.utils import add_noisy_features, df_to_csr
-from slickml.utils._todo_fmt import Color
+from slickml.utils import Colors, add_noisy_features, df_to_csr
 from slickml.visualization._todo_plotting import (
     plot_xfs_cv_results,
     plot_xfs_feature_frequency,
@@ -330,12 +329,12 @@ class XGBoostFeatureSelector:
         # main loop
         for iteration in range(self.n_iter):
             print(
-                Color.BOLD
+                Colors.BOLD
                 + "*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-* "
-                + Color.B_Green
+                + Colors.B_Green
                 + f"Iteration {iteration + 1}"
-                + Color.END
-                + Color.BOLD
+                + Colors.END
+                + Colors.BOLD
                 + " *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*",
             )
 
@@ -437,24 +436,24 @@ class XGBoostFeatureSelector:
                 ext_cv_test2.append(self.evals_result["eval"][self.params["eval_metric"]][-1])
 
                 print(
-                    Color.BOLD
+                    Colors.BOLD
                     + "*-*-*-*-*-*-*-*-*-*-*-* "
-                    + Color.F_Green
+                    + Colors.F_Green
                     + f"Fold = {ijk}/{self.n_splits}"
-                    + Color.F_Black
+                    + Colors.F_Black
                     + " -- "
-                    + Color.F_Red
+                    + Colors.F_Red
                     + f"Train {self.params['eval_metric'].upper()}"
                     + " = "
                     + f"{self.evals_result['train'][self.params['eval_metric']][-1]:.3f}"
-                    + Color.F_Black
+                    + Colors.F_Black
                     + " -- "
-                    + Color.F_Blue
+                    + Colors.F_Blue
                     + f"Test {self.params['eval_metric'].upper()}"
                     + " = "
                     + f"{self.evals_result['eval'][self.params['eval_metric']][-1]:.3f}"
-                    + Color.END
-                    + Color.BOLD
+                    + Colors.END
+                    + Colors.BOLD
                     + " *-*-*-*-*-*-*-*-*-*-*-*",
                 )
                 # free memory here at each fold
@@ -478,59 +477,59 @@ class XGBoostFeatureSelector:
 
             # print internal metrics results
             print(
-                Color.BOLD
+                Colors.BOLD
                 + "*-*-* "
-                + Color.GREEN
+                + Colors.GREEN
                 + f"Internal {self.n_splits}-Folds CV:"
-                + Color.END
-                + Color.BOLD
+                + Colors.END
+                + Colors.BOLD
                 + " -*-*- "
-                + Color.F_Red
+                + Colors.F_Red
                 + f"Train {self.metrics.upper()}"
                 + " = "
                 + f"{np.mean(int_cv_train2):.3f}"
                 + " +/- "
                 + f"{np.std(int_cv_train2):.3f}"
-                + Color.END
-                + Color.BOLD
+                + Colors.END
+                + Colors.BOLD
                 + " -*-*- "
-                + Color.F_Blue
+                + Colors.F_Blue
                 + f"Test {self.metrics.upper()}"
                 + " = "
                 + f"{np.mean(int_cv_test2):.3f}"
                 + " +/- "
                 + f"{np.std(int_cv_test2):.3f}"
-                + Color.END
-                + Color.BOLD
+                + Colors.END
+                + Colors.BOLD
                 + " *-*-*",
             )
 
             #  print external eval_metric results
             print(
-                Color.BOLD
+                Colors.BOLD
                 + "*-*-* "
-                + Color.GREEN
+                + Colors.GREEN
                 + f"External {self.n_splits}-Folds CV:"
-                + Color.END
-                + Color.BOLD
+                + Colors.END
+                + Colors.BOLD
                 + " -*-*- "
-                + Color.F_Red
+                + Colors.F_Red
                 + f"Train {self.params['eval_metric'].upper()}"
                 + " = "
                 + f"{np.mean(ext_cv_train2):.3f}"
                 + " +/- "
                 + f"{np.std(ext_cv_train2):.3f}"
-                + Color.END
-                + Color.BOLD
+                + Colors.END
+                + Colors.BOLD
                 + " -*-*- "
-                + Color.F_Blue
+                + Colors.F_Blue
                 + f"Test {self.params['eval_metric'].upper()}"
                 + " = "
                 + f"{np.mean(ext_cv_test2):.3f}"
                 + " +/- "
                 + f"{np.std(ext_cv_test2):.3f}"
-                + Color.END
-                + Color.BOLD
+                + Colors.END
+                + Colors.BOLD
                 + " *-*-*\n",
             )
 

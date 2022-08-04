@@ -5,8 +5,7 @@ import shap
 import xgboost as xgb
 from sklearn.preprocessing import StandardScaler
 
-from slickml.utils import df_to_csr
-from slickml.utils._todo_fmt import Color
+from slickml.utils import Colors, df_to_csr
 from slickml.visualization._todo_plotting import (
     plot_glmnet_coeff_path,
     plot_glmnet_cv_results,
@@ -987,30 +986,30 @@ class XGBoostCVClassifier(XGBoostClassifier):
 
         if self.verbose:
             print(
-                Color.BOLD
+                Colors.BOLD
                 + "*-* "
-                + Color.GREEN
+                + Colors.GREEN
                 + f"Best Boosting Round = {len(self.cv_results_) - 1}"
-                + Color.END
-                + Color.BOLD
+                + Colors.END
+                + Colors.BOLD
                 + " -*- "
-                + Color.F_Red
+                + Colors.F_Red
                 + f"{self.n_splits}-Folds CV {self.metrics.upper()}: "
-                + Color.END
-                + Color.BOLD
-                + Color.B_Blue
+                + Colors.END
+                + Colors.BOLD
+                + Colors.B_Blue
                 + f"Train = {self.cv_results_.iloc[-1][0]:.3f}"
                 + " +/- "
                 + f"{self.cv_results_.iloc[-1][1]:.3f}"
-                + Color.END
-                + Color.BOLD
+                + Colors.END
+                + Colors.BOLD
                 + " -*- "
-                + Color.B_Magenta
+                + Colors.B_Magenta
                 + f"Test = {self.cv_results_.iloc[-1][2]:.3f}"
                 + " +/- "
                 + f"{self.cv_results_.iloc[-1][3]:.3f}"
-                + Color.END
-                + Color.BOLD
+                + Colors.END
+                + Colors.BOLD
                 + " *-*",
             )
 

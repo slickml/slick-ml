@@ -1,6 +1,41 @@
-# TODO(amir): move `Color` to Enum
-class Color:
-    """Colors for foreground and background."""
+from slickml.utils import ExtendedEnum
+
+
+class Colors(ExtendedEnum):
+    """Colors for foreground and background.
+
+    Methods
+    -------
+    names()
+        Returns a list of color names as string
+
+    values()
+        Returns a list of color values as string
+
+    pairs()
+        Returns a dictionary of all colors name-value pairs as string
+
+    Examples
+    --------
+    >>> from slickml.utils import Colors
+    >>> Colors.RED
+    >>> Colors.BLUE
+    >>> Colors.names()
+    >>> Colors.values()
+    >>> Colors.pairs()
+    """
+
+    # Generic
+    PURPLE = "\033[95m"
+    CYAN = "\033[96m"
+    DARKCYAN = "\033[36m"
+    BLUE = "\033[94m"
+    GREEN = "\033[92m"
+    YELLOW = "\033[93m"
+    RED = "\033[91m"
+    BOLD = "\033[1m"
+    UNDERLINE = "\033[4m"
+    END = "\033[0m"
 
     # Foreground
     F_Default = "\x1b[39m"
@@ -39,15 +74,3 @@ class Color:
     B_LightMagenta = "\x1b[105m"
     B_LightCyan = "\x1b[106m"
     B_White = "\x1b[107m"
-
-    # Generic
-    PURPLE = "\033[95m"
-    CYAN = "\033[96m"
-    DARKCYAN = "\033[36m"
-    BLUE = "\033[94m"
-    GREEN = "\033[92m"
-    YELLOW = "\033[93m"
-    RED = "\033[91m"
-    BOLD = "\033[1m"
-    UNDERLINE = "\033[4m"
-    END = "\033[0m"
