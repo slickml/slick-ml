@@ -19,7 +19,7 @@ class Colors(ExtendedEnum):
     --------
     >>> from slickml.utils import Colors
     >>> Colors.RED
-    >>> Colors.BLUE
+    >>> str(Colors.BLUE)
     >>> Colors.names()
     >>> Colors.values()
     >>> Colors.pairs()

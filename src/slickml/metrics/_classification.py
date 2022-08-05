@@ -1,7 +1,11 @@
+from dataclasses import dataclass
+from typing import Any, Dict, List, Optional, Tuple, Union
+
 import numpy as np
 import pandas as pd
 import seaborn as sns
 from IPython.core.display import display
+from matplotlib.figure import Figure
 from sklearn.metrics import (
     accuracy_score,
     auc,
@@ -15,193 +19,234 @@ from sklearn.metrics import (
     roc_curve,
 )
 
-from slickml.visualization._todo_plotting import plot_binary_classification_metrics
+from slickml.utils import check_var
+from slickml.visualization import plot_binary_classification_metrics
 
 
-# TODO(amir): write a protocol for Metric
+# TODO(amir): update docstrings types in attributes
+# TODO(amir): currently `pos_label` in `roc` is defaulted to None
+# the None options is ok for [0, 1] and [-1, 1] cases; plan to expose `pos_label`
+# with default values to None? what would be the breaking changes ?
+@dataclass
 class BinaryClassificationMetrics:
-    """Binary Classification Metrics.
-    This is wrapper to calculate all the binary classification
-    metrics with both arbitrary and three computed methods for
-    calculating the thresholds. Threshold computations including:
-    1) Youden Index: (https://en.wikipedia.org/wiki/Youden%27s_J_statistic).
-    2) Maximizing Precision-Recall.
-    3) Maximizing Sensitivity-Specificity.
+    """BinaryClassificationMetrics calculates binary classification metrics in one place.
+
+    Binary metrics are computed based on three methods for calculating the thresholds to binarize
+    the prediction probabilities. Threshold computations including:
+        1) Youden Index _[1].
+        2) Maximizing Precision-Recall.
+        3) Maximizing Sensitivity-Specificity.
+
+    References
+    ----------
+    .. [1] https://en.wikipedia.org/wiki/Youden%27s_J_statistic
 
     Parameters
     ----------
-    y_true: numpy.array[int] or list[int]
-        List of ground truth binary values [0, 1]
+    y_true : Union[List[int], np.ndarray, pd.Series]
+        List of ground truth values such as [0, 1] for binary problems
 
-    y_pred_proba: numpy.array[float] or list[float]
-        List of predicted probability for the positive class
-        (class=1 or y_pred_proba[:, 1] in scikit-learn)
+    y_pred_proba : Union[List[float], np.ndarray, pd.Series]
+        List of predicted probabilities for the positive class (class=1) in binary problems
+        or y_pred_proba[:, 1] in scikit-learn API
 
-    threshold: float, optional (default=0.5)
-        Threshold value for mapping y_pred_prob to y_pred
-        Note that for threshold ">" is used instead of  ">="
+    threshold : float, optional
+        Inclusive threshold value to binarize y_pred_prob to y_pred where any value that satisfies
+        y_pred_prob >= threshold will set to class=1 (positive class). Note that for ">=" is used
+        instead of ">", by default 0.5
 
-    average_method: str, optional (default="binary")
-        Method to calculate the average of the metric. Possible values are
-        "micro", "macro", "weighted", "binary"
+    average_method : str, optional
+        Method to calculate the average of any metric. Possible values are "micro", "macro",
+        "weighted", "binary", by default "binary"
 
-    precision_digits: int, optional (default=3)
-        The number of precision digits to format the scores' dataframe
+    precision_digits : int, optional
+        The number of precision digits to format the scores dataframe, by default 3
 
-    display_df: boolean, optional (default=True)
-        Flag to display the formatted scores' dataframe
+    display_df : bool, optional
+        Whether to display the formatted scores' dataframe, by default True
 
     Attributes
     ----------
-    y_pred_: numpy.array(int) or list[int]
-        Predicted class based on the threshold.
-        Positive class for y_pred_proba >= threshold and
-        negative for else.
+    y_pred_ : np.ndarray
+        Predicted class based on the `threshold`. The threshold value inclusively binarizes
+        `y_pred_prob` to `y_pred` where any value that satisfies `y_pred_prob >= threshold` will
+        set to class=1 (positive class). Note that for ">=" is used instead of ">"
 
-    accuracy_: float value between 0. and 1.
-        Classification accuracy based on threshold value
+    accuracy_ : float
+        Accuracy based on the initial `threshold` value with a possible value between 0.0 and 1.0
 
-    balanced_accuracy_: float value between 0. and 1.
-        Balanced classification accuracy based on threshold value
-        considering the prevalence of the classes
+    balanced_accuracy_ : float
+        Balanced accuracy based on the initial `threshold` value considering the prevalence of the
+        classes with a possible value between 0.0 and 1.0
 
-    fpr_list_: numpy.array[float] or list[float]
-        List of calculated false-positive-rates based on roc_thresholds.
-        This can be used for ROC curve plotting
+    fpr_list_ : np.ndarray
+        List of calculated false-positive-rates based on `roc_thresholds_`
 
-    tpr_list_: numpy.array[float] or list[float]
-        List of calculated true-positive-rates based on roc_thresholds
-        This can be used for ROC curve plotting
+    tpr_list_ : np.ndarray
+        List of calculated true-positive-rates based on `roc_thresholds_`
 
-    roc_thresholds_: numpy.array[float] or list[float]
-        List of thresholds value to calculate fpr_list_ and tpr_list_
+    roc_thresholds_ : np.ndarray
+        List of thresholds value to calculate `fpr_list_` and `tpr_list_`
 
-    auc_roc_: float value between 0. and 1.
-        Area under ROC curve
+    auc_roc_ : float
+        Area under ROC curve with a possible value between 0.0 and 1.0
 
-    precision_list_: numpy.array[float] or list[float]
-        List of calculated precision based on pr_thresholds
-        This can be used for ROC curve plotting
+    precision_list_ : np.ndarray
+        List of calculated precision based on `pr_thresholds_`
 
-    recall_list_: numpy.array[float] or list[float]
+    recall_list_ : np.ndarray
         List of calculated recall based on pr_thresholds
-        This can be used for ROC curve plotting
 
-    pr_thresholds_: numpy.array[float] or list[float]
-        List of thresholds value to calculate precision_list_ and recall_list_
+    pr_thresholds_ : numpy.ndarray
+        List of precision-recall thresholds value to calculate `precision_list_` and `recall_list_`
 
-    auc_pr_: float value between 0. and 1.
-        Area under Precision-Recall curve
+    auc_pr_ : float
+        Area under Precision-Recall curve with a possible value between 0.0 and 1.0
 
-    precision_: float value between 0. and 1.
-        Precision based on threshold value
+    precision_ : float
+        Precision based on the `threshold` value with a possible value between 0.0 and 1.0
 
-    recall_: float value between 0. and 1.
-        Recall based on threshold value
+    recall_ : float
+        Recall based on the `threshold` value with a possible value between 0.0 and 1.0
 
-    f1_: float value between 0. and 1.
-        F1-score based on threshold value (beta=1.0)
+    f1_ : float
+        F1-score based on the `threshold` value (beta=1.0) with a possible value between 0.0 and 1.0
 
-    f2_: float value between 0. and 1.
-        F2-score based on threshold value (beta=2.0)
+    f2_ : float
+        F2-score based on the `threshold` value (beta=2.0) with a possible value between 0.0 and 1.0
 
-    f05_: float value between 0. and 1.
-        F(1/2)-score based on threshold value (beta=0.5)
+    f05_ : float
+        F(1/2)-score based on the `threshold` value (beta=0.5) with a possible value between 0.0 and
+        1.0
 
-    average_precision_: float value between 0. and 1.
-        Avearge precision based on threshold value and class prevalence
+    average_precision_ : float
+        Avearge precision based on the `threshold` value and class prevalence with a possible value
+        between 0.0 and 1.0
 
-    tn_: integer
-        True negative counts based on threshold value
+    tn_ : np.int64
+        True negative counts based on the `threshold` value
 
-    fp_: integer
-        False positive counts based on threshold value
+    fp_ : np.int64
+        False positive counts based on the `threshold` valuee
 
-    fn_: integer
-        False negative counts based on threshold value
+    fn_ : np.int64
+        False negative counts based on the `threshold` value
 
-    tp_: integer
-        True positive counts based on threshold value
+    tp_ : np.int64
+        True positive counts based on the `threshold` value
 
-    threat_score_: float value between 0. and 1.
-        Threat score based on threshold value
+    threat_score_ : float
+        Threat score based on the `threshold` value with a possible value between 0.0 and 1.0
 
-    youden_threshold_: float value between 0. and 1.
-        Threshold calculated based on Youden Index
+    youden_index_ : np.int64
+        Index of the calculated Youden index threshold
 
-    sens_spec_threshold_: float value between 0. and 1.
-        Threshold calculated based on maximized sensitivity-specificity
+    youden_threshold_ : float
+        Threshold calculated based on Youden Index with a possible value between 0.0 and 1.0
 
-    prec_rec_threshold_: float value between 0. and 1.
-        Threshold calculated based on maximized precision-recall
+    sens_spec_threshold_ : float
+        Threshold calculated based on maximized sensitivity-specificity with a possible value
+        between 0.0 and 1.0
 
-    thresholds_dict_: dict()
-        Dictionary of all calculated thresholds
+    prec_rec_threshold_ : float
+        Threshold calculated based on maximized precision-recall with a possible value between 0.0
+        and 1.0
 
-    metrics_dict_: dict()
-        Dictionary of all calculated metrics
+    thresholds_dict_ : Dict[str, float]
+        Calculated thresholds based on different algorithms including Youden Index
+        `youden_threshold_`, maximizing the area under sensitivity-specificity curve
+        `sens_spec_threshold_`, and maximizing the area under precision-recall curver
+        `prec_rec_threshold_`
 
-    metrics_df_: pandas.DataFrame
-        Pandas DataFrame of all calculated metrics with threshold as index
+    metrics_dict_ : Dict[str, float]
+        Rounded metrics based on the number of precision digits
 
-    average_methods_: list[str]
+    metrics_df_ : pd.DataFrame
+        Pandas DataFrame of all calculated metrics with `threshold` set as index
+
+    average_methods_: List[str]
         List of all possible average methods
 
-    plotting_dict_: dict()
-        Plotting object as a dictionary consists of all
-        calculated metrics which was used to plot the thresholds
+    plotting_dict_: Dict[str, Any]
+        Plotting properties
+
+    Methods
+    -------
+    plot(figsize=(12, 12), save_path=None, display_plot=False)
+        Plots classification metrics
+
+    get_metrics(dtype="dataframe")
+        Returns calculated classification metrics
+
+    Examples
+    --------
+    >>> from slickml.metrics import BinaryClassificationMetrics
+    >>> cm = BinaryClassificationMetrics(
+    ...     y_true=[1, 1, 0, 0],
+    ...     y_pred_proba=[0.95, 0.3, 0.1, 0.9]
+    ... )
+    >>> f = cm.plot()
+    >>> m = cm.get_metrics()
     """
 
-    def __init__(
-        self,
-        y_true,
-        y_pred_proba,
-        threshold=None,
-        average_method=None,
-        precision_digits=None,
-        display_df=True,
-    ):
-        if not isinstance(y_true, np.ndarray):
-            self.y_true = np.array(y_true)
-        else:
-            self.y_true = y_true
-        if not isinstance(y_pred_proba, np.ndarray):
-            self.y_pred_proba = np.array(y_pred_proba)
-        else:
-            self.y_pred_proba = y_pred_proba
-        if threshold is None:
-            self.threshold = 0.5
-        else:
-            self.threshold = threshold
-        if average_method == "binary" or average_method is None:
+    y_true: Union[List[int], np.ndarray, pd.Series]
+    y_pred_proba: Union[List[float], np.ndarray, pd.Series]
+    threshold: Optional[float] = 0.5
+    average_method: Optional[str] = "binary"
+    precision_digits: Optional[int] = 3
+    display_df: Optional[bool] = True
+
+    def __post_init__(self):
+        """Post instantiation validations and assignments."""
+        check_var(
+            self.threshold,
+            var_name="threshold",
+            dtypes=float,
+        )
+        check_var(
+            self.average_method,
+            var_name="average_method",
+            dtypes=str,
+            values=(
+                "micro",
+                "macro",
+                "weighted",
+                "binary",
+            ),
+        )
+        check_var(
+            self.precision_digits,
+            var_name="precision_digits",
+            dtypes=int,
+        )
+        check_var(
+            self.display_df,
+            var_name="display_df",
+            dtypes=bool,
+        )
+        # TODO(amir): add `values_between` option to `check_var()`
+        if self.threshold < 0.0 or self.threshold > 1.0:
+            raise ValueError("The input threshold must have a value between 0.0 and 1.0.")
+
+        # TODO(amir): how we can pull off special cases like this ?
+        if self.average_method == "binary" or self.average_method is None:
             self.average_method = None
-        else:
-            if not isinstance(average_method, str):
-                raise TypeError("The input average_method must have str dtype.")
-            else:
-                if average_method in [
-                    "micro",
-                    "macro",
-                    "weighted",
-                ]:
-                    self.average_method = average_method
-                else:
-                    raise ValueError("The input average_method value is not valid.")
-        if precision_digits is None:
-            self.precision_digits = 3
-        else:
-            if not isinstance(precision_digits, int):
-                raise TypeError("The input precision_digits must have integer dtype.")
-            else:
-                self.precision_digits = precision_digits
-        if not isinstance(display_df, bool):
-            raise TypeError("The input display_df must have bool dtype.")
-        else:
-            self.display_df = display_df
+
+        # TODO(amir): add `list_to_array()` function into slickml.utils
+        # TODO(amir): how numpy works with pd.Series here? kinda fuzzy
+        if not isinstance(self.y_true, np.ndarray):
+            self.y_true = np.array(self.y_true)
+        if not isinstance(self.y_pred_proba, np.ndarray):
+            self.y_pred_proba = np.array(self.y_pred_proba)
+
         self.y_pred_ = (self.y_pred_proba >= self.threshold).astype(int)
         self.accuracy_ = self._accuracy()
         self.balanced_accuracy_ = self._balanced_accuracy()
-        self.fpr_list_, self.tpr_list_, self.roc_thresholds_ = self._roc_curve()
+        (
+            self.fpr_list_,
+            self.tpr_list_,
+            self.roc_thresholds_,
+        ) = self._roc_curve()
         self.auc_roc_ = self._auc_roc()
         (
             self.precision_list_,
@@ -209,14 +254,29 @@ class BinaryClassificationMetrics:
             self.pr_thresholds_,
         ) = self._precision_recall_curve()
         self.auc_pr_ = self._auc_pr()
-        self.precision_, self.recall_, self.f1_ = self._precision_recall_f1()
-        self.f2_, self.f05_ = self._f2_f50()
+        (
+            self.precision_,
+            self.recall_,
+            self.f1_,
+        ) = self._precision_recall_f1()
+        (
+            self.f2_,
+            self.f05_,
+        ) = self._f2_f50()
         self.average_precision_ = self._average_precision()
-        self.tn_, self.fp_, self.fn_, self.tp_ = self._confusion_matrix()
+        (
+            self.tn_,
+            self.fp_,
+            self.fn_,
+            self.tp_,
+        ) = self._confusion_matrix()
         self.threat_score_ = self._threat_score()
         self.metrics_dict_ = self._metrics_dict()
         self.metrics_df_ = self._metrics_df()
-        self.youden_index_, self.youden_threshold_ = self._threshold_youden()
+        (
+            self.youden_index_,
+            self.youden_threshold_,
+        ) = self._threshold_youden()
         (
             self.sens_spec_index_,
             self.sens_spec_threshold_,
@@ -229,54 +289,128 @@ class BinaryClassificationMetrics:
         self.plotting_dict_ = self._plotting_dict()
         self.average_methods_ = self._average_methods()
 
-    def _accuracy(self):
-        """
-        Function to calculate accuracy score
-        """
-        accuracy = accuracy_score(y_true=self.y_true, y_pred=self.y_pred_, normalize=True)
+    def plot(
+        self,
+        figsize: Optional[Tuple[float, float]] = (12, 12),
+        save_path: Optional[str] = None,
+        display_plot: Optional[bool] = False,
+    ) -> Figure:
+        """Plots classification metrics.
 
-        return accuracy
+        Parameters
+        ----------
+        figsize : Tuple[float, float], optional
+            Figure size, by default (12, 12)
 
-    def _balanced_accuracy(self):
+        save_path : str, optional
+            The full or relative path to save the plot including the image format such as
+            "myplot.png" or "../../myplot.pdf", by default None
+
+        display_plot : bool, optional
+            Whether to show the plot, by default False
+
+        Returns
+        -------
+        Figure
         """
-        Function to calculate balanced accuracy score
+        return plot_binary_classification_metrics(
+            figsize=figsize,
+            save_path=save_path,
+            display_plot=display_plot,
+            **self.plotting_dict_,
+        )
+
+    def get_metrics(
+        self,
+        dtype: Optional[str] = "dataframe",
+    ) -> Union[pd.DataFrame, Dict[str, Union[float, None]]]:
+        """Returns calculated metrics with desired dtypes.
+
+        Currently, available output types are "dataframe" and "dict".
+
+        Parameters
+        ----------
+        dtype : str, optional
+            Results dtype, by default "dataframe"
+
+        Returns
+        -------
+        Union[pd.DataFrame, Dict[str, Union[float, None]]]
         """
-        balanced_accuracy = balanced_accuracy_score(
+        check_var(
+            dtype,
+            var_name="dtype",
+            dtypes=str,
+            values=("dataframe", "dict"),
+        )
+
+        if dtype == "dataframe":
+            return self.metrics_df_
+        else:
+            return self.metrics_dict_
+
+    def _accuracy(self) -> float:
+        """Calculates accuracy score.
+
+        Returns
+        -------
+        float
+        """
+        return accuracy_score(
+            y_true=self.y_true,
+            y_pred=self.y_pred_,
+            normalize=True,
+        )
+
+    def _balanced_accuracy(self) -> float:
+        """Calculates balanced accuracy score.
+
+        Returns
+        -------
+        float
+        """
+        return balanced_accuracy_score(
             y_true=self.y_true,
             y_pred=self.y_pred_,
             adjusted=False,
         )
 
-        return balanced_accuracy
+    # TODO(amir): check return types here between ndarray or list
+    def _roc_curve(self) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+        """Calculates the roc curve elements: fpr, tpr, thresholds.
 
-    def _roc_curve(self):
+        Returns
+        -------
+        Tuple[np.ndarray, np.ndarray, np.ndarray]
         """
-        Function to calculate the roc curve elements: fpr, tpr, thresholds"""
         fpr_list, tpr_list, roc_thresholds = roc_curve(
             y_true=self.y_true,
             y_score=self.y_pred_proba,
         )
 
-        return fpr_list, tpr_list, roc_thresholds
+        return (fpr_list, tpr_list, roc_thresholds)
 
-    def _auc_roc(self):
+    # TODO(amir): check the API when `average_method="binary"` that does it pass None as the method
+    # or keep it as "binary"
+    def _auc_roc(self) -> float:
+        """Calculates the area under ROC curve (auc_roc).
+
+        Returns
+        -------
+        float
         """
-        Function to calculate the area under ROC curve (auc_roc)
-        """
-        if self.average_method == "binary":
-            self.average_method = None
-        auc_roc = roc_auc_score(
+        return roc_auc_score(
             y_true=self.y_true,
             y_score=self.y_pred_proba,
             average=self.average_method,
         )
 
-        return auc_roc
+    def _precision_recall_curve(self) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+        """Calculates precision recall curve elements: precision_list, recall_list, pr_thresholds.
 
-    def _precision_recall_curve(self):
-        """
-        Function to calculate the precision recall curve elements:
-        precision_list, recall_list, pr_thresholds
+        Returns
+        -------
+        Tuple[np.ndarray, np.ndarray, np.ndarray]
         """
         precision_list, recall_list, pr_thresholds = precision_recall_curve(
             y_true=self.y_true,
@@ -285,17 +419,24 @@ class BinaryClassificationMetrics:
 
         return precision_list, recall_list, pr_thresholds
 
-    def _auc_pr(self):
-        """
-        Function to calculate the area under Precision-Recal curve (auc_pr)
-        """
-        auc_pr = auc(self.recall_list_, self.precision_list_)
+    def _auc_pr(self) -> float:
+        """Calculates the area under Precision-Recal curve (auc_pr).
 
-        return auc_pr
-
-    def _precision_recall_f1(self):
+        Returns
+        -------
+        float
         """
-        Function to calculate precision, recall, and f1-score
+        return auc(
+            self.recall_list_,
+            self.precision_list_,
+        )
+
+    def _precision_recall_f1(self) -> Tuple[float, float, float]:
+        """Calculates precision, recall, and f1-score.
+
+        Returns
+        -------
+        Tuple[float, float, float]
         """
         precision, recall, f1, _ = precision_recall_fscore_support(
             y_true=self.y_true,
@@ -310,11 +451,14 @@ class BinaryClassificationMetrics:
             recall = recall[1]
             f1 = f1[1]
 
-        return precision, recall, f1
+        return (precision, recall, f1)
 
-    def _f2_f50(self):
-        """
-        Function to calculate f2-score and f0.5-score
+    def _f2_f50(self) -> Tuple[float, float]:
+        """Calculates f2-score and f0.5-score.
+
+        Returns
+        -------
+        Tuple[float, float]
         """
         f2 = fbeta_score(
             y_true=self.y_true,
@@ -334,31 +478,39 @@ class BinaryClassificationMetrics:
             f2 = f2[1]
             f05 = f05[1]
 
-        return f2, f05
+        return (f2, f05)
 
-    def _average_precision(self):
+    def _average_precision(self) -> float:
+        """Calculates average precision.
+
+        Returns
+        -------
+        float
         """
-        Function to calculate average precision
-        """
-        average_precision = average_precision_score(
+        return average_precision_score(
             y_true=self.y_true,
             y_score=self.y_pred_proba,
             average=self.average_method,
         )
 
-        return average_precision
+    def _confusion_matrix(self) -> Tuple[float, float, float, float]:
+        """Calculates confusion matrix elements: tn, fp, fn, tp.
 
-    def _confusion_matrix(self):
+        Returns
+        -------
+        Tuple[float, float, float, float]
         """
-        Function to calculate confusion matrix elements: tn, fp, fn, tp
-        """
-        tn, fp, fn, tp = confusion_matrix(y_true=self.y_true, y_pred=self.y_pred_).ravel()
+        return confusion_matrix(
+            y_true=self.y_true,
+            y_pred=self.y_pred_,
+        ).ravel()
 
-        return tn, fp, fn, tp
+    def _threat_score(self) -> float:
+        """Calculates threat score.
 
-    def _threat_score(self):
-        """
-        Function to calculate threat score
+        Returns
+        -------
+        float
         """
         if self.average_method == "weighted":
             w = self.tp_ + self.tn_
@@ -378,34 +530,74 @@ class BinaryClassificationMetrics:
 
         return threat_score
 
-    def _metrics_dict(self):
+    def _metrics_dict(self) -> Dict[str, float]:
+        """Rounded calculated metrics based on the number of precision digits.
+
+        Returns
+        -------
+        Dict[str, float]
         """
-        Function to create a dictionary of all calculated metrics based on the
-        precision digits and average method"""
-        metrics_dict = {
-            "Accuracy": round(self.accuracy_, self.precision_digits),
-            "Balanced Accuracy": round(self.balanced_accuracy_, self.precision_digits),
-            "ROC AUC": round(self.auc_roc_, self.precision_digits),
-            "PR AUC": round(self.auc_pr_, self.precision_digits),
-            "Precision": round(self.precision_, self.precision_digits),
-            "Recall": round(self.recall_, self.precision_digits),
-            "F-1 Score": round(self.f1_, self.precision_digits),
-            "F-2 Score": round(self.f2_, self.precision_digits),
-            "F-0.50 Score": round(self.f05_, self.precision_digits),
-            "Threat Score": round(self.threat_score_, self.precision_digits),
-            "Average Precision": round(self.average_precision_, self.precision_digits),
+        return {
+            "Accuracy": round(
+                number=self.accuracy_,
+                ndigits=self.precision_digits,
+            ),
+            "Balanced Accuracy": round(
+                number=self.balanced_accuracy_,
+                ndigits=self.precision_digits,
+            ),
+            "ROC AUC": round(
+                number=self.auc_roc_,
+                ndigits=self.precision_digits,
+            ),
+            "PR AUC": round(
+                number=self.auc_pr_,
+                ndigits=self.precision_digits,
+            ),
+            "Precision": round(
+                number=self.precision_,
+                ndigits=self.precision_digits,
+            ),
+            "Recall": round(
+                number=self.recall_,
+                ndigits=self.precision_digits,
+            ),
+            "F-1 Score": round(
+                number=self.f1_,
+                ndigits=self.precision_digits,
+            ),
+            "F-2 Score": round(
+                number=self.f2_,
+                ndigits=self.precision_digits,
+            ),
+            "F-0.50 Score": round(
+                number=self.f05_,
+                ndigits=self.precision_digits,
+            ),
+            "Threat Score": round(
+                number=self.threat_score_,
+                ndigits=self.precision_digits,
+            ),
+            "Average Precision": round(
+                number=self.average_precision_,
+                ndigits=self.precision_digits,
+            ),
             "TP": self.tp_,
             "TN": self.tn_,
             "FP": self.fp_,
             "FN": self.fn_,
         }
 
-        return metrics_dict
+    def _metrics_df(self) -> pd.DataFrame:
+        """Creates a pandas DataFrame of all calculated metrics with custom formatting.
 
-    def _metrics_df(self):
+        The resulted dataframe contains all the metrics based on the precision digits and selected
+        average method.
+
+        Returns
+        -------
+        pd.DataFrame
         """
-        Function to create a pandas DataFrame of all calculated metrics based
-        on the precision digits and average method"""
         # update None average_method back to binary for printing
         if self.average_method is None:
             self.average_method = "binary"
@@ -417,6 +609,7 @@ class BinaryClassificationMetrics:
                 {self.average_method.title()}""",
             ],
         )
+        # TODO(amir): can we do df.reindex() ?
         metrics_df = metrics_df.reindex(
             columns=[
                 "Accuracy",
@@ -437,6 +630,8 @@ class BinaryClassificationMetrics:
             ],
         )
 
+        # TODO(amir): move this to a utility function under utils/format.py since it is repeated
+        # that would make it more general and scalable across API
         # Set CSS properties
         th_props = [
             ("font-size", "12px"),
@@ -444,64 +639,87 @@ class BinaryClassificationMetrics:
             ("font-weight", "bold"),
         ]
 
-        td_props = [("font-size", "12px"), ("text-align", "center")]
+        td_props = [
+            ("font-size", "12px"),
+            ("text-align", "center"),
+        ]
 
         # Set table styles
         styles = [
             dict(selector="th", props=th_props),
             dict(selector="td", props=td_props),
         ]
-        cm = sns.light_palette("blue", as_cmap=True)
+        cm = sns.light_palette(
+            "blue",
+            as_cmap=True,
+        )
 
         if self.display_df:
-            display(metrics_df.style.background_gradient(cmap=cm).set_table_styles(styles))
+            display(
+                metrics_df.style.background_gradient(
+                    cmap=cm,
+                ).set_table_styles(styles),
+            )
 
         return metrics_df
 
-    def _threshold_youden(self):
+    def _threshold_youden(self) -> Tuple[int, float]:
+        """Calculates the Youden index and Youden threshold.
+
+        Returns
+        -------
+        Tuple[int, float]
         """
-        Function to calculate youden index as a threshold
-        """
-        youden_index = np.argmax(np.abs(self.tpr_list_ - self.fpr_list_))
+        youden_index = np.argmax(
+            np.abs(self.tpr_list_ - self.fpr_list_),
+        )
         youden_threshold = self.roc_thresholds_[youden_index]
 
-        return youden_index, youden_threshold
+        return (youden_index, youden_threshold)
 
-    def _threshold_sens_spec(self):
+    def _threshold_sens_spec(self) -> Tuple[int, float]:
+        """Calculates the threshold that maximizes sensitivity-specificity curve.
+
+        Returns
+        -------
+        Tuple[int, float]
         """
-        Function to calculate the threshold that maximizes
-        sensitivity-specificity curve"""
-        sens_spec_index = np.argmin(abs(self.tpr_list_ + self.fpr_list_ - 1))
+        sens_spec_index = np.argmin(
+            abs(self.tpr_list_ + self.fpr_list_ - 1),
+        )
         sens_spec_threshold = self.roc_thresholds_[sens_spec_index]
 
-        return sens_spec_index, sens_spec_threshold
+        return (sens_spec_index, sens_spec_threshold)
 
-    def _threshold_prec_rec(self):
+    def _threshold_prec_rec(self) -> Tuple[int, float]:
+        """Calculates the threshold that maximizes precision-recall curve.
+
+        Returns
+        -------
+        Tuple[int, float]
         """
-        Function to calculate the threshold that maximizes precision-recall
-        curve"""
         prec_rec_index = np.argmin(abs(self.precision_list_ - self.recall_list_))
         prec_rec_threshold = self.pr_thresholds_[prec_rec_index]
 
-        return prec_rec_index, prec_rec_threshold
+        return (prec_rec_index, prec_rec_threshold)
 
-    def _thresholds_dict(self):
+    def _thresholds_dict(self) -> Dict[str, float]:
+        """Returns the calculated thresholds as a dictionary.
+
+        Returns
+        -------
+        Dict[str, float]
         """
-        Function to return calculated thresholds as a dictionary
-        """
-        thresholds_dict = {
+        return {
             "Youden": self.youden_threshold_,
             "Sensitivity-Specificity": self.sens_spec_threshold_,
             "Precision-Recall-F1": self.prec_rec_threshold_,
         }
 
-        return thresholds_dict
-
-    def _plotting_dict(self):
-        """
-        Function to return the plotting properties as a dictionary
-        """
-        plotting_dict = {
+    # TODO(amir): check Any here since it can be Union[np.ndarray, int, float] ?
+    def _plotting_dict(self) -> Dict[str, Any]:
+        """Returns the plotting properties."""
+        return {
             "roc_thresholds": self.roc_thresholds_,
             "pr_thresholds": self.pr_thresholds_,
             "precision_list": self.precision_list_,
@@ -519,31 +737,16 @@ class BinaryClassificationMetrics:
             "prec_rec_index": self.prec_rec_index_,
         }
 
-        return plotting_dict
+    def _average_methods(self) -> List[str]:
+        """Returns the list of average methods.
 
-    def _average_methods(self):
+        Returns
+        -------
+        List[str]
         """
-        Function to return average methods as a list
-        """
-        return ["binary", "weighted", "macro", "micro"]
-
-    def plot(self, figsize=None, save_path=None):
-        """Function to plot binary classification metrics.
-        This function is a helper function based on the plotting_dict
-        attribute of the BinaryClassificationMetrics class.
-
-        Parameters
-        ----------
-        figsize: tuple, optional, (default=(12, 12))
-            Figure size
-
-        save_path: str, optional (default=None)
-            The full or relative path to save the plot including the image format.
-            For example "myplot.png" or "../../myplot.pdf"
-        """
-
-        plot_binary_classification_metrics(
-            figsize=figsize,
-            save_path=save_path,
-            **self.plotting_dict_,
-        )
+        return [
+            "binary",
+            "weighted",
+            "macro",
+            "micro",
+        ]

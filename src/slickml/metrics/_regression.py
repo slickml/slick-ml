@@ -37,96 +37,98 @@ class RegressionMetrics:
 
     Parameters
     ----------
-    y_true: Union[List[float], np.ndarray, pd.Series]
+    y_true : Union[List[float], np.ndarray, pd.Series]
         Ground truth target (response) values
 
-    y_pred: Union[List[float], np.ndarray, pd.Series]
+    y_pred : Union[List[float], np.ndarray, pd.Series]
         Predicted target (response) values
 
-    multioutput: str, optional
+    multioutput : str, optional
         Method to calculate the metric for multioutput targets where possible values are
         "raw_values", "uniform_average", and "variance_weighted". "raw_values" returns a full set of
         scores in case of multioutput input. "uniform_average" scores of all outputs are averaged
         with uniform weight. "variance_weighted" scores of all outputs are averaged, weighted by the
         variances of each individual output, by default "uniform_average"
 
-    precision_digits: int, optional
+    precision_digits : int, optional
         The number of precision digits to format the scores dataframe, by default 3
 
-    display_df: bool, optional
+    display_df : bool, optional
         Whether to display the formatted scores' dataframe, by default True
 
     Attributes
     ----------
-    y_residual_: np.ndarray
+    y_residual_ : np.ndarray
         Residual values (errors) calculated as (y_true - y_pred)
 
-    y_residual_normsq_:  np.ndarray
+    y_residual_normsq_ :  np.ndarray
         Square root of absolute value of y_residual_
 
-    r2_: float
+    r2_ : float
         R^2 score (coefficient of determination) with a possible value between 0.0 and 1.0
 
-    ev_: float
+    ev_ : float
         Explained variance score with a possible value between 0.0 and 1.0
 
-    mae_: float
+    mae_ : float
         Mean absolute error
 
-    mse_: float
+    mse_ : float
         Mean squared error
 
-    msle_: float
+    msle_ : float
         Mean squared log error
 
-    mape_: float
+    mape_ : float
         Mean absolute percentage error
 
-    auc_rec_: float
+    auc_rec_ : float
         Area under REC curve with a possible value between 0.0 and 1.0
 
-    deviation_:  np.ndarray
+    deviation_ :  np.ndarray
         List of deviations to plot REC curve.
 
-    accuracy_:  List[float]
+    accuracy_ :  List[float]
         Calculated accuracy at each deviation to plot REC curve.
 
-    y_ratio_:  np.ndarray
+    y_ratio_ :  np.ndarray
         Ratio of y_pred/y_true.
 
-    mean_y_ratio_: float
+    mean_y_ratio_ : float
         Mean value of y_pred/y_true ratio.
 
-    std_y_ratio_: float
+    std_y_ratio_ : float
         Standard deviation value of y_pred/y_true ratio.
 
-    cv_y_ratio_: float
+    cv_y_ratio_ : float
         Coefficient of variation calculated as std_y_ratio/mean_y_ratio
 
-    metrics_dict_: Dict[str, Union[float, None]]
+    metrics_dict_ : Dict[str, Union[float, None]]
         Rounded metrics based on the number of precision digits
 
-    metrics_df_: pd.DataFrame
+    metrics_df_ : pd.DataFrame
         Pandas DataFrame of all calculated metrics
 
-    plotting_dict_: Dict[str, Any]
+    plotting_dict_ : Dict[str, Any]
         Plotting properties
 
     Methods
     -------
-    plot(figsize=(12, 12), save_path=None, display_plot=False)
+    plot(figsize=(12, 16), save_path=None, display_plot=False)
         Plots regression metrics
+
+    get_metrics(dtype="dataframe")
+        Returns calculated metrics
 
     Examples
     --------
     >>> from slickml.metrics import RegressionMetrics
-    >>> m = RegressionMetrics(
+    >>> rm = RegressionMetrics(
     ...     y_true=[3, -0.5, 2, 7],
     ...     y_pred=[2.5, 0.0, 2, 8]
     ... )
-    ... m.plot()
-    ... m.metrics_df_
-    ... m.metrics_dict_
+    >>> f = rm.plot()
+    >>> m = rm.get_metrics()
     """
 
     y_true: Union[List[float], np.ndarray, pd.Series]
@@ -136,6 +138,7 @@ class RegressionMetrics:
     display_df: Optional[bool] = True
 
     def __post_init__(self):
+        """Post instantiation validations and assignments."""
         check_var(
             self.multioutput,
             var_name="multioutput",
@@ -219,6 +222,35 @@ class RegressionMetrics:
             display_plot=display_plot,
             **self.plotting_dict_,
         )
+
+    def get_metrics(
+        self,
+        dtype: Optional[str] = "dataframe",
+    ) -> Union[pd.DataFrame, Dict[str, Union[float, None]]]:
+        """Returns calculated metrics with desired dtypes.
+
+        Currently, available output types are "dataframe" and "dict".
+
+        Parameters
+        ----------
+        dtype : str, optional
+            Results dtype, by default "dataframe"
+
+        Returns
+        -------
+        Union[pd.DataFrame, Dict[str, Union[float, None]]]
+        """
+        check_var(
+            dtype,
+            var_name="dtype",
+            dtypes=str,
+            values=("dataframe", "dict"),
+        )
+
+        if dtype == "dataframe":
+            return self.metrics_df_
+        else:
+            return self.metrics_dict_
 
     def _r2(self) -> float:
         """Calculates R^2 score.
