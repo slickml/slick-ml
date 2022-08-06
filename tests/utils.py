@@ -10,23 +10,27 @@ from scipy.sparse import csr_matrix
 from tests import resources
 
 
-def _ids(kwargs: Dict[str, Any]) -> str:
-    """Returns a user-friendly test case ID from the parametrized key-value pairs.
+# TODO(amir): what if values is list ?
+def _ids(values: Any) -> str:
+    """Returns a user-friendly test case ID from the parametrized values.
 
     Parameters
     ----------
-    kwargs : Dict[str, Any]
-        Key-value pairs of test resources
+    values : Any
+        Test resource values
 
     Returns
     -------
     str
     """
-    return ", ".join(f"{k} : {v}" for (k, v) in kwargs.items())
+    if isinstance(values, dict):
+        return ", ".join(f"{k} : {v}" for (k, v) in values.items())
+    else:
+        return str(values)
 
 
 def _load_test_scenarios_from_json(filename: str) -> Dict[str, Any]:
-    """Returns a json file contains valid and invalid test cases.
+    """Returns a json file contains valid and invalid test cases that can be used for `pytest.fixtures`.
 
     Parameters
     ----------
@@ -43,6 +47,22 @@ def _load_test_scenarios_from_json(filename: str) -> Dict[str, Any]:
             filename,
         ),
     )
+
+
+def _load_test_data_from_csv(filename: str) -> pd.DataFrame:
+    """Returns a `pandas.DataFrame` data loaded from a csv file that can be used for `pytest.fixtures`.
+
+    Parameters
+    ----------
+    filename : str
+        Data filename
+
+    Returns
+    -------
+    pd.DataFrame
+    """
+    with pkg_resources.path(resources, filename) as path:
+        return pd.read_csv(path)
 
 
 def _captured_log(capsys: CaptureFixture) -> Tuple[str, str]:
@@ -65,7 +85,7 @@ def _dummy_pandas_dataframe(
     size: Optional[int] = 100,
     random_state: Optional[int] = 1367,
 ) -> pd.DataFrame:
-    """Returns a dummy pandas DataFrame.
+    """Returns a dummy pandas DataFrame that can be used for `pytest.fixtures`.
 
     The DataFrame shape is (size, 4), two features ("feature_1", "feature_2"), and two targets
     ("binary_target", "multi_target").

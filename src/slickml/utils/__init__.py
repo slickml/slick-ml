@@ -1,4 +1,3 @@
-from slickml.utils._base import ExtendedEnum, check_var
 from slickml.utils._format import Colors
 from slickml.utils._transform import (
     add_noisy_features,
@@ -6,6 +5,7 @@ from slickml.utils._transform import (
     df_to_csr,
     memory_use_csr,
 )
+from slickml.utils._validation import check_var
 
 __all__ = [
     "memory_use_csr",
@@ -13,6 +13,5 @@ __all__ = [
     "array_to_df",
     "add_noisy_features",
     "check_var",
-    "ExtendedEnum",
     "Colors",
 ]

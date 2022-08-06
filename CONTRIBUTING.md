@@ -131,7 +131,7 @@ Please note that before starting any major work, open an issue describing what y
 - All unit-tests live in `tests/` directory separted from the source code.
 - All unit-test files should begin with the word `test` i.e. `test_foo.py`.
 - Our naming convention for naming tests is `test_<method_under_test>__<when>__<then>` pattern which would increase the code readbility.
-- We use [*pytest-cov*](https://github.com/pytest-dev/pytest-cov) plugin 🔌 helps to populated a coverage report 🗂 for the unit-tests and see the parts of the code that the related unit-tests have not touched 🔎 🕵️‍♀️.
+- We use [*pytest-cov*](https://github.com/pytest-dev/pytest-cov) plugin 🔌 which helps to populate a coverage report 🗂 for the unit-tests to shed more light on the parts of the code that have not been toched in unit-tests 🔎 🕵️‍♀️.
 - To run all unit-tests, simply run 🏃‍♀️ :
   ```console
   poe test

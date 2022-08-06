@@ -61,6 +61,14 @@ class BinaryClassificationMetrics:
     display_df : bool, optional
         Whether to display the formatted scores' dataframe, by default True
 
+    Methods
+    -------
+    plot(figsize=(12, 12), save_path=None, display_plot=False, return_fig=False)
+        Plots classification metrics
+
+    get_metrics(dtype="dataframe")
+        Returns calculated classification metrics
+
     Attributes
     ----------
     y_pred_ : np.ndarray
@@ -166,14 +174,6 @@ class BinaryClassificationMetrics:
     plotting_dict_: Dict[str, Any]
         Plotting properties
 
-    Methods
-    -------
-    plot(figsize=(12, 12), save_path=None, display_plot=False)
-        Plots classification metrics
-
-    get_metrics(dtype="dataframe")
-        Returns calculated classification metrics
-
     References
     ----------
     .. [1] https://en.wikipedia.org/wiki/Youden%27s_J_statistic
@@ -198,6 +198,24 @@ class BinaryClassificationMetrics:
 
     def __post_init__(self):
         """Post instantiation validations and assignments."""
+        check_var(
+            self.y_true,
+            var_name="y_true",
+            dtypes=(
+                np.ndarray,
+                pd.Series,
+                list,
+            ),
+        )
+        check_var(
+            self.y_pred_proba,
+            var_name="y_pred_proba",
+            dtypes=(
+                np.ndarray,
+                pd.Series,
+                list,
+            ),
+        )
         check_var(
             self.threshold,
             var_name="threshold",
@@ -229,7 +247,7 @@ class BinaryClassificationMetrics:
             raise ValueError("The input threshold must have a value between 0.0 and 1.0.")
 
         # TODO(amir): how we can pull off special cases like this ?
-        if self.average_method == "binary" or self.average_method is None:
+        if self.average_method == "binary" or not self.average_method:
             self.average_method = None
 
         # TODO(amir): add `list_to_array()` function into slickml.utils
@@ -294,7 +312,8 @@ class BinaryClassificationMetrics:
         figsize: Optional[Tuple[float, float]] = (12, 12),
         save_path: Optional[str] = None,
         display_plot: Optional[bool] = False,
-    ) -> Figure:
+        return_fig: Optional[bool] = False,
+    ) -> Optional[Figure]:
         """Plots classification metrics.
 
         Parameters
@@ -309,6 +328,9 @@ class BinaryClassificationMetrics:
         display_plot : bool, optional
             Whether to show the plot, by default False
 
+        return_fig : bool, optional
+            Whether to return figure object, by default False
+
         Returns
         -------
         Figure
@@ -317,6 +339,7 @@ class BinaryClassificationMetrics:
             figsize=figsize,
             save_path=save_path,
             display_plot=display_plot,
+            return_fig=return_fig,
             **self.plotting_dict_,
         )
 
@@ -446,7 +469,7 @@ class BinaryClassificationMetrics:
         )
 
         # updating precision, recall, and f1 for binary average method
-        if self.average_method is None:
+        if not self.average_method:
             precision = precision[1]
             recall = recall[1]
             f1 = f1[1]
@@ -474,7 +497,7 @@ class BinaryClassificationMetrics:
         )
 
         # updating f2, f0.5 scores for binary average method
-        if self.average_method is None:
+        if not self.average_method:
             f2 = f2[1]
             f05 = f05[1]
 
@@ -599,7 +622,7 @@ class BinaryClassificationMetrics:
         pd.DataFrame
         """
         # update None average_method back to binary for printing
-        if self.average_method is None:
+        if not self.average_method:
             self.average_method = "binary"
 
         metrics_df = pd.DataFrame(
