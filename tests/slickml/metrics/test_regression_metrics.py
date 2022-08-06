@@ -12,6 +12,7 @@ from tests.utils import _ids
 _FLOATING_POINT_THRESHOLD = 1e-5
 
 
+# TODO(amir): tests for multi-outputs + "variance_weighted" and "raw_values" methods are still missing
 class TestRegressionMetrics:
     """Validates `RegressionMetrics` instantiation."""
 
