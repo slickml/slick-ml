@@ -25,7 +25,7 @@ def plot_binary_classification_metrics(
     display_plot=None,
     **kwargs,
 ) -> Figure:
-    """Visualizes binary classification metrics using `plotting_dict_` attribute of `BinaryClassificationMetrics`.
+    """Visualizes binary classification metrics using ``plotting_dict_`` attribute of ``BinaryClassificationMetrics``.
 
     Parameters
     ----------
@@ -353,7 +353,7 @@ def plot_regression_metrics(
     display_plot: Optional[bool] = False,
     **kwargs: Dict[str, Any],
 ) -> Figure:
-    """Visualizes regression metrics using `plotting_dict_` attribute of `RegressionMetrics`.
+    """Visualizes regression metrics using ``plotting_dict_`` attribute of ``RegressionMetrics``.
 
     Parameters
     ----------

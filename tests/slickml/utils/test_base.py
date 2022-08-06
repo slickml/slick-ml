@@ -218,8 +218,8 @@ class TestExtendedEnum:
         assert_that(FooBarBazQux.names()).is_iterable()
         assert_that(FooBarBazQux.values()).is_instance_of(list)
         assert_that(FooBarBazQux.values()).is_iterable()
-        assert_that(FooBarBazQux.pairs()).is_instance_of(dict)
-        assert_that(FooBarBazQux.pairs()).is_iterable()
+        assert_that(FooBarBazQux.to_dict()).is_instance_of(dict)
+        assert_that(FooBarBazQux.to_dict()).is_iterable()
         assert_that(sorted(FooBarBazQux.names())).is_equal_to(
             sorted(
                 [
@@ -240,7 +240,7 @@ class TestExtendedEnum:
                 ],
             ),
         )
-        assert_that(FooBarBazQux.pairs()).is_equal_to(
+        assert_that(FooBarBazQux.to_dict()).is_equal_to(
             {
                 "FOO": "foo",
                 "BAR": "bar",

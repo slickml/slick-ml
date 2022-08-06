@@ -37,10 +37,6 @@ class BinaryClassificationMetrics:
         2) Maximizing Precision-Recall.
         3) Maximizing Sensitivity-Specificity.
 
-    References
-    ----------
-    .. [1] https://en.wikipedia.org/wiki/Youden%27s_J_statistic
-
     Parameters
     ----------
     y_true : Union[List[int], np.ndarray, pd.Series]
@@ -48,16 +44,16 @@ class BinaryClassificationMetrics:
 
     y_pred_proba : Union[List[float], np.ndarray, pd.Series]
         List of predicted probabilities for the positive class (class=1) in binary problems
-        or y_pred_proba[:, 1] in scikit-learn API
+        or ``y_pred_proba[:, 1]`` in scikit-learn API
 
     threshold : float, optional
-        Inclusive threshold value to binarize y_pred_prob to y_pred where any value that satisfies
-        y_pred_prob >= threshold will set to class=1 (positive class). Note that for ">=" is used
-        instead of ">", by default 0.5
+        Inclusive threshold value to binarize ``y_pred_prob`` to ``y_pred`` where any value that
+        satisfies ``y_pred_prob >= threshold`` will set to ``class=1 (positive class)``. Note that
+        for ``">="`` is used instead of ``">"``, by default 0.5
 
     average_method : str, optional
-        Method to calculate the average of any metric. Possible values are "micro", "macro",
-        "weighted", "binary", by default "binary"
+        Method to calculate the average of any metric. Possible values are ``"micro"``, ``"macro"``,
+        ``"weighted"``, ``"binary"``, by default "binary"
 
     precision_digits : int, optional
         The number of precision digits to format the scores dataframe, by default 3
@@ -68,75 +64,75 @@ class BinaryClassificationMetrics:
     Attributes
     ----------
     y_pred_ : np.ndarray
-        Predicted class based on the `threshold`. The threshold value inclusively binarizes
-        `y_pred_prob` to `y_pred` where any value that satisfies `y_pred_prob >= threshold` will
-        set to class=1 (positive class). Note that for ">=" is used instead of ">"
+        Predicted class based on the ``threshold``. The threshold value inclusively binarizes
+        ``y_pred_prob`` to ``y_pred`` where any value that satisfies ``y_pred_prob >= threshold``
+        will set to ``class=1 (positive class)``. Note that for ``">="`` is used instead of ``">"``
 
     accuracy_ : float
-        Accuracy based on the initial `threshold` value with a possible value between 0.0 and 1.0
+        Accuracy based on the initial ``threshold`` value with a possible value between 0.0 and 1.0
 
     balanced_accuracy_ : float
-        Balanced accuracy based on the initial `threshold` value considering the prevalence of the
+        Balanced accuracy based on the initial ``threshold`` value considering the prevalence of the
         classes with a possible value between 0.0 and 1.0
 
     fpr_list_ : np.ndarray
-        List of calculated false-positive-rates based on `roc_thresholds_`
+        List of calculated false-positive-rates based on ``roc_thresholds_``
 
     tpr_list_ : np.ndarray
-        List of calculated true-positive-rates based on `roc_thresholds_`
+        List of calculated true-positive-rates based on ``roc_thresholds_``
 
     roc_thresholds_ : np.ndarray
-        List of thresholds value to calculate `fpr_list_` and `tpr_list_`
+        List of thresholds value to calculate ``fpr_list_`` and ``tpr_list_``
 
     auc_roc_ : float
         Area under ROC curve with a possible value between 0.0 and 1.0
 
     precision_list_ : np.ndarray
-        List of calculated precision based on `pr_thresholds_`
+        List of calculated precision based on ``pr_thresholds_``
 
     recall_list_ : np.ndarray
-        List of calculated recall based on pr_thresholds
+        List of calculated recall based on ``pr_thresholds_``
 
     pr_thresholds_ : numpy.ndarray
-        List of precision-recall thresholds value to calculate `precision_list_` and `recall_list_`
+        List of precision-recall thresholds value to calculate ``precision_list_`` and ``recall_list_``
 
     auc_pr_ : float
         Area under Precision-Recall curve with a possible value between 0.0 and 1.0
 
     precision_ : float
-        Precision based on the `threshold` value with a possible value between 0.0 and 1.0
+        Precision based on the ``threshold`` value with a possible value between 0.0 and 1.0
 
     recall_ : float
-        Recall based on the `threshold` value with a possible value between 0.0 and 1.0
+        Recall based on the ``threshold`` value with a possible value between 0.0 and 1.0
 
     f1_ : float
-        F1-score based on the `threshold` value (beta=1.0) with a possible value between 0.0 and 1.0
+        F1-score based on the ``threshold`` value (beta=1.0) with a possible value between 0.0 and 1.0
 
     f2_ : float
-        F2-score based on the `threshold` value (beta=2.0) with a possible value between 0.0 and 1.0
+        F2-score based on the ``threshold`` value (beta=2.0) with a possible value between 0.0 and 1.0
 
     f05_ : float
-        F(1/2)-score based on the `threshold` value (beta=0.5) with a possible value between 0.0 and
+        F(1/2)-score based on the ``threshold`` value (beta=0.5) with a possible value between 0.0 and
         1.0
 
     average_precision_ : float
-        Avearge precision based on the `threshold` value and class prevalence with a possible value
+        Avearge precision based on the ``threshold`` value and class prevalence with a possible value
         between 0.0 and 1.0
 
     tn_ : np.int64
-        True negative counts based on the `threshold` value
+        True negative counts based on the ``threshold`` value
 
     fp_ : np.int64
-        False positive counts based on the `threshold` valuee
+        False positive counts based on the ``threshold`` valuee
 
     fn_ : np.int64
-        False negative counts based on the `threshold` value
+        False negative counts based on the ``threshold`` value
 
     tp_ : np.int64
-        True positive counts based on the `threshold` value
+        True positive counts based on the ``threshold`` value
 
     threat_score_ : float
-        Threat score based on the `threshold` value with a possible value between 0.0 and 1.0
+        Threat score based on the ``threshold`` value with a possible value between 0.0 and 1.0
 
     youden_index_ : np.int64
         Index of the calculated Youden index threshold
@@ -154,15 +150,15 @@ class BinaryClassificationMetrics:
 
     thresholds_dict_ : Dict[str, float]
         Calculated thresholds based on different algorithms including Youden Index
-        `youden_threshold_`, maximizing the area under sensitivity-specificity curve
-        `sens_spec_threshold_`, and maximizing the area under precision-recall curver
-        `prec_rec_threshold_`
+        ``youden_threshold_``, maximizing the area under sensitivity-specificity curve
+        ``sens_spec_threshold_``, and maximizing the area under precision-recall curver
+        ``prec_rec_threshold_``
 
     metrics_dict_ : Dict[str, float]
         Rounded metrics based on the number of precision digits
 
     metrics_df_ : pd.DataFrame
-        Pandas DataFrame of all calculated metrics with `threshold` set as index
+        Pandas DataFrame of all calculated metrics with ``threshold`` set as index
 
     average_methods_: List[str]
         List of all possible average methods
@@ -177,6 +173,10 @@ class BinaryClassificationMetrics:
 
     get_metrics(dtype="dataframe")
         Returns calculated classification metrics
+
+    References
+    ----------
+    .. [1] https://en.wikipedia.org/wiki/Youden%27s_J_statistic
 
     Examples
     --------

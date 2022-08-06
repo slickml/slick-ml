@@ -44,9 +44,9 @@ def check_var(
     Notes
     -----
     This is the main function that is being used across the API as the variable checker before any
-    class/function being instantiated. This is our solution instead of using `pydantic` validator
+    class/function being instantiated. This is our solution instead of using ``pydantic`` validator
     and root_validator due to a lot of issues (i.e. data type casting/truncation in a silence mode)
-    that we have seen in our investigation. Hopefully, when `pydantic` version 2.0 is released,
+    that we have seen in our investigation. Hopefully, when ``pydantic`` version 2.0 is released,
     we can use it.
 
     Examples
@@ -156,7 +156,7 @@ def check_var(
 
 
 class ExtendedEnum(Enum):
-    """Base Enum type with compatible `str` functionalities.
+    """Base Enum type with compatible string functionalities.
 
     Methods
     -------
@@ -178,7 +178,7 @@ class ExtendedEnum(Enum):
     >>> FooBar.FOO
     >>> FooBar.names()
     >>> FooBar.values()
-    >>> FooBar.pairs()
+    >>> FooBar.to_dict()
     """
 
     @classmethod
@@ -202,7 +202,7 @@ class ExtendedEnum(Enum):
         return list(map(lambda c: c.value, cls))
 
     @classmethod
-    def pairs(cls) -> Dict[str, str]:
+    def to_dict(cls) -> Dict[str, str]:
         """Returns a dictionary of all Enum name-value pairs as string.
 
         Returns
@@ -212,7 +212,7 @@ class ExtendedEnum(Enum):
         return {name: str(value) for (name, value) in cls.__members__.items()}
 
     def __str__(self) -> str:
-        """Returns the Enum `str` value.
+        """Returns the Enum ``str`` value.
 
         Returns
         -------
@@ -221,7 +221,7 @@ class ExtendedEnum(Enum):
         return self.value
 
     def __repr__(self) -> str:
-        """Returns the Enum `str` representation value.
+        """Returns the Enum ``str`` representation value.
 
         Returns
         -------

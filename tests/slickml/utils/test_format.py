@@ -35,8 +35,8 @@ class TestColors:
         assert_that(Colors.names()).is_iterable()
         assert_that(Colors.values()).is_instance_of(list)
         assert_that(Colors.values()).is_iterable()
-        assert_that(Colors.pairs()).is_instance_of(dict)
-        assert_that(Colors.pairs()).is_iterable()
+        assert_that(Colors.to_dict()).is_instance_of(dict)
+        assert_that(Colors.to_dict()).is_iterable()
         assert_that(Colors.names()).contains(
             "PURPLE",
             "END",
@@ -45,7 +45,7 @@ class TestColors:
             "\x1b[39m",
             "\x1b[90m",
         )
-        assert_that(Colors.pairs()).is_equal_to(
+        assert_that(Colors.to_dict()).is_equal_to(
             {
                 "PURPLE": "\033[95m",
                 "END": "\033[0m",

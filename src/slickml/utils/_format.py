@@ -12,7 +12,7 @@ class Colors(ExtendedEnum):
     values()
         Returns a list of color values as string
 
-    pairs()
+    to_dict()
         Returns a dictionary of all colors name-value pairs as string
 
     Examples
@@ -22,7 +22,7 @@ class Colors(ExtendedEnum):
     >>> str(Colors.BLUE)
     >>> Colors.names()
     >>> Colors.values()
-    >>> Colors.pairs()
+    >>> Colors.to_dict()
     """
 
     # Generic

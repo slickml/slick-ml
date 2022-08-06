@@ -33,7 +33,7 @@ class RegressionMetrics:
     Notes
     -----
     In case of multioutput regression, calculation methods can be chosen among
-    ["raw_values", "uniform_average", "variance_weighted"].
+    ``"raw_values"``, ``"uniform_average"``, and ``"variance_weighted"``.
 
     Parameters
     ----------
@@ -44,11 +44,11 @@ class RegressionMetrics:
         Predicted target (response) values
 
     multioutput : str, optional
-        Method to calculate the metric for multioutput targets where possible values are
-        "raw_values", "uniform_average", and "variance_weighted". "raw_values" returns a full set of
-        scores in case of multioutput input. "uniform_average" scores of all outputs are averaged
-        with uniform weight. "variance_weighted" scores of all outputs are averaged, weighted by the
-        variances of each individual output, by default "uniform_average"
+        Method to calculate the metric for ``multioutput targets`` where possible values are
+        ``"raw_values"``, ``"uniform_average"``, and ``"variance_weighted"``. ``"raw_values"``
+        returns a full set of scores in case of multioutput input. ``"uniform_average"`` scores of
+        all outputs are averaged with uniform weight. ``"variance_weighted"`` scores of all outputs
+        are averaged, weighted by the variances of each individual output, by default "uniform_average"
 
     precision_digits : int, optional
         The number of precision digits to format the scores dataframe, by default 3
@@ -59,13 +59,13 @@ class RegressionMetrics:
     Attributes
     ----------
     y_residual_ : np.ndarray
-        Residual values (errors) calculated as (y_true - y_pred)
+        Residual values (errors) calculated as ``(y_true - y_pred)``
 
     y_residual_normsq_ :  np.ndarray
-        Square root of absolute value of y_residual_
+        Square root of absolute value of ``y_residual_``
 
     r2_ : float
-        R^2 score (coefficient of determination) with a possible value between 0.0 and 1.0
+        :math:`R^2` score (coefficient of determination) with a possible value between 0.0 and 1.0
 
     ev_ : float
         Explained variance score with a possible value between 0.0 and 1.0
@@ -86,22 +86,22 @@ class RegressionMetrics:
         Area under REC curve with a possible value between 0.0 and 1.0
 
     deviation_ :  np.ndarray
-        List of deviations to plot REC curve.
+        List of deviations to plot REC curve
 
     accuracy_ :  List[float]
-        Calculated accuracy at each deviation to plot REC curve.
+        Calculated accuracy at each deviation to plot REC curve
 
     y_ratio_ :  np.ndarray
-        Ratio of y_pred/y_true.
+        Ratio of ``y_pred/y_true``
 
     mean_y_ratio_ : float
-        Mean value of y_pred/y_true ratio.
+        Mean value of ``y_pred/y_true`` ratio
 
     std_y_ratio_ : float
-        Standard deviation value of y_pred/y_true ratio.
+        Standard deviation value of ``y_pred/y_true`` ratio
 
     cv_y_ratio_ : float
-        Coefficient of variation calculated as std_y_ratio/mean_y_ratio
+        Coefficient of variation calculated as ``std_y_ratio/mean_y_ratio``
 
     metrics_dict_ : Dict[str, Union[float, None]]
         Rounded metrics based on the number of precision digits
@@ -229,7 +229,7 @@ class RegressionMetrics:
     ) -> Union[pd.DataFrame, Dict[str, Union[float, None]]]:
         """Returns calculated metrics with desired dtypes.
 
-        Currently, available output types are "dataframe" and "dict".
+        Currently, available output types are ``"dataframe"`` and ``"dict"``.
 
         Parameters
         ----------
