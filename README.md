@@ -42,7 +42,8 @@ Data Scientists with a toolbox to quickly prototype solutions for a given proble
 The API documentation is available at [docs.slickml.com](https://www.docs.slickml.com).
 
 ## 🛠 Installation
-To begin with, install [Python version >=3.8,<3.11](https://www.python.org) and simply run 🏃‍♀️ :
+To begin with, install [Python version >=3.8,<3.11](https://www.python.org) and to install the library
+from [PyPI](https://pypi.org/project/slickml/) simply run 🏃‍♀️ :
 ```console
 pip install slickml
 ```
