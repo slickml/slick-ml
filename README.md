@@ -20,7 +20,7 @@
   <p align="center">
     <a href="https://github.com/slickml/slick-ml/releases"> Explore Releases</a>
     🟣 
-    <a href="https://github.com/slickml/slick-ml/blob/master/CONTRIBUTING.md"> Be a Contributor</a>
+    <a href="https://github.com/slickml/slick-ml/blob/master/CONTRIBUTING.md"> Become a Contributor</a>
     🟣 
     <a href="https://www.docs.slickml.com"> Explore API Docs</a>
     🟣 
