@@ -14,7 +14,7 @@ take couple minutes ⏳ 🤦‍♂️.
   # Linux Users
   sudo apt install build-essential gfortran
   ```
-- Now, simply run 🏃‍♀️ :
+- Now, to install the library from [PyPI](https://pypi.org/project/slickml/) simply run 🏃‍♀️ :
 
   ```console
   pip install slickml
