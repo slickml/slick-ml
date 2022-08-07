@@ -150,9 +150,10 @@ Please note that before starting any major work, open an issue describing what y
   poe sphinx
   ```
 - The generated API documentation file can be found at `docs/_build/index.html`.
+- You can also add a new page in `.rst` or `md` formats under `docs/page`.
+- All `sphinx` configurations that we are using are available in `docs/conf.py`.
 
-
-### 🔥 Pull Requests
+## 🔥 Pull Requests
 - We currently have `bug-report` and `feature-request` as [*issue-templates*](https://github.com/slickml/slick-ml/issues). As laid out above, please make sure to open-up an issue before start working on a major work and get the core team feedback.
 - Try to fix one bug or add one new feature per PR. This would minimize the amount of code changes and it is easier for code-review. Hefty PRs usually do not get merged so fast while it could have been if the work was splitted into multiple PRs clearly laid out in an issue before hand. Therefore, the code reviewer would not be surprised by the work.
 - We recommend to follow [*Fork and Pull Request Workflow*](https://github.com/susam/gitpr).

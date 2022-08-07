@@ -29,7 +29,7 @@ class Metrics(Protocol):
     def get_metrics(
         self,
         dtype: Optional[str],
-    ) -> Union[pd.DataFrame, Dict[str, Union[float, None]]]:
+    ) -> Union[pd.DataFrame, Dict[str, Optional[float]]]:
         """Returns calculated metrics in a desired output dtype.
 
         Parameters
@@ -39,6 +39,6 @@ class Metrics(Protocol):
 
         Returns
         -------
-        Union[pd.DataFrame, Dict[str, Union[float, None]]]
+        Union[pd.DataFrame, Dict[str, Optional[float]]]
         """
         ...

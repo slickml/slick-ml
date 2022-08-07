@@ -10,13 +10,25 @@
 
 
 <p align="center">
-<a href="https://www.docs.slickml.com/">
-  <img src="https://raw.githubusercontent.com/slickml/slick-ml/master/assets/designs/logo_clear.png" width="250"></img></a>
+  <a href="https://www.docs.slickml.com/">
+    <img src="https://raw.githubusercontent.com/slickml/slick-ml/master/assets/designs/logo_clear.png" width="250"></img>
+  </a>
 </p>
 
-<h1 align="center">
-    SlickML🧞: Slick Machine Learning in Python
-</h1>
+<div align="center">
+<h1 align="center">SlickML🧞: Slick Machine Learning in Python</h1>
+  <p align="center">
+    <a href="https://github.com/slickml/slick-ml/releases"> Explore Releases</a>
+    🟣 
+    <a href="https://github.com/slickml/slick-ml/blob/master/CONTRIBUTING.md"> Be a Contributor</a>
+    🟣 
+    <a href="https://www.docs.slickml.com"> Explore API Docs</a>
+    🟣 
+    <a href="https://www.slickml.com/slack-invite"> Join our Slack</a>
+    🟣 
+    <a href="https://twitter.com/slickml"> Tweet Us</a>   
+  </p>
+</div>
 
 
 **SlickML** is an open-source machine learning library written in Python aimed

@@ -1,7 +1,8 @@
-## 📚 Citing SlickML🧞
-======================
+📚 Citing SlickML🧞
+===================
 
 If you use SlickML in an academic work 📃 🧪 🧬 , please consider citing it 🙏 .
+
 ### Bibtex Entry:
 ```bib
 @software{slickml2020,
@@ -18,4 +19,9 @@ If you use SlickML in an academic work 📃 🧪 🧬 , please consider citing i
   journal={URL available at: https://github. com/slickml/slick-ml},
   year={2021}
 }
+```
+
+### APA Entry:
+```bib
+Tahmassebi, A., & Smith, T. (2021). Slickml: Slick machine learning in python. URL available at: https://github. com/slickml/slick-ml.
 ```
