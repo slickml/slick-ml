@@ -323,7 +323,7 @@ class BinaryClassificationMetrics:
     def get_metrics(
         self,
         dtype: Optional[str] = "dataframe",
-    ) -> Union[pd.DataFrame, Dict[str, Union[float, None]]]:
+    ) -> Union[pd.DataFrame, Dict[str, Optional[float]]]:
         """Returns calculated metrics with desired dtypes.
 
         Currently, available output types are "dataframe" and "dict".
@@ -335,7 +335,7 @@ class BinaryClassificationMetrics:
 
         Returns
         -------
-        Union[pd.DataFrame, Dict[str, Union[float, None]]]
+        Union[pd.DataFrame, Dict[str, Optional[float]]]
         """
         check_var(
             dtype,

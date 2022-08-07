@@ -103,7 +103,7 @@ class RegressionMetrics:
     cv_y_ratio_ : float
         Coefficient of variation calculated as ``std_y_ratio/mean_y_ratio``
 
-    metrics_dict_ : Dict[str, Union[float, None]]
+    metrics_dict_ : Dict[str, Optional[float]]
         Rounded metrics based on the number of precision digits
 
     metrics_df_ : pd.DataFrame
@@ -226,7 +226,7 @@ class RegressionMetrics:
     def get_metrics(
         self,
         dtype: Optional[str] = "dataframe",
-    ) -> Union[pd.DataFrame, Dict[str, Union[float, None]]]:
+    ) -> Union[pd.DataFrame, Dict[str, Optional[float]]]:
         """Returns calculated metrics with desired dtypes.
 
         Currently, available output types are ``"dataframe"`` and ``"dict"``.
@@ -238,7 +238,7 @@ class RegressionMetrics:
 
         Returns
         -------
-        Union[pd.DataFrame, Dict[str, Union[float, None]]]
+        Union[pd.DataFrame, Dict[str, Optional[float]]]
         """
         check_var(
             dtype,
@@ -305,12 +305,12 @@ class RegressionMetrics:
         )
 
     # TODO(amir): double check the return type here with mypy
-    def _msle(self) -> Union[float, None]:
+    def _msle(self) -> Optional[float]:
         """Calculates mean-squared-log-error.
 
         Returns
         -------
-        Union[float, None]
+        Optional[float]
         """
         if min(self.y_true) < 0 or min(self.y_pred) < 0:
             msle = None
@@ -403,12 +403,12 @@ class RegressionMetrics:
         return (y_ratio, mean_y_ratio, std_y_ratio, cv_y_ratio)
 
     # TODO(amir): refactor this into a dataclass with dependency injection
-    def _metrics_dict(self) -> Dict[str, Union[float, None]]:
+    def _metrics_dict(self) -> Dict[str, Optional[float]]:
         """Rounded calculated metrics based on the number of precision digits.
 
         Returns
         -------
-        Dict[str, Union[float, None]]
+        Dict[str, Optional[float]]
         """
         return {
             "R2 Score": round(
