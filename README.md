@@ -173,7 +173,10 @@ reg_metrics.plot()
 ## 🧑‍💻🤝 Contributing to SlickML🧞
 You can find the details of the development process in our [Contributing](CONTRIBUTING.md) guidelines. We strongly believe that reading and following these guidelines will help us make the contribution process easy and effective for everyone involved 🚀🌙 .
 
-![Metrics](https://metrics.lecoq.io/slickml?template=classic&base.header=0&base.activity=0&base.community=0&base.repositories=0&base.metadata=0&followup=1&languages=1&stargazers=1&base.indepth=false&base.hireable=false&languages.limit=8&languages.threshold=0%25&languages.other=false&languages.colors=github&languages.sections=most-used&languages.indepth=false&languages.analysis.timeout=15&languages.categories=markup%2C%20programming&languages.recent.categories=markup%2C%20programming&languages.recent.load=300&languages.recent.days=14&followup.sections=repositories&followup.indepth=false&followup.archived=true&stargazers.charts.type=classic&config.timezone=America%2FChicago)
+
+![Repobeats analytics image](https://repobeats.axiom.co/api/embed/ca865991b0547199fe7a069de7af25645b225e9c.svg "Repobeats analytics image")
+
+
 
 ## ❓ 🆘 📲 Need Help?
 Please join our [Slack Channel](https://www.slickml.com/slack-invite) to interact directly with the core team and our small community. This is a good place to discuss your questions and ideas or in general ask for help 👨‍👩‍👧 👫 👨‍👩‍👦 .
