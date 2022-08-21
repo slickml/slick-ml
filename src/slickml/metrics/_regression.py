@@ -56,6 +56,14 @@ class RegressionMetrics:
     display_df : bool, optional
         Whether to display the formatted scores' dataframe, by default True
 
+    Methods
+    -------
+    plot(figsize=(12, 16), save_path=None, display_plot=False, return_fig=False)
+        Plots regression metrics
+
+    get_metrics(dtype="dataframe")
+        Returns calculated metrics
+
     Attributes
     ----------
     y_residual_ : np.ndarray
@@ -86,9 +94,9 @@ class RegressionMetrics:
         Area under REC curve with a possible value between 0.0 and 1.0
 
     deviation_ :  np.ndarray
-        List of deviations to plot REC curve
+        Arranged deviations to plot REC curve
 
-    accuracy_ :  List[float]
+    accuracy_ :  np.ndarray
         Calculated accuracy at each deviation to plot REC curve
 
     y_ratio_ :  np.ndarray
@@ -112,14 +120,6 @@ class RegressionMetrics:
     plotting_dict_ : Dict[str, Any]
         Plotting properties
 
-    Methods
-    -------
-    plot(figsize=(12, 16), save_path=None, display_plot=False)
-        Plots regression metrics
-
-    get_metrics(dtype="dataframe")
-        Returns calculated metrics
-
     Examples
     --------
     >>> from slickml.metrics import RegressionMetrics
@@ -127,8 +127,8 @@ class RegressionMetrics:
     ...     y_true=[3, -0.5, 2, 7],
     ...     y_pred=[2.5, 0.0, 2, 8]
     ... )
-    >>> f = rm.plot()
     >>> m = rm.get_metrics()
+    >>> rm.plot()
     """
 
     y_true: Union[List[float], np.ndarray, pd.Series]
@@ -139,6 +139,24 @@ class RegressionMetrics:
 
     def __post_init__(self):
         """Post instantiation validations and assignments."""
+        check_var(
+            self.y_true,
+            var_name="y_true",
+            dtypes=(
+                np.ndarray,
+                pd.Series,
+                list,
+            ),
+        )
+        check_var(
+            self.y_pred,
+            var_name="y_pred",
+            dtypes=(
+                np.ndarray,
+                pd.Series,
+                list,
+            ),
+        )
         check_var(
             self.multioutput,
             var_name="multioutput",
@@ -197,7 +215,8 @@ class RegressionMetrics:
         figsize: Optional[Tuple[float, float]] = (12, 16),
         save_path: Optional[str] = None,
         display_plot: Optional[bool] = False,
-    ) -> Figure:
+        return_fig: Optional[bool] = False,
+    ) -> Optional[Figure]:
         """Plots regression metrics.
 
         Parameters
@@ -212,14 +231,18 @@ class RegressionMetrics:
         display_plot : bool, optional
             Whether to show the plot, by default False
 
+        return_fig : bool, optional
+            Whether to return figure object, by default False
+
         Returns
         -------
-        Figure
+        Figure, optional
         """
         return plot_regression_metrics(
             figsize=figsize,
             save_path=save_path,
             display_plot=display_plot,
+            return_fig=return_fig,
             **self.plotting_dict_,
         )
 
@@ -336,7 +359,8 @@ class RegressionMetrics:
             multioutput=self.multioutput,
         )
 
-    def _rec_curve(self) -> Tuple[np.ndarray, List[float], float]:
+    # TODO(amir): how can vectorize the double for loop here ?
+    def _rec_curve(self) -> Tuple[np.ndarray, np.ndarray, float]:
         """Calculates the rec curve elements: deviation, accuracy, auc.
 
         Notes
@@ -354,29 +378,30 @@ class RegressionMetrics:
 
         Returns
         -------
-        Tuple[np.ndarray, List[float], float]
+        Tuple[np.ndarray, np.ndarray, float]
         """
         begin = 0.0
         end = 1.0
         interval = 0.01
         accuracy = []
         deviation = np.arange(begin, end, interval)
+        # this would prolly break mypy since it cannot understand that the list is alrady cast to
+        # np.ndarray; so np.array() or np.linalg.norm() should be used
+        norms = np.abs(self.y_true - self.y_pred) / np.sqrt(
+            self.y_true**2 + self.y_pred**2,
+        )
 
-        # TODO(amir): we gotta see if we can simply the for loop here with a better algo
-        # main loop to calculate norm and compare with each deviation
-        for i in range(len(deviation)):
+        # main loop to count the number of times that the calculated norm is less than deviation
+        for _, dev in enumerate(deviation):
             count = 0.0
-            for j in range(len(self.y_true)):
-                calc_norm = np.linalg.norm(self.y_true[j] - self.y_pred[j]) / np.sqrt(
-                    np.linalg.norm(self.y_true[j]) ** 2 + np.linalg.norm(self.y_pred[j]) ** 2,
-                )
-                if calc_norm < deviation[i]:
+            for _, norm in enumerate(norms):
+                if norm < dev:
                     count += 1
             accuracy.append(count / len(self.y_true))
 
         auc_rec = scp.integrate.simps(accuracy, deviation) / end
 
-        return (deviation, accuracy, auc_rec)
+        return (deviation, np.array(accuracy), auc_rec)
 
     def _ratio_hist(self) -> Tuple[np.ndarray, float, float, float]:
         """Calculates the histogram elements of y_pred/y_true ratio.
@@ -431,7 +456,7 @@ class RegressionMetrics:
                 number=self.msle_,
                 ndigits=self.precision_digits,
             )
-            if self.msle_ is not None
+            if self.msle_
             else None,
             "Mean Absolute Percentage Error": round(
                 number=self.mape_,

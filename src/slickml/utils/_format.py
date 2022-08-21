@@ -1,4 +1,4 @@
-from slickml.utils import ExtendedEnum
+from slickml.base import ExtendedEnum
 
 
 class Colors(ExtendedEnum):

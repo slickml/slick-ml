@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 from scipy.sparse import csr_matrix
 
-from slickml.utils import check_var
+from slickml.utils._validation import check_var
 
 
 def memory_use_csr(csr: csr_matrix) -> int:

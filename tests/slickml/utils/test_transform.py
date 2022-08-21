@@ -2,6 +2,7 @@ import re
 from typing import Any, Dict
 
 import numpy as np
+import numpy.testing as npt
 import pandas as pd
 import pytest
 from assertpy import assert_that
@@ -16,12 +17,25 @@ from tests.utils import (
     _ids,
 )
 
-_FLOATING_POINT_THRESHOLD = 1e-5
+
+@pytest.fixture
+def datafarame_for_testing():
+    """Returns pandas.DataFrame as `pytest.fixture`"""
+    return _dummy_pandas_dataframe(
+        size=100,
+        random_state=1367,
+    )
 
 
-def test_df_to_csr__passes__with_default_inputs() -> None:
+@pytest.fixture
+def sparse_matrix_for_testing():
+    """Returns csr matrix as `pytest.fixture`"""
+    return _dummy_sparse_matrix()
+
+
+def test_df_to_csr__passes__with_default_inputs(datafarame_for_testing: pd.DataFrame) -> None:
     """Validates conversion of a pandas DataFrame into CSR matrix with default inputs."""
-    df = _dummy_pandas_dataframe()
+    df = datafarame_for_testing
     csr = df_to_csr(df)
 
     assert_that(csr).is_instance_of(csr_matrix)
@@ -30,53 +44,53 @@ def test_df_to_csr__passes__with_default_inputs() -> None:
     assert_that(all(csr.data == df.values.flatten()[np.flatnonzero(df.values)])).is_true()
 
 
-def test_df_to_csr__passes__when_verbose_is_true(capsys: CaptureFixture) -> None:
+def test_df_to_csr__passes__when_verbose_is_true(
+    capsys: CaptureFixture,
+    datafarame_for_testing: pd.DataFrame,
+) -> None:
     """Validates if the logged memory usage in standard output is accurate."""
-    df = _dummy_pandas_dataframe()
+    df = datafarame_for_testing
     csr = df_to_csr(df, verbose=True)
     output, error = _captured_log(capsys)
 
     assert_that(error).is_empty()
     assert_that(output).is_not_empty()
-    assert_that(
-        np.abs(
-            _captured_memory_use_from_stdout(
-                captured_output=output,
-                index=-2,
-            )
-            - memory_use_csr(csr) / 2**20,
+    npt.assert_almost_equal(
+        _captured_memory_use_from_stdout(
+            captured_output=output,
+            index=-2,
         ),
-    ).is_less_than(_FLOATING_POINT_THRESHOLD)
+        memory_use_csr(csr) / 2**20,
+        decimal=5,
+    )
     assert_that(
         _captured_memory_use_from_stdout(
             captured_output=output,
             index=-2,
         ),
     ).is_instance_of(float)
-    assert_that(
-        np.abs(
-            _captured_memory_use_from_stdout(
-                captured_output=output,
-                index=-3,
-            )
-            - memory_use_csr(csr),
+    npt.assert_almost_equal(
+        _captured_memory_use_from_stdout(
+            captured_output=output,
+            index=-3,
         ),
-    ).is_less_than(_FLOATING_POINT_THRESHOLD)
+        memory_use_csr(csr),
+        decimal=5,
+    )
     assert_that(
         _captured_memory_use_from_stdout(
             captured_output=output,
             index=-3,
         ),
     ).is_instance_of(float)
-    assert_that(
-        np.abs(
-            _captured_memory_use_from_stdout(
-                captured_output=output,
-                index=-4,
-            )
-            - df.memory_usage().sum() / 2**10,
+    npt.assert_almost_equal(
+        _captured_memory_use_from_stdout(
+            captured_output=output,
+            index=-4,
         ),
-    ).is_less_than(_FLOATING_POINT_THRESHOLD * 1e4)
+        df.memory_usage().sum() / 2**10,
+        decimal=1,
+    )
     assert_that(
         _captured_memory_use_from_stdout(
             captured_output=output,
@@ -133,10 +147,12 @@ def test_memory_use_csr__fails__with_invalid_inputs(kwargs: Dict[str, Any]) -> N
         memory_use_csr(**kwargs)
 
 
-def test_memory_use_csr__passes__with_default_inputs() -> None:
+def test_memory_use_csr__passes__with_default_inputs(
+    sparse_matrix_for_testing: csr_matrix,
+) -> None:
     """Validates that memory usage info with default inputs is accurate."""
     mem = memory_use_csr(
-        csr=_dummy_sparse_matrix(),
+        csr=sparse_matrix_for_testing,
     )
 
     assert_that(mem).is_instance_of(int)

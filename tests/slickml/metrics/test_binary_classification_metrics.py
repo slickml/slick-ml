@@ -1,6 +1,7 @@
 from typing import Any, Dict, List, Union
 
 import numpy as np
+import numpy.testing as npt
 import pandas as pd
 import pytest
 from assertpy import assert_that
@@ -8,8 +9,6 @@ from matplotlib.figure import Figure
 
 from slickml.metrics import BinaryClassificationMetrics
 from tests.utils import _ids
-
-_FLOATING_POINT_THRESHOLD = 1e-5
 
 
 # TODO(amir): the case for `average_method = None` which is in `__post_init__`
@@ -91,6 +90,7 @@ class TestBinaryClassificationMetrics:
         m = BinaryClassificationMetrics(**kwargs)
         f = m.plot(
             display_plot=False,
+            return_fig=True,
         )
 
         assert_that(m.y_true).is_instance_of(np.ndarray)
@@ -103,7 +103,6 @@ class TestBinaryClassificationMetrics:
         assert_that(m.precision_digits).is_equal_to(3)
         assert_that(m.display_df).is_instance_of(bool)
         assert_that(m.display_df).is_true()
-
         assert_that(m.y_pred_).is_instance_of(np.ndarray)
         assert_that(m.accuracy_).is_instance_of(float)
         assert_that(m.balanced_accuracy_).is_instance_of(float)
@@ -136,112 +135,27 @@ class TestBinaryClassificationMetrics:
         assert_that(m.plotting_dict_).is_instance_of(dict)
         assert_that(m.get_metrics(dtype="dataframe")).is_instance_of(pd.DataFrame)
         assert_that(m.get_metrics(dtype="dict")).is_instance_of(dict)
-
-        assert_that(
-            np.abs(
-                np.mean(m.y_pred_) - 0.25,
-            ),
-        ).is_less_than(_FLOATING_POINT_THRESHOLD)
-        assert_that(
-            np.abs(
-                m.accuracy_ - 0.75,
-            ),
-        ).is_less_than(_FLOATING_POINT_THRESHOLD)
-        assert_that(
-            np.abs(
-                m.balanced_accuracy_ - 0.75,
-            ),
-        ).is_less_than(_FLOATING_POINT_THRESHOLD)
-        assert_that(
-            np.abs(
-                np.mean(m.fpr_list_) - 0.4,
-            ),
-        ).is_less_than(_FLOATING_POINT_THRESHOLD)
-        assert_that(
-            np.abs(
-                np.mean(m.tpr_list_) - 0.6,
-            ),
-        ).is_less_than(_FLOATING_POINT_THRESHOLD)
-        assert_that(
-            np.abs(
-                np.mean(m.roc_thresholds_) - 0.69,
-            ),
-        ).is_less_than(_FLOATING_POINT_THRESHOLD)
-        assert_that(
-            np.abs(
-                m.auc_roc_ - 0.75,
-            ),
-        ).is_less_than(_FLOATING_POINT_THRESHOLD)
-        assert_that(
-            np.abs(
-                np.mean(m.precision_list_) - 0.7333333333333333,
-            ),
-        ).is_less_than(_FLOATING_POINT_THRESHOLD)
-        assert_that(
-            np.abs(
-                np.mean(m.recall_list_) - 0.6,
-            ),
-        ).is_less_than(_FLOATING_POINT_THRESHOLD)
-        assert_that(
-            np.abs(
-                np.mean(m.pr_thresholds_) - 0.4125,
-            ),
-        ).is_less_than(_FLOATING_POINT_THRESHOLD)
-        assert_that(
-            np.abs(
-                m.auc_pr_ - 0.7916666666666666,
-            ),
-        ).is_less_than(_FLOATING_POINT_THRESHOLD)
-        assert_that(
-            np.abs(
-                m.precision_ - 1.0,
-            ),
-        ).is_less_than(_FLOATING_POINT_THRESHOLD)
-        assert_that(
-            np.abs(
-                m.recall_ - 0.5,
-            ),
-        ).is_less_than(_FLOATING_POINT_THRESHOLD)
-        assert_that(
-            np.abs(
-                m.f1_ - 0.6666666666666666,
-            ),
-        ).is_less_than(_FLOATING_POINT_THRESHOLD)
-        assert_that(
-            np.abs(
-                m.f2_ - 0.5555555555555556,
-            ),
-        ).is_less_than(_FLOATING_POINT_THRESHOLD)
-        assert_that(
-            np.abs(
-                m.f05_ - 0.8333333333333334,
-            ),
-        ).is_less_than(_FLOATING_POINT_THRESHOLD)
-        assert_that(
-            np.abs(
-                m.average_precision_ - 0.8333333333333333,
-            ),
-        ).is_less_than(_FLOATING_POINT_THRESHOLD)
-        assert_that(
-            np.abs(
-                m.threat_score_ - 0.5,
-            ),
-        ).is_less_than(_FLOATING_POINT_THRESHOLD)
-        assert_that(
-            np.abs(
-                m.youden_threshold_ - 0.8,
-            ),
-        ).is_less_than(_FLOATING_POINT_THRESHOLD)
-        assert_that(
-            np.abs(
-                m.sens_spec_threshold_ - 0.4,
-            ),
-        ).is_less_than(_FLOATING_POINT_THRESHOLD)
-        assert_that(
-            np.abs(
-                m.prec_rec_threshold_ - 0.4,
-            ),
-        ).is_less_than(_FLOATING_POINT_THRESHOLD)
+        npt.assert_almost_equal(np.mean(m.y_pred_), 0.25, decimal=5)
+        npt.assert_almost_equal(m.accuracy_, 0.75, decimal=5)
+        npt.assert_almost_equal(m.balanced_accuracy_, 0.75, decimal=5)
+        npt.assert_almost_equal(np.mean(m.fpr_list_), 0.4, decimal=5)
+        npt.assert_almost_equal(np.mean(m.tpr_list_), 0.6, decimal=5)
+        npt.assert_almost_equal(np.mean(m.roc_thresholds_), 0.69, decimal=5)
+        npt.assert_almost_equal(m.auc_roc_, 0.75, decimal=5)
+        npt.assert_almost_equal(np.mean(m.precision_list_), 0.73333, decimal=5)
+        npt.assert_almost_equal(np.mean(m.recall_list_), 0.6, decimal=5)
+        npt.assert_almost_equal(np.mean(m.pr_thresholds_), 0.4125, decimal=5)
+        npt.assert_almost_equal(m.auc_pr_, 0.791666, decimal=5)
+        npt.assert_almost_equal(m.precision_, 1.0, decimal=5)
+        npt.assert_almost_equal(m.recall_, 0.5, decimal=5)
+        npt.assert_almost_equal(m.f1_, 0.66666, decimal=5)
+        npt.assert_almost_equal(m.f2_, 0.55555, decimal=5)
+        npt.assert_almost_equal(m.f05_, 0.83333, decimal=5)
+        npt.assert_almost_equal(m.average_precision_, 0.83333, decimal=5)
+        npt.assert_almost_equal(m.threat_score_, 0.5, decimal=5)
+        npt.assert_almost_equal(m.youden_threshold_, 0.8, decimal=5)
+        npt.assert_almost_equal(m.sens_spec_threshold_, 0.4, decimal=5)
+        npt.assert_almost_equal(m.prec_rec_threshold_, 0.4, decimal=5)
         assert_that(m.tn_).is_equal_to(2)
         assert_that(m.fp_).is_equal_to(0)
         assert_that(m.fn_).is_equal_to(1)
@@ -289,6 +203,7 @@ class TestBinaryClassificationMetrics:
         m = BinaryClassificationMetrics(**kwargs)
         f = m.plot(
             display_plot=False,
+            return_fig=True,
         )
 
         assert_that(m.y_true).is_instance_of(np.ndarray)
@@ -301,7 +216,6 @@ class TestBinaryClassificationMetrics:
         assert_that(m.precision_digits).is_equal_to(3)
         assert_that(m.display_df).is_instance_of(bool)
         assert_that(m.display_df).is_true()
-
         assert_that(m.y_pred_).is_instance_of(np.ndarray)
         assert_that(m.accuracy_).is_instance_of(float)
         assert_that(m.balanced_accuracy_).is_instance_of(float)
@@ -334,112 +248,27 @@ class TestBinaryClassificationMetrics:
         assert_that(m.plotting_dict_).is_instance_of(dict)
         assert_that(m.get_metrics(dtype="dataframe")).is_instance_of(pd.DataFrame)
         assert_that(m.get_metrics(dtype="dict")).is_instance_of(dict)
-
-        assert_that(
-            np.abs(
-                np.mean(m.y_pred_) - 0.25,
-            ),
-        ).is_less_than(_FLOATING_POINT_THRESHOLD)
-        assert_that(
-            np.abs(
-                m.accuracy_ - 0.75,
-            ),
-        ).is_less_than(_FLOATING_POINT_THRESHOLD)
-        assert_that(
-            np.abs(
-                m.balanced_accuracy_ - 0.75,
-            ),
-        ).is_less_than(_FLOATING_POINT_THRESHOLD)
-        assert_that(
-            np.abs(
-                np.mean(m.fpr_list_) - 0.4,
-            ),
-        ).is_less_than(_FLOATING_POINT_THRESHOLD)
-        assert_that(
-            np.abs(
-                np.mean(m.tpr_list_) - 0.6,
-            ),
-        ).is_less_than(_FLOATING_POINT_THRESHOLD)
-        assert_that(
-            np.abs(
-                np.mean(m.roc_thresholds_) - 0.69,
-            ),
-        ).is_less_than(_FLOATING_POINT_THRESHOLD)
-        assert_that(
-            np.abs(
-                m.auc_roc_ - 0.75,
-            ),
-        ).is_less_than(_FLOATING_POINT_THRESHOLD)
-        assert_that(
-            np.abs(
-                np.mean(m.precision_list_) - 0.7333333333333333,
-            ),
-        ).is_less_than(_FLOATING_POINT_THRESHOLD)
-        assert_that(
-            np.abs(
-                np.mean(m.recall_list_) - 0.6,
-            ),
-        ).is_less_than(_FLOATING_POINT_THRESHOLD)
-        assert_that(
-            np.abs(
-                np.mean(m.pr_thresholds_) - 0.4125,
-            ),
-        ).is_less_than(_FLOATING_POINT_THRESHOLD)
-        assert_that(
-            np.abs(
-                m.auc_pr_ - 0.7916666666666666,
-            ),
-        ).is_less_than(_FLOATING_POINT_THRESHOLD)
-        assert_that(
-            np.abs(
-                m.precision_ - 0.8333333333333333,
-            ),
-        ).is_less_than(_FLOATING_POINT_THRESHOLD)
-        assert_that(
-            np.abs(
-                m.recall_ - 0.75,
-            ),
-        ).is_less_than(_FLOATING_POINT_THRESHOLD)
-        assert_that(
-            np.abs(
-                m.f1_ - 0.7333333333333334,
-            ),
-        ).is_less_than(_FLOATING_POINT_THRESHOLD)
-        assert_that(
-            np.abs(
-                m.f2_ - 0.7323232323232323,
-            ),
-        ).is_less_than(_FLOATING_POINT_THRESHOLD)
-        assert_that(
-            np.abs(
-                m.f05_ - 0.7738095238095237,
-            ),
-        ).is_less_than(_FLOATING_POINT_THRESHOLD)
-        assert_that(
-            np.abs(
-                m.average_precision_ - 0.8333333333333333,
-            ),
-        ).is_less_than(_FLOATING_POINT_THRESHOLD)
-        assert_that(
-            np.abs(
-                m.threat_score_ - 0.611111111111111,
-            ),
-        ).is_less_than(_FLOATING_POINT_THRESHOLD)
-        assert_that(
-            np.abs(
-                m.youden_threshold_ - 0.8,
-            ),
-        ).is_less_than(_FLOATING_POINT_THRESHOLD)
-        assert_that(
-            np.abs(
-                m.sens_spec_threshold_ - 0.4,
-            ),
-        ).is_less_than(_FLOATING_POINT_THRESHOLD)
-        assert_that(
-            np.abs(
-                m.prec_rec_threshold_ - 0.4,
-            ),
-        ).is_less_than(_FLOATING_POINT_THRESHOLD)
+        npt.assert_almost_equal(np.mean(m.y_pred_), 0.25, decimal=5)
+        npt.assert_almost_equal(m.accuracy_, 0.75, decimal=5)
+        npt.assert_almost_equal(m.balanced_accuracy_, 0.75, decimal=5)
+        npt.assert_almost_equal(np.mean(m.fpr_list_), 0.4, decimal=5)
+        npt.assert_almost_equal(np.mean(m.tpr_list_), 0.6, decimal=5)
+        npt.assert_almost_equal(np.mean(m.roc_thresholds_), 0.69, decimal=5)
+        npt.assert_almost_equal(m.auc_roc_, 0.75, decimal=5)
+        npt.assert_almost_equal(np.mean(m.precision_list_), 0.73333, decimal=5)
+        npt.assert_almost_equal(np.mean(m.recall_list_), 0.6, decimal=5)
+        npt.assert_almost_equal(np.mean(m.pr_thresholds_), 0.4125, decimal=5)
+        npt.assert_almost_equal(m.auc_pr_, 0.79166, decimal=5)
+        npt.assert_almost_equal(m.precision_, 0.833333, decimal=5)
+        npt.assert_almost_equal(m.recall_, 0.75, decimal=5)
+        npt.assert_almost_equal(m.f1_, 0.73333, decimal=5)
+        npt.assert_almost_equal(m.f2_, 0.73232, decimal=5)
+        npt.assert_almost_equal(m.f05_, 0.77380, decimal=5)
+        npt.assert_almost_equal(m.average_precision_, 0.83333, decimal=5)
+        npt.assert_almost_equal(m.threat_score_, 0.611111, decimal=5)
+        npt.assert_almost_equal(m.youden_threshold_, 0.8, decimal=5)
+        npt.assert_almost_equal(m.sens_spec_threshold_, 0.4, decimal=5)
+        npt.assert_almost_equal(m.prec_rec_threshold_, 0.4, decimal=5)
         assert_that(m.tn_).is_equal_to(2)
         assert_that(m.fp_).is_equal_to(0)
         assert_that(m.fn_).is_equal_to(1)
@@ -487,6 +316,7 @@ class TestBinaryClassificationMetrics:
         m = BinaryClassificationMetrics(**kwargs)
         f = m.plot(
             display_plot=False,
+            return_fig=True,
         )
 
         assert_that(m.y_true).is_instance_of(np.ndarray)
@@ -499,7 +329,6 @@ class TestBinaryClassificationMetrics:
         assert_that(m.precision_digits).is_equal_to(3)
         assert_that(m.display_df).is_instance_of(bool)
         assert_that(m.display_df).is_true()
-
         assert_that(m.y_pred_).is_instance_of(np.ndarray)
         assert_that(m.accuracy_).is_instance_of(float)
         assert_that(m.balanced_accuracy_).is_instance_of(float)
@@ -532,112 +361,27 @@ class TestBinaryClassificationMetrics:
         assert_that(m.plotting_dict_).is_instance_of(dict)
         assert_that(m.get_metrics(dtype="dataframe")).is_instance_of(pd.DataFrame)
         assert_that(m.get_metrics(dtype="dict")).is_instance_of(dict)
-
-        assert_that(
-            np.abs(
-                np.mean(m.y_pred_) - 0.25,
-            ),
-        ).is_less_than(_FLOATING_POINT_THRESHOLD)
-        assert_that(
-            np.abs(
-                m.accuracy_ - 0.75,
-            ),
-        ).is_less_than(_FLOATING_POINT_THRESHOLD)
-        assert_that(
-            np.abs(
-                m.balanced_accuracy_ - 0.75,
-            ),
-        ).is_less_than(_FLOATING_POINT_THRESHOLD)
-        assert_that(
-            np.abs(
-                np.mean(m.fpr_list_) - 0.4,
-            ),
-        ).is_less_than(_FLOATING_POINT_THRESHOLD)
-        assert_that(
-            np.abs(
-                np.mean(m.tpr_list_) - 0.6,
-            ),
-        ).is_less_than(_FLOATING_POINT_THRESHOLD)
-        assert_that(
-            np.abs(
-                np.mean(m.roc_thresholds_) - 0.69,
-            ),
-        ).is_less_than(_FLOATING_POINT_THRESHOLD)
-        assert_that(
-            np.abs(
-                m.auc_roc_ - 0.75,
-            ),
-        ).is_less_than(_FLOATING_POINT_THRESHOLD)
-        assert_that(
-            np.abs(
-                np.mean(m.precision_list_) - 0.7333333333333333,
-            ),
-        ).is_less_than(_FLOATING_POINT_THRESHOLD)
-        assert_that(
-            np.abs(
-                np.mean(m.recall_list_) - 0.6,
-            ),
-        ).is_less_than(_FLOATING_POINT_THRESHOLD)
-        assert_that(
-            np.abs(
-                np.mean(m.pr_thresholds_) - 0.4125,
-            ),
-        ).is_less_than(_FLOATING_POINT_THRESHOLD)
-        assert_that(
-            np.abs(
-                m.auc_pr_ - 0.7916666666666666,
-            ),
-        ).is_less_than(_FLOATING_POINT_THRESHOLD)
-        assert_that(
-            np.abs(
-                m.precision_ - 0.8333333333333333,
-            ),
-        ).is_less_than(_FLOATING_POINT_THRESHOLD)
-        assert_that(
-            np.abs(
-                m.recall_ - 0.75,
-            ),
-        ).is_less_than(_FLOATING_POINT_THRESHOLD)
-        assert_that(
-            np.abs(
-                m.f1_ - 0.7333333333333334,
-            ),
-        ).is_less_than(_FLOATING_POINT_THRESHOLD)
-        assert_that(
-            np.abs(
-                m.f2_ - 0.7323232323232323,
-            ),
-        ).is_less_than(_FLOATING_POINT_THRESHOLD)
-        assert_that(
-            np.abs(
-                m.f05_ - 0.7738095238095237,
-            ),
-        ).is_less_than(_FLOATING_POINT_THRESHOLD)
-        assert_that(
-            np.abs(
-                m.average_precision_ - 0.8333333333333333,
-            ),
-        ).is_less_than(_FLOATING_POINT_THRESHOLD)
-        assert_that(
-            np.abs(
-                m.threat_score_ - 0.5833333333333333,
-            ),
-        ).is_less_than(_FLOATING_POINT_THRESHOLD)
-        assert_that(
-            np.abs(
-                m.youden_threshold_ - 0.8,
-            ),
-        ).is_less_than(_FLOATING_POINT_THRESHOLD)
-        assert_that(
-            np.abs(
-                m.sens_spec_threshold_ - 0.4,
-            ),
-        ).is_less_than(_FLOATING_POINT_THRESHOLD)
-        assert_that(
-            np.abs(
-                m.prec_rec_threshold_ - 0.4,
-            ),
-        ).is_less_than(_FLOATING_POINT_THRESHOLD)
+        npt.assert_almost_equal(np.mean(m.y_pred_), 0.25, decimal=5)
+        npt.assert_almost_equal(m.accuracy_, 0.75, decimal=5)
+        npt.assert_almost_equal(m.balanced_accuracy_, 0.75, decimal=5)
+        npt.assert_almost_equal(np.mean(m.fpr_list_), 0.4, decimal=5)
+        npt.assert_almost_equal(np.mean(m.tpr_list_), 0.6, decimal=5)
+        npt.assert_almost_equal(np.mean(m.roc_thresholds_), 0.69, decimal=5)
+        npt.assert_almost_equal(m.auc_roc_, 0.75, decimal=5)
+        npt.assert_almost_equal(np.mean(m.precision_list_), 0.73333, decimal=5)
+        npt.assert_almost_equal(np.mean(m.recall_list_), 0.6, decimal=5)
+        npt.assert_almost_equal(np.mean(m.pr_thresholds_), 0.4125, decimal=5)
+        npt.assert_almost_equal(m.auc_pr_, 0.79166, decimal=5)
+        npt.assert_almost_equal(m.precision_, 0.83333, decimal=5)
+        npt.assert_almost_equal(m.recall_, 0.75, decimal=5)
+        npt.assert_almost_equal(m.f1_, 0.73333, decimal=5)
+        npt.assert_almost_equal(m.f2_, 0.73232, decimal=5)
+        npt.assert_almost_equal(m.f05_, 0.77380, decimal=5)
+        npt.assert_almost_equal(m.average_precision_, 0.83333, decimal=5)
+        npt.assert_almost_equal(m.threat_score_, 0.58333, decimal=5)
+        npt.assert_almost_equal(m.youden_threshold_, 0.8, decimal=5)
+        npt.assert_almost_equal(m.sens_spec_threshold_, 0.4, decimal=5)
+        npt.assert_almost_equal(m.prec_rec_threshold_, 0.4, decimal=5)
         assert_that(m.tn_).is_equal_to(2)
         assert_that(m.fp_).is_equal_to(0)
         assert_that(m.fn_).is_equal_to(1)
@@ -685,6 +429,7 @@ class TestBinaryClassificationMetrics:
         m = BinaryClassificationMetrics(**kwargs)
         f = m.plot(
             display_plot=False,
+            return_fig=True,
         )
 
         assert_that(m.y_true).is_instance_of(np.ndarray)
@@ -697,7 +442,6 @@ class TestBinaryClassificationMetrics:
         assert_that(m.precision_digits).is_equal_to(3)
         assert_that(m.display_df).is_instance_of(bool)
         assert_that(m.display_df).is_true()
-
         assert_that(m.y_pred_).is_instance_of(np.ndarray)
         assert_that(m.accuracy_).is_instance_of(float)
         assert_that(m.balanced_accuracy_).is_instance_of(float)
@@ -730,112 +474,27 @@ class TestBinaryClassificationMetrics:
         assert_that(m.plotting_dict_).is_instance_of(dict)
         assert_that(m.get_metrics(dtype="dataframe")).is_instance_of(pd.DataFrame)
         assert_that(m.get_metrics(dtype="dict")).is_instance_of(dict)
-
-        assert_that(
-            np.abs(
-                np.mean(m.y_pred_) - 0.25,
-            ),
-        ).is_less_than(_FLOATING_POINT_THRESHOLD)
-        assert_that(
-            np.abs(
-                m.accuracy_ - 0.75,
-            ),
-        ).is_less_than(_FLOATING_POINT_THRESHOLD)
-        assert_that(
-            np.abs(
-                m.balanced_accuracy_ - 0.75,
-            ),
-        ).is_less_than(_FLOATING_POINT_THRESHOLD)
-        assert_that(
-            np.abs(
-                np.mean(m.fpr_list_) - 0.4,
-            ),
-        ).is_less_than(_FLOATING_POINT_THRESHOLD)
-        assert_that(
-            np.abs(
-                np.mean(m.tpr_list_) - 0.6,
-            ),
-        ).is_less_than(_FLOATING_POINT_THRESHOLD)
-        assert_that(
-            np.abs(
-                np.mean(m.roc_thresholds_) - 0.69,
-            ),
-        ).is_less_than(_FLOATING_POINT_THRESHOLD)
-        assert_that(
-            np.abs(
-                m.auc_roc_ - 0.75,
-            ),
-        ).is_less_than(_FLOATING_POINT_THRESHOLD)
-        assert_that(
-            np.abs(
-                np.mean(m.precision_list_) - 0.7333333333333333,
-            ),
-        ).is_less_than(_FLOATING_POINT_THRESHOLD)
-        assert_that(
-            np.abs(
-                np.mean(m.recall_list_) - 0.6,
-            ),
-        ).is_less_than(_FLOATING_POINT_THRESHOLD)
-        assert_that(
-            np.abs(
-                np.mean(m.pr_thresholds_) - 0.4125,
-            ),
-        ).is_less_than(_FLOATING_POINT_THRESHOLD)
-        assert_that(
-            np.abs(
-                m.auc_pr_ - 0.7916666666666666,
-            ),
-        ).is_less_than(_FLOATING_POINT_THRESHOLD)
-        assert_that(
-            np.abs(
-                m.precision_ - 0.75,
-            ),
-        ).is_less_than(_FLOATING_POINT_THRESHOLD)
-        assert_that(
-            np.abs(
-                m.recall_ - 0.75,
-            ),
-        ).is_less_than(_FLOATING_POINT_THRESHOLD)
-        assert_that(
-            np.abs(
-                m.f1_ - 0.75,
-            ),
-        ).is_less_than(_FLOATING_POINT_THRESHOLD)
-        assert_that(
-            np.abs(
-                m.f2_ - 0.75,
-            ),
-        ).is_less_than(_FLOATING_POINT_THRESHOLD)
-        assert_that(
-            np.abs(
-                m.f05_ - 0.75,
-            ),
-        ).is_less_than(_FLOATING_POINT_THRESHOLD)
-        assert_that(
-            np.abs(
-                m.average_precision_ - 0.8333333333333333,
-            ),
-        ).is_less_than(_FLOATING_POINT_THRESHOLD)
-        assert_that(
-            np.abs(
-                m.threat_score_ - 0.5,
-            ),
-        ).is_less_than(_FLOATING_POINT_THRESHOLD)
-        assert_that(
-            np.abs(
-                m.youden_threshold_ - 0.8,
-            ),
-        ).is_less_than(_FLOATING_POINT_THRESHOLD)
-        assert_that(
-            np.abs(
-                m.sens_spec_threshold_ - 0.4,
-            ),
-        ).is_less_than(_FLOATING_POINT_THRESHOLD)
-        assert_that(
-            np.abs(
-                m.prec_rec_threshold_ - 0.4,
-            ),
-        ).is_less_than(_FLOATING_POINT_THRESHOLD)
+        npt.assert_almost_equal(np.mean(m.y_pred_), 0.25, decimal=5)
+        npt.assert_almost_equal(m.accuracy_, 0.75, decimal=5)
+        npt.assert_almost_equal(m.balanced_accuracy_, 0.75, decimal=5)
+        npt.assert_almost_equal(np.mean(m.fpr_list_), 0.4, decimal=5)
+        npt.assert_almost_equal(np.mean(m.tpr_list_), 0.6, decimal=5)
+        npt.assert_almost_equal(np.mean(m.roc_thresholds_), 0.69, decimal=5)
+        npt.assert_almost_equal(m.auc_roc_, 0.75, decimal=5)
+        npt.assert_almost_equal(np.mean(m.precision_list_), 0.73333, decimal=5)
+        npt.assert_almost_equal(np.mean(m.recall_list_), 0.6, decimal=5)
+        npt.assert_almost_equal(np.mean(m.pr_thresholds_), 0.4125, decimal=5)
+        npt.assert_almost_equal(m.auc_pr_, 0.79166, decimal=5)
+        npt.assert_almost_equal(m.precision_, 0.75, decimal=5)
+        npt.assert_almost_equal(m.recall_, 0.75, decimal=5)
+        npt.assert_almost_equal(m.f1_, 0.75, decimal=5)
+        npt.assert_almost_equal(m.f2_, 0.75, decimal=5)
+        npt.assert_almost_equal(m.f05_, 0.75, decimal=5)
+        npt.assert_almost_equal(m.average_precision_, 0.83333, decimal=5)
+        npt.assert_almost_equal(m.threat_score_, 0.5, decimal=5)
+        npt.assert_almost_equal(m.youden_threshold_, 0.8, decimal=5)
+        npt.assert_almost_equal(m.sens_spec_threshold_, 0.4, decimal=5)
+        npt.assert_almost_equal(m.prec_rec_threshold_, 0.4, decimal=5)
         assert_that(m.tn_).is_equal_to(2)
         assert_that(m.fp_).is_equal_to(0)
         assert_that(m.fn_).is_equal_to(1)

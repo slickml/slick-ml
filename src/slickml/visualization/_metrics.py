@@ -1,4 +1,3 @@
-import warnings
 from typing import Any, Dict, Optional, Tuple
 
 import matplotlib as mpl
@@ -15,16 +14,16 @@ from slickml.utils import check_var
 sns.set_style("ticks")
 mpl.rcParams["axes.linewidth"] = 2
 mpl.rcParams["lines.linewidth"] = 2
-warnings.filterwarnings("ignore")
 
 
 # TODO(amir): globally adjust options, fonts, ...
 def plot_binary_classification_metrics(
-    figsize=None,
-    save_path=None,
-    display_plot=None,
+    figsize: Optional[Tuple[float, float]] = (12, 12),
+    save_path: Optional[str] = None,
+    display_plot: Optional[bool] = False,
+    return_fig: Optional[bool] = False,
     **kwargs,
-) -> Figure:
+) -> Optional[Figure]:
     """Visualizes binary classification metrics using ``plotting_dict_`` attribute of ``BinaryClassificationMetrics``.
 
     Parameters
@@ -39,12 +38,15 @@ def plot_binary_classification_metrics(
     display_plot : bool, optional
         Whether to show the plot, by default False
 
+    return_fig : bool, optional
+        Whether to return figure object, by default False
+
     **kwargs : Dict[str, Any]
         Key-value pairs of regression metrics plot
 
     Returns
     -------
-    Figure
+    Figure, optional
     """
     check_var(
         figsize,
@@ -56,8 +58,13 @@ def plot_binary_classification_metrics(
         var_name="display_plot",
         dtypes=bool,
     )
+    check_var(
+        return_fig,
+        var_name="return_fig",
+        dtypes=bool,
+    )
     # TODO(amir): double check this
-    if save_path is not None:
+    if save_path:
         check_var(
             save_path,
             var_name="save_path",
@@ -338,7 +345,10 @@ def plot_binary_classification_metrics(
     if display_plot:
         plt.show()
 
-    return fig
+    if return_fig:
+        return fig
+
+    return None
 
 
 # TODO(amir): standardize all `plotting` params and options
@@ -351,6 +361,7 @@ def plot_regression_metrics(
     figsize: Optional[Tuple[float, float]] = (12, 16),
     save_path: Optional[str] = None,
     display_plot: Optional[bool] = False,
+    return_fig: Optional[bool] = False,
     **kwargs: Dict[str, Any],
 ) -> Figure:
     """Visualizes regression metrics using ``plotting_dict_`` attribute of ``RegressionMetrics``.
@@ -367,12 +378,15 @@ def plot_regression_metrics(
     display_plot : bool, optional
         Whether to show the plot, by default False
 
+    return_fig : bool, optional
+        Whether to return figure object, by default False
+
     **kwargs : Dict[str, Any]
         Key-value pairs of regression metrics plot
 
     Returns
     -------
-    Figure
+    Figure, optional
     """
     check_var(
         figsize,
@@ -384,8 +398,13 @@ def plot_regression_metrics(
         var_name="display_plot",
         dtypes=bool,
     )
+    check_var(
+        return_fig,
+        var_name="return_fig",
+        dtypes=bool,
+    )
     # TODO(amir): double check this
-    if save_path is not None:
+    if save_path:
         check_var(
             save_path,
             var_name="save_path",
@@ -623,11 +642,15 @@ def plot_regression_metrics(
             bbox_inches="tight",
             dpi=200,
         )
+
     if display_plot:
         plt.show()
+
+    if return_fig:
+        return fig
 
     # TODO(amir): investigate the options to return axes as well if needed
     # TODO(amir): investigate a better option for `plt.show()`; currently, no matter what the
     # figure is being shown when returning `fig`; what would be a global pattern here that can be
     # tested as well? Should we sacrifice the testing part here?
-    return fig
+    return None

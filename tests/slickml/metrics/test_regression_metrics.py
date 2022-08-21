@@ -1,6 +1,7 @@
 from typing import Any, Dict, List, Union
 
 import numpy as np
+import numpy.testing as npt
 import pandas as pd
 import pytest
 from assertpy import assert_that
@@ -8,8 +9,6 @@ from matplotlib.figure import Figure
 
 from slickml.metrics import RegressionMetrics
 from tests.utils import _ids
-
-_FLOATING_POINT_THRESHOLD = 1e-5
 
 
 # TODO(amir): tests for multi-outputs + "variance_weighted" and "raw_values" methods are still missing
@@ -78,6 +77,7 @@ class TestRegressionMetrics:
         m = RegressionMetrics(**kwargs)
         f = m.plot(
             display_plot=False,
+            return_fig=True,
         )
 
         assert_that(m.y_true).is_instance_of(np.ndarray)
@@ -98,7 +98,7 @@ class TestRegressionMetrics:
         assert_that(m.mape_).is_instance_of(float)
         assert_that(m.auc_rec_).is_instance_of(float)
         assert_that(m.deviation_).is_instance_of(np.ndarray)
-        assert_that(m.accuracy_).is_instance_of(list)
+        assert_that(m.accuracy_).is_instance_of(np.ndarray)
         assert_that(m.y_ratio_).is_instance_of(np.ndarray)
         assert_that(m.mean_y_ratio_).is_instance_of(float)
         assert_that(m.std_y_ratio_).is_instance_of(float)
@@ -109,71 +109,19 @@ class TestRegressionMetrics:
         assert_that(m.get_metrics(dtype="dataframe")).is_instance_of(pd.DataFrame)
         assert_that(m.get_metrics(dtype="dict")).is_instance_of(dict)
 
-        assert_that(
-            np.abs(
-                m.r2_ - 0.9486081370449679,
-            ),
-        ).is_less_than(_FLOATING_POINT_THRESHOLD)
-        assert_that(
-            np.abs(
-                m.mae_ - 0.5,
-            ),
-        ).is_less_than(_FLOATING_POINT_THRESHOLD)
-        assert_that(
-            np.abs(
-                m.mse_ - 0.375,
-            ),
-        ).is_less_than(_FLOATING_POINT_THRESHOLD)
-        assert_that(
-            np.abs(
-                m.mape_ - 0.3273809523809524,
-            ),
-        ).is_less_than(_FLOATING_POINT_THRESHOLD)
-        assert_that(
-            np.abs(
-                m.auc_rec_ - 0.6864583333333334,
-            ),
-        ).is_less_than(_FLOATING_POINT_THRESHOLD)
-        assert_that(
-            np.abs(
-                m.mean_y_ratio_ - 0.7440476190476191,
-            ),
-        ).is_less_than(_FLOATING_POINT_THRESHOLD)
-        assert_that(
-            np.abs(
-                m.std_y_ratio_ - 0.4433225281277483,
-            ),
-        ).is_less_than(_FLOATING_POINT_THRESHOLD)
-        assert_that(
-            np.abs(
-                m.cv_y_ratio_ - 0.5958254778036937,
-            ),
-        ).is_less_than(_FLOATING_POINT_THRESHOLD)
-        assert_that(
-            np.abs(
-                np.mean(m.y_residual_) - (-0.25),
-            ),
-        ).is_less_than(_FLOATING_POINT_THRESHOLD)
-        assert_that(
-            np.abs(
-                np.mean(m.y_residual_normsq_) - 0.6035533905932737,
-            ),
-        ).is_less_than(_FLOATING_POINT_THRESHOLD)
-        assert_that(
-            np.abs(
-                np.mean(m.deviation_) - 0.49499999999999994,
-            ),
-        ).is_less_than(_FLOATING_POINT_THRESHOLD)
-        assert_that(
-            np.abs(
-                np.mean(m.accuracy_) - 0.69,
-            ),
-        ).is_less_than(_FLOATING_POINT_THRESHOLD)
-        assert_that(
-            np.abs(
-                np.mean(m.y_ratio_) - 0.7440476190476191,
-            ),
-        ).is_less_than(_FLOATING_POINT_THRESHOLD)
+        npt.assert_almost_equal(m.r2_, 0.94860, decimal=5)
+        npt.assert_almost_equal(m.mae_, 0.5, decimal=5)
+        npt.assert_almost_equal(m.mse_, 0.375, decimal=5)
+        npt.assert_almost_equal(m.mape_, 0.32738, decimal=5)
+        npt.assert_almost_equal(m.auc_rec_, 0.68645, decimal=5)
+        npt.assert_almost_equal(m.mean_y_ratio_, 0.74404, decimal=5)
+        npt.assert_almost_equal(m.std_y_ratio_, 0.44332, decimal=5)
+        npt.assert_almost_equal(m.cv_y_ratio_, 0.59582, decimal=5)
+        npt.assert_almost_equal(np.mean(m.y_residual_), -0.25, decimal=5)
+        npt.assert_almost_equal(np.mean(m.y_residual_normsq_), 0.60355, decimal=5)
+        npt.assert_almost_equal(np.mean(m.deviation_), 0.49499, decimal=5)
+        npt.assert_almost_equal(np.mean(m.accuracy_), 0.69, decimal=5)
+        npt.assert_almost_equal(np.mean(m.y_ratio_), 0.74404, decimal=5)
 
         # TODO(amir): figure out a better way to test out figures
         assert_that(f).is_instance_of(Figure)
@@ -188,11 +136,7 @@ class TestRegressionMetrics:
 
         assert_that(m.msle_).is_not_none()
         assert_that(m.msle_).is_instance_of(float)
-        assert_that(
-            np.abs(
-                m.msle_ - 0.0490263575494607,
-            ),
-        ).is_less_than(_FLOATING_POINT_THRESHOLD)
+        npt.assert_almost_equal(m.msle_, 0.04902, decimal=5)
 
     @pytest.mark.parametrize(
         "kwargs",
