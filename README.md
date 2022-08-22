@@ -1,12 +1,12 @@
 [![build](https://github.com/slickml/slick-ml/actions/workflows/ci.yml/badge.svg)](https://github.com/slickml/slick-ml/actions/workflows/ci.yml)
 [![docs](https://github.com/slickml/slick-ml/actions/workflows/cd.yml/badge.svg)](https://github.com/slickml/slick-ml/actions/workflows/cd.yml)
 [![codecov](https://codecov.io/gh/slickml/slick-ml/branch/master/graph/badge.svg?token=Z7XP51MB4K)](https://codecov.io/gh/slickml/slick-ml)
-[![License](https://img.shields.io/github/license/slickml/slick-ml)](https://github.com/slickml/slick-ml/blob/master/LICENSE/)
-[![PyPI - Downloads](https://img.shields.io/pypi/dm/slickml)](https://pypi.org/project/slickml/)
-![PyPI Version](https://img.shields.io/pypi/v/slickml)
-![Python Version](https://img.shields.io/pypi/pyversions/slickml)
-[![Forks](https://img.shields.io/github/forks/slickml/slick-ml)](https://github.com/slickml/slick-ml/network/members/)
-[![Stars](https://img.shields.io/github/stars/slickml/slick-ml)](https://github.com/slickml/slick-ml/stargazers/)
+[![license](https://img.shields.io/github/license/slickml/slick-ml)](https://github.com/slickml/slick-ml/blob/master/LICENSE/)
+[![downloads](https://pepy.tech/badge/slickml)](https://pepy.tech/project/slickml)
+![pypi_version](https://img.shields.io/pypi/v/slickml)
+![python_version](https://img.shields.io/pypi/pyversions/slickml)
+[![slack_invite](https://badgen.net/badge/Join/SlickML%20Slack/purple?icon=slack)](https://www.slickml.com/slack-invite)
+
 
 
 <p align="center">
@@ -30,16 +30,16 @@
   </p>
 </div>
 
-
+## 🧠 SlickML🧞 Philosophy
 **SlickML** is an open-source machine learning library written in Python aimed
-at accelerating the experimentation time for a ML application. Data Scientists'
+at accelerating the experimentation time for ML applications with tabular data while maximizing the amount of information can be inferred. Data Scientists'
 tasks can often be repetitive such as feature selection, model tuning, or
-evaluating metrics for classification and regression problems. SlickML provides
-Data Scientists with a toolbox to quickly prototype solutions for a given problem with minimal code. 
+evaluating metrics for classification and regression problems. We strongly believe that a good portion of the tasks based on tabular data can be addressed via gradient boosting and generalized linear models<sup>[1](https://arxiv.org/pdf/2207.08815.pdf)</sup>. SlickML provides
+Data Scientists with a toolbox to quickly prototype solutions for a given problem with minimal code while maximizing the amound of information that can be inferred.
 
 
 ## 📖 Documentation
-The API documentation is available at [docs.slickml.com](https://www.docs.slickml.com).
+✨ The API documentation is available at [docs.slickml.com](https://www.docs.slickml.com).
 
 ## 🛠 Installation
 To begin with, install [Python version >=3.8,<3.11](https://www.python.org) and to install the library
@@ -172,7 +172,11 @@ reg_metrics.plot()
 
 ## 🧑‍💻🤝 Contributing to SlickML🧞
 You can find the details of the development process in our [Contributing](CONTRIBUTING.md) guidelines. We strongly believe that reading and following these guidelines will help us make the contribution process easy and effective for everyone involved 🚀🌙 .
+Special thanks to all of our amazing contributors 👇
 
+<a href="https://github.com/slickml/slick-ml/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=slickml/slick-ml" />
+</a>
 
 ![Repobeats analytics image](https://repobeats.axiom.co/api/embed/ca865991b0547199fe7a069de7af25645b225e9c.svg "Repobeats analytics image")
 

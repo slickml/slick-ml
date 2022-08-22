@@ -14,14 +14,17 @@
    github project repo. Anything we put in the doc, should be easy to maintain. So, we should
    maximize the use of permalinks and symlinks.
 
-Welcome to SlickML🧞 Documentation!
-===================================
+SlickML🧞: Slick Machine Learning in Python
+===========================================
 
-**SlickML** is an open-source machine learning library written in Python aimed at accelerating the
-experimentation time for a ML application. Data Scientists' tasks can often be repetitive such as
-feature selection, model tuning, or evaluating metrics for classification and regression problems.
-SlickML provides Data Scientists with a toolbox to quickly prototype solutions for a given problem
-with minimal code.
+|build_status| |docs_status| |codecov| |downloads| |github_stars| |slack_invite| 
+
+**SlickML** is an open-source machine learning library written in Python aimed at accelerating the experimentation time for ML applications
+with tabular data while maximizing the amount of information can be inferred. Data Scientists' tasks can often be repetitive such as feature
+selection, model tuning, or evaluating metrics for classification and regression problems. We strongly believe that a good portion of the tasks
+based on tabular data can be addressed via gradient boosting and generalized linear models<sup>[1](https://arxiv.org/pdf/2207.08815.pdf)</sup>.
+SlickML provides Data Scientists with a toolbox to quickly prototype solutions for a given problem with minimal code while maximizing the amound
+of information that can be inferred.
 
 
 .. toctree::
@@ -46,3 +49,23 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
+
+
+.. |build_status| image:: https://github.com/slickml/slick-ml/actions/workflows/ci.yml/badge.svg
+   :target: https://github.com/slickml/slick-ml/actions/workflows/ci.yml
+.. |docs_status| image:: https://github.com/slickml/slick-ml/actions/workflows/cd.yml/badge.svg
+   :target: https://github.com/slickml/slick-ml/actions/workflows/cd.yml
+.. |codecov| image:: https://codecov.io/gh/slickml/slick-ml/branch/master/graph/badge.svg?token=Z7XP51MB4K
+   :target: https://codecov.io/gh/slickml/slick-ml
+.. |license| image:: https://img.shields.io/github/license/slickml/slick-ml
+   :target: https://github.com/slickml/slick-ml/blob/master/LICENSE
+.. |downloads| image:: https://pepy.tech/badge/slickml
+   :target: https://pepy.tech/project/slickml
+.. |pypi_version| image:: https://img.shields.io/pypi/v/slickml
+   :target: https://pypi.org/project/slickml
+.. |python_versions| image:: https://img.shields.io/pypi/pyversions/slickml
+   :target: https://pypi.org/project/slickml
+.. |slack_invite| image:: https://badgen.net/badge/Join/SlickML%20Slack/purple?icon=slack
+   :target: https://www.slickml.com/slack-invite
+.. |github_stars| image:: https://img.shields.io/github/stars/slickml/slick-ml?color=cyan&label=github&logo=github
+   :target: https://github.com/slickml/slick-ml
