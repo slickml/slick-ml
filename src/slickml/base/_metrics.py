@@ -9,7 +9,7 @@ class Metrics(Protocol):
 
     Notes
     -----
-    The main reason of this protocol is proper duck typing (PEP-544) _[1] when using metrics such as
+    The main reason of this protocol is proper duck typing (PEP-544) [1]_ when using metrics such as
     ``RegressionMetrics`` or ``ClassificationMetrics`` in pipelines.
 
     References

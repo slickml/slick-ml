@@ -407,7 +407,7 @@ class RegressionMetrics:
         """Calculates the histogram elements of y_pred/y_true ratio.
 
         This would report the coefficient of variation CV as std(ratio)/mean(ratio) based on "A
-        Pareto front based evolutionary model for airfoil self-noise prediction" paper _[1].
+        Pareto front based evolutionary model for airfoil self-noise prediction" paper [1]_.
 
         References
         ----------

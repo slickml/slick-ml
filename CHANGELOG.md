@@ -1,5 +1,5 @@
 📣 🥁 Changelog & Releases
-=========================
+===========================
 
 - We follow [Semantic Versioning](http://semver.org/) to document any notable changes.
 - Please checkout [SlickML Official Releases](https://github.com/slickml/slick-ml/releases) for more details.

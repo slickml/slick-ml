@@ -2,6 +2,8 @@
    Reference: 
       - https://sphinx-tutorial.readthedocs.io/
       - https://www.sphinx-doc.org/en/master/usage/restructuredtext/directives.html
+      - https://sphinx-design.readthedocs.io/en/furo-theme/
+      - https://sphinx-design.readthedocs.io/en/furo-theme/cards.html
 
 .. NOTES: 
    1) You can create a new page under `docs/pages/` in `.md` or `.rst` format
@@ -14,22 +16,85 @@
    github project repo. Anything we put in the doc, should be easy to maintain. So, we should
    maximize the use of permalinks and symlinks.
 
-SlickML🧞: Slick Machine Learning in Python
-===========================================
+SlickML🧞 Documentation
+*******************************
 
 |build_status| |docs_status| |codecov| |downloads| |github_stars| |slack_invite| 
 
-**SlickML** is an open-source machine learning library written in Python aimed at accelerating the experimentation time for ML applications
+----
+
+🧠 SlickML🧞 Philosophy
+-----------------------------
+
+`SlickML <https://github.com/slickml/slick-ml>`_ is an open-source machine learning library written in Python aimed at accelerating the experimentation time for ML applications
 with tabular data while maximizing the amount of information can be inferred. Data Scientists' tasks can often be repetitive such as feature
 selection, model tuning, or evaluating metrics for classification and regression problems. We strongly believe that a good portion of the tasks
-based on tabular data can be addressed via gradient boosting and generalized linear models<sup>[1](https://arxiv.org/pdf/2207.08815.pdf)</sup>.
+based on tabular data can be addressed via gradient boosting and generalized linear models `[1] <https://arxiv.org/pdf/2207.08815.pdf>`_.
 SlickML provides Data Scientists with a toolbox to quickly prototype solutions for a given problem with minimal code while maximizing the amound
 of information that can be inferred.
 
 
+.. grid:: 1 2 2 2
+    :gutter: 3
+    :margin: 0
+    :padding: 3 4 0 0
+
+    .. grid-item-card:: :doc:`🛠 Installation <pages/installation>`
+        :link: pages/installation
+        :link-type: doc
+
+        Learn more on the requirements and how to set up your Python environment to install SlickML ...
+
+    .. grid-item-card:: :doc:`📌 Quick Start <pages/quick_start>`
+        :link: pages/quick_start
+        :link-type: doc
+
+        Wanna take a glimpse at some of key functionalities? Quick start is the best place to start your journey ...
+
+    .. grid-item-card:: :doc:`🎯 API Reference <autoapi/index>`
+        :link: autoapi/index
+        :link-type: doc
+
+        Explore SlickML API Reference and hopefully scrutinize the source code ...
+
+    .. grid-item-card:: :doc:`📣 Changelog & Releases <pages/releases>`
+        :link: pages/releases
+        :link-type: doc
+
+        Stay up-to-date with the new features in SlickML by checking out the latest release notes ...      
+----
+
+🧑‍💻🤝 Become a Contributor
+----------------------------
+SlickML🧞 is trying to build a thriving open source community where data scientists and machine learning
+practitioners can come together and contribute their ideas to the project. The details of the development
+process in are laid out in our `Contributing <pages/contributing.html>`_ guidelines. We strongly believe that
+reading and following these guidelines will help us make the contribution process easy and effective for
+everyone involved 🚀🌙 . Special thanks to all of our amazing contributors 👇
+
+.. image:: https://contrib.rocks/image?repo=slickml/slick-ml
+  :width: 300
+  :alt: Contributors
+  :target: https://github.com/slickml/slick-ml/graphs/contributors
+
+.. image:: https://repobeats.axiom.co/api/embed/ca865991b0547199fe7a069de7af25645b225e9c.svg
+  :width: 1000
+  :alt: Repobeats analytics image
+  :target: https://github.com/slickml/slick-ml/commits/master
+
+----
+
+❓ 🆘 📲 Need Help?
+----------------------
+Please join our `Slack Channel <https://www.slickml.com/slack-invite>`_ to interact directly with the core team and our small
+community. This is a good place to discuss your questions and ideas or in general ask for help 👨‍👩‍👧 👫 👨‍👩‍👦 .
+
+
+
+
 .. toctree::
+   :hidden:
    :maxdepth: 1
-   :caption: Contents:
    
    Installation <pages/installation>
    Quick Start <pages/quick_start>
@@ -43,8 +108,10 @@ of information that can be inferred.
 .. FUTURE PAGES:
    Examples <pages/examples>
 
-Indices and tables
-==================
+----
+
+🔍 Indices and Tables
+-----------------------
 
 * :ref:`genindex`
 * :ref:`modindex`
