@@ -44,11 +44,11 @@ Data Scientists with a toolbox to quickly prototype solutions for a given proble
 ## 🛠 Installation
 To begin with, install [Python version >=3.8,<3.11](https://www.python.org) and to install the library
 from [PyPI](https://pypi.org/project/slickml/) simply run 🏃‍♀️ :
-```console
+```
 pip install slickml
 ```
 📣  Please note that a working [Fortran Compiler](https://gcc.gnu.org/install/) (`gfortran`) is also required to build the package. If you do not have `gcc` installed, the following commands depending on your operating system will take care of this requirement.
-```console
+```
 # Mac Users
 brew install gcc
 

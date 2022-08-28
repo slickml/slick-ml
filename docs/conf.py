@@ -76,8 +76,8 @@ exclude_patterns = [
 ]
 # -- Options for Pygments (syntax highlighting) ------------------------------
 # Reference: https://pygments.org/styles/
-pygments_style = "monokai"
-pygments_dark_style = "monokai"
+pygments_style = "dracula"
+pygments_dark_style = "dracula"
 
 # -- Options for NumpyDoc style -----------------------------------------------
 # Reference:
