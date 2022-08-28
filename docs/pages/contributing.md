@@ -44,7 +44,7 @@ Please note that before starting any major work, open an issue describing what y
 
 - To begin with, install a [Python version >=3.8,<3.11](https://www.python.org).
 - A working [Fortran Compiler](https://gcc.gnu.org/install/) (`gfortran`) is also required. If you do not have `gcc` installed, the following commands depending on your operating system will take care of this requirement. Please note that installing `gcc` sometimes might take couple minutes ⏳ 🤦‍♂️.
-  ```console
+  ```
   # Mac Users
   brew install gcc
 
@@ -53,64 +53,64 @@ Please note that before starting any major work, open an issue describing what y
   ```
 - All developments are done via [*python-poetry*](https://python-poetry.org/). To begin with, first install `poetry` following the [*installation documentation*](https://python-poetry.org/docs/#installation) depending on your operating system.
 - You can also easily [*manage your Python environments*](https://python-poetry.org/docs/managing-environments#managing-environments) and easily switch between environments via `poetry`. To set the `poetry` environment using your preferred `python` version (i.e. `3.9.13`) which is already installed on your system preferably via `pyenv`, simply run 🏃‍♀️ :
-  ```console
+  ```
   poetry env use 3.9.13
   ```
 - Once you setup your environment, to install the dependencies (`poetry.lock`), simply run 🏃‍♀️ :
-  ```console
+  ```
   poetry install
   ```
 - We mainly use [*Poe the Poet*](https://github.com/nat-n/poethepoet), a pythonic task runner that works well with `poetry`.
 - To make sure your environmnet is setup correctly, simply run 🏃‍♀️ :
-  ```console
+  ```
   poe greet
   ```
 - For more options for task runners, simply run 🏃‍♀️ :
-  ```console
+  ```
   poe --help
   ```
 
 
 ## 🛠 Formatting
 - To ease the process and reduce headache 💆‍♀️ , we have serialized the required formatting commands to save more time ⏰. To apply all the required `formatting` steps, simply run 🏃‍♀️ :
-  ```console
+  ```
   poe format
   ```
 - `poe format` command is essentially runs `poe add-trailing-comma`, `poe black` and `poe isort` commands behind the scene in a serial fashion. You can learn more about each steps below 👇 .
 - Different versions of python require commas in different places. Trailing commas 🏁 is a common issue (C812) in code styles that [*add-trailing-comma*](https://github.com/asottile/add-trailing-comma) has solved it. To apply `add-trailing-comma`, simply run 🏃‍♀️ :
-  ```console
+  ```
   poe add-trailing-comma
   ```
 - We save a lot of time ⏳ and mental energy 🔋 for more important matters by using [*black*](https://github.com/psf/black) ⬛  as our main code formatter. The only option we have specified over the default values is `line-length = 100`. To apply `black`, simply run 🏃‍♀️ :
-  ```console
+  ```
   poe black
   ```
 - We also use [*isort*](https://github.com/PyCQA/isort) to sort imports libraries alphabetically, and automatically 🔠 separated into sections and by type. To apply `isort`, simply run 🏃‍♀️ :
-  ```console
+  ```
   poe isort
   ```
 
 
 ## 🪓 Linting
 - Similar to formatting, to ease the process and reduce headache 💆‍♂️ , we have serialized the required linting commands to save more time ⏰. To apply all the required `linting` steps, simply run 🏃‍♀️ :
-  ```console
+  ```
   poe check
   ```
 - `poe check` command is essentially runs `poe black --check`, `poe isort --check-only`, `poe flake8`, and `poe mypy` commands behind the scene in a serial fashion. You can learn more about each steps below 👇 .
 - To lint our code base we use [*flake8*](https://flake8.pycqa.org/en/latest/) with [*flake8-commas*](https://github.com/PyCQA/flake8-commas) extension, and more specification laid out in [*.flake8*](https://github.com/slickml/slick-ml/blob/master/.flake8) file. To apply `flake8` to the code base, simply run 🏃‍♀️ :
-  ```console
+  ```
   poe flake8
   ```
 - We also use [*mypy*](https://github.com/python/mypy) with more specification laid out in [*mypy.ini*](https://github.com/slickml/slick-ml/blob/master/mypy.ini) to check static typing of our code base. To apply `mypy` to the code base, simply run 🏃‍♀️ :
-  ```console
+  ```
   poe mypy
   ```
 - To check if the code is formatted correctly via `black`, you can simply run 🏃‍♀️ :
-  ```console
+  ```
   poe black --check
   ```
 - To check if the imporetd libraries is sorted correctly via `isort`, you can simply run 🏃‍♀️ :
-  ```console
+  ```
   poe isort --check-only
   ```
 
@@ -122,11 +122,11 @@ Please note that before starting any major work, open an issue describing what y
 - Our naming convention for naming tests is `test_<method_under_test>__<when>__<then>` pattern which would increase the code readbility.
 - We use [*pytest-cov*](https://github.com/pytest-dev/pytest-cov) plugin 🔌 helps to populated a coverage report 🗂 for the unit-tests and see the parts of the code that the related unit-tests have not touched 🔎 🕵️‍♀️.
 - To run all unit-tests, simply run 🏃‍♀️ :
-  ```console
+  ```
   poe test
   ```
 - To run a specific test file, simply run 🏃‍♀️ :
-  ```console
+  ```
   poe test tests/test_<file_name>.py
   ```
 
@@ -135,7 +135,7 @@ Please note that before starting any major work, open an issue describing what y
 - We follow [*numpydoc*](https://numpydoc.readthedocs.io/en/latest/format.html) style guidelines for docstrings syntax, and best practices 👌 .
 - We use [*Sphinx Auto API*](https://sphinx-autoapi.readthedocs.io/en/latest/tutorials.html) 🤖 for generating our API documentation 💪 .
 - In order to generate the API documentation 🔖  from source 🌲 , simply run 🏃‍♀️ :
-  ```console
+  ```
   poe sphinx
   ```
 - The generated API documentation file can be found at `docs/_build/index.html`.
@@ -154,7 +154,7 @@ Please note that before starting any major work, open an issue describing what y
   5. Try to `rebase` the commits as much as possible to keep the git history clean.
   6. Follow the `formatting`, `linting`, and `testing` guidelines above.
   7. Finally, to check cross-compatibility of your changes using different operating systems and python versions, simply run 🏃‍♀️ :
-     ```console
+     ```
      poe tox
      ```
      🔔 Sometimes, `tox` is unhappy; so, don't hesitate to run `poe tox` twice 😁 .
