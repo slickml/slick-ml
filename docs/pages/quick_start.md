@@ -1,8 +1,8 @@
 📌 Quick Start
-==============
+================
 
-
-✅ An example to quickly run a `Feature Selection` pipeline with embedded `Cross-Validation` and `Feature-Importance` visualization: 
+## ✅ Feature Selection
+An example to quickly run a Feature Selection pipeline with embedded Cross-Validation and Feature-Importance visualization: 
 ```python
 from slickml.feautre_selection import XGBoostFeatureSelector
 xfs = XGBoostFeatureSelector()
@@ -20,7 +20,8 @@ xfs.plot_frequency()
 ```
 ![frequency](https://raw.githubusercontent.com/slickml/slick-ml/master/assets/images/feature_frequency.png)
 
-✅ An example to quickly find the `tuned hyper-parameter` with `Bayesian Optimization`:
+## ✅ Hyper-parameter Tuning
+An example to quickly find the tuned hyper-parameter with Bayesian Optimization:
 ```python
 from slickml.optimization import XGBoostClassifierBayesianOpt
 xbo = XGBoostClassifierBayesianOpt()
@@ -43,7 +44,8 @@ best_params
  }
 ```
 
-✅ An example to quickly train/validate a `XGBoostCV Classifier` with `Cross-Validation`, `Feature-Importance`, and `Shap` visualizations:
+## ✅ Classification via `XGBoost`
+An example to quickly train/validate a `XGBoostCVClassifier` with Cross-Validation, Feature-Importance, and Shap visualizations:
 ```python
 from slickml.classification import XGBoostCVClassifier
 clf = XGBoostCVClassifier(params=best_params)
@@ -75,7 +77,8 @@ clf.plot_shap_waterfall()
 ![clfshapwf](https://raw.githubusercontent.com/slickml/slick-ml/master/assets/images/clf_shap_waterfall.png)
 
 
-✅ An example to train/validate a `GLMNetCV Classifier` with `Cross-Validation` and `Coefficients` visualizations:
+## ✅ Classification via `GLMNet`
+An example to train/validate a `GLMNetCVClassifier` with Cross-Validation and Coefficients visualizations:
 ```python
 from slickml.classification import GLMNetCVClassifier
 clf = GLMNetCVClassifier(alpha=0.3, n_splits=4, metric="roc_auc")
@@ -91,8 +94,8 @@ clf.plot_coeff_path()
 ```
 ![clfglmnetpath](https://raw.githubusercontent.com/slickml/slick-ml/master/assets/images/clf_glmnet_paths.png)
 
-
-✅ An example to quickly visualize the `binary classification metrics` based on multiple `thresholds`:
+## ✅ Classification Metrics
+An example to quickly visualize the binary classification metrics based on multiple thresholds:
 ```python
 from slickml.metrics import BinaryClassificationMetrics
 clf_metrics = BinaryClassificationMetrics(y_test, y_pred_proba)
@@ -100,8 +103,8 @@ clf_metrics.plot()
 ```
 ![clfmetrics](https://raw.githubusercontent.com/slickml/slick-ml/master/assets/images/clf_metrics.png)
 
-
-✅ An example to quickly visualize some `regression metrics`:
+## ✅ Regression Metrics
+An example to quickly visualize some regression metrics:
 ```python
 from slickml.metrics import RegressionMetrics
 reg_metrics = RegressionMetrics(y_test, y_pred)

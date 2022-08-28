@@ -66,7 +66,7 @@ def _load_test_data_from_csv(filename: str) -> pd.DataFrame:
 
 
 def _captured_log(capsys: CaptureFixture) -> Tuple[str, str]:
-    """Returns the captured standard output/error via `pytest.capsys` _[1].
+    """Returns the captured standard output/error via `pytest.capsys` [1]_.
 
     References
     ----------

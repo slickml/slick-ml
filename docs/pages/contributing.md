@@ -1,5 +1,5 @@
 🧑‍💻🤝 Contributing to SlickML🧞
-=============================
+================================
 
 ## 👋 Introduction
 Hello from SlickML🧞 Team 👋 and welcome to our contributing guidelines 🤗 . Here we laid out the details of the development process based on our coding standards, and we hope these guidelines would ease the process for you. Please feel free to apply your revisions if you did not find these guidelines useful.
@@ -52,9 +52,9 @@ Please note that before starting any major work, open an issue describing what y
   sudo apt install build-essential gfortran
   ```
 - All developments are done via [*python-poetry*](https://python-poetry.org/). To begin with, first install `poetry` following the [*installation documentation*](https://python-poetry.org/docs/#installation) depending on your operating system.
-- You can also easily [*manage your Python environments*](https://python-poetry.org/docs/managing-environments#managing-environments) and easily switch between environments via `poetry`. To set the `poetry` environment using your preferred `python` version (i.e. `3.9.9`), simply run 🏃‍♀️ :
+- You can also easily [*manage your Python environments*](https://python-poetry.org/docs/managing-environments#managing-environments) and easily switch between environments via `poetry`. To set the `poetry` environment using your preferred `python` version (i.e. `3.9.13`) which is already installed on your system preferably via `pyenv`, simply run 🏃‍♀️ :
   ```console
-  poetry env use 3.9.9
+  poetry env use 3.9.13
   ```
 - Once you setup your environment, to install the dependencies (`poetry.lock`), simply run 🏃‍♀️ :
   ```console
@@ -161,6 +161,9 @@ Please note that before starting any major work, open an issue describing what y
   8. Now, you are ready to push your changes to your forked repository.
   9.  Lastly, open a PR in our repository to the `master` branch and follow the PR template so that we can efficiently review the changes as soon as possible and get your feature/bug-fix merged.
   10. Nicely done! You are all set! You are now officially part of [SlickML contributors](https://github.com/slickml/slick-ml/graphs/contributors).
+
+
+
 
 
 ## ❓ 🆘 📲 Need Help?

@@ -54,7 +54,7 @@ def plot_xgb_feature_importance(
         Color of the horizontal lines of lollipops, by default "#87CEEB"
 
     marker : str, optional
-        Marker style of the lollipops. More valid marker styles can be found at _[1], by default "o"
+        Marker style of the lollipops. More valid marker styles can be found at [1]_, by default "o"
 
     markersize : Union[int, float], optional
         Markersize, by default 10
@@ -83,10 +83,10 @@ def plot_xgb_feature_importance(
 
     See Also
     --------
-    ``XGBoostClassifier``
-    ``XGBoostCVClassifier``
-    ``XGBoostRegressor``
-    ``XGBoostCVRegressor``
+    :class:`slickml.classification.XGBoostClassifier`
+    :class:`slickml.classification.XGBoostCVClassifier`
+    :class:`slickml.classification.XGBoostRegressor`
+    :class:`slickml.classification.XGBoostCVRegressor`
 
     References
     ----------

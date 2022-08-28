@@ -1,5 +1,5 @@
 📚 Citing SlickML🧞
-===================
+====================
 
 If you use SlickML in an academic work 📃 🧪 🧬 , please consider citing it 🙏 .
 

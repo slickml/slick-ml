@@ -46,7 +46,7 @@ def plot_shap_summary(
     This is a helper function to plot the ``shap`` summary plot based on all types of
     ``shap.Explainer`` including ``shap.LinearExplainer`` for linear models, ``shap.TreeExplainer``
     for tree-based models, and ``shap.DeepExplainer`` deep neural network models. More on details
-    are available at _[1].
+    are available at [1]_.
 
     Parameters
     ----------
@@ -304,7 +304,7 @@ def plot_shap_waterfall(
         Color of the line plot, by default "purple"
 
     marker : str, optional
-        Marker style of the lollipops. More valid marker styles can be found at _[1], by default "o"
+        Marker style of the lollipops. More valid marker styles can be found at [1]_, by default "o"
 
     markersize : Union[int, float], optional
         Markersize, by default 7

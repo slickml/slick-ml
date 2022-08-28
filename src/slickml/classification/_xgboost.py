@@ -24,7 +24,7 @@ from slickml.visualization import (
 class XGBoostClassifier(BaseEstimator, ClassifierMixin):
     """XGBoost Classifier.
 
-    This is wrapper using XGBoost classifier to train a XGBoost _[1] model with using the optimum
+    This is wrapper using XGBoost classifier to train a XGBoost [1]_ model with using the optimum
     number of boosting rounds from the inputs. This is also the base class for ``XGBoostCVClassifier``.
 
     Parameters
@@ -355,7 +355,7 @@ class XGBoostClassifier(BaseEstimator, ClassifierMixin):
             Color of the horizontal lines of lollipops, by default "#87CEEB"
 
         marker : str, optional
-            Marker style of the lollipops. More valid marker styles can be found at _[1], by default "o"
+            Marker style of the lollipops. More valid marker styles can be found at [1]_, by default "o"
 
         markersize : Union[int, float], optional
             Markersize, by default 10
@@ -431,7 +431,7 @@ class XGBoostClassifier(BaseEstimator, ClassifierMixin):
         This is a helper function to plot the ``shap`` summary plot based on all types of
         ``shap.Explainer`` including ``shap.LinearExplainer`` for linear models, ``shap.TreeExplainer``
         for tree-based models, and ``shap.DeepExplainer`` deep neural network models. More on details
-        are available at _[1]. Note that this function should be ran after the ``predict_proba()``
+        are available at [1]_. Note that this function should be ran after the ``predict_proba()``
         to make sure the ``X_test`` is being instansiated or set ``validation=False``.
 
         Parameters
@@ -585,7 +585,7 @@ class XGBoostClassifier(BaseEstimator, ClassifierMixin):
             Color of the line plot, by default "purple"
 
         marker : str, optional
-            Marker style of the lollipops. More valid marker styles can be found at _[1], by default "o"
+            Marker style of the lollipops. More valid marker styles can be found at [1]_, by default "o"
 
         markersize : Union[int, float], optional
             Markersize, by default 7
@@ -670,7 +670,8 @@ class XGBoostClassifier(BaseEstimator, ClassifierMixin):
 
         See Also
         --------
-        ``get_default_params()``
+        :meth:`get_default_params()`
+
 
         Returns
         -------
@@ -685,7 +686,7 @@ class XGBoostClassifier(BaseEstimator, ClassifierMixin):
 
         See Also
         --------
-        ``get_params()``
+        :meth:`get_params()`
 
         Returns
         -------
@@ -717,6 +718,10 @@ class XGBoostClassifier(BaseEstimator, ClassifierMixin):
 
         y_train : Union[List[float], np.ndarray, pd.Series]
             Input ground truth for training (targets)
+
+        See Also
+        --------
+        :meth:`_dtest()`
 
         Returns
         -------
@@ -809,7 +814,7 @@ class XGBoostClassifier(BaseEstimator, ClassifierMixin):
 
         See Also
         --------
-        ``_dtrain()``
+        :meth:`_dtrain()`
 
         Returns
         -------
