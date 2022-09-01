@@ -137,6 +137,8 @@ class XGBoostClassifier(BaseEstimator, ClassifierMixin):
     References
     ----------
     .. [1] https://xgboost.readthedocs.io/en/latest/python/python_api.html
+    .. [2] https://matplotlib.org/stable/api/markers_api.html
+    .. [3] https://shap-lrjball.readthedocs.io/en/latest/generated/shap.summary_plot.html
     """
 
     num_boost_round: Optional[int] = 200
@@ -355,7 +357,7 @@ class XGBoostClassifier(BaseEstimator, ClassifierMixin):
             Color of the horizontal lines of lollipops, by default "#87CEEB"
 
         marker : str, optional
-            Marker style of the lollipops. More valid marker styles can be found at [1]_, by default "o"
+            Marker style of the lollipops. More valid marker styles can be found at [2]_, by default "o"
 
         markersize : Union[int, float], optional
             Markersize, by default 10
@@ -381,10 +383,6 @@ class XGBoostClassifier(BaseEstimator, ClassifierMixin):
 
         return_fig : bool, optional
             Whether to return figure object, by default False
-
-        References
-        ----------
-        .. [1] https://matplotlib.org/stable/api/markers_api.html
 
         Returns
         -------
@@ -431,7 +429,7 @@ class XGBoostClassifier(BaseEstimator, ClassifierMixin):
         This is a helper function to plot the ``shap`` summary plot based on all types of
         ``shap.Explainer`` including ``shap.LinearExplainer`` for linear models, ``shap.TreeExplainer``
         for tree-based models, and ``shap.DeepExplainer`` deep neural network models. More on details
-        are available at [1]_. Note that this function should be ran after the ``predict_proba()``
+        are available at [3]_. Note that this function should be ran after the ``predict_proba()``
         to make sure the ``X_test`` is being instansiated or set ``validation=False``.
 
         Parameters
@@ -492,10 +490,6 @@ class XGBoostClassifier(BaseEstimator, ClassifierMixin):
 
         display_plot : bool, optional
             Whether to show the plot, by default True
-
-        References
-        ----------
-        .. [1] https://shap-lrjball.readthedocs.io/en/latest/generated/shap.summary_plot.html
 
         Returns
         -------
@@ -585,7 +579,7 @@ class XGBoostClassifier(BaseEstimator, ClassifierMixin):
             Color of the line plot, by default "purple"
 
         marker : str, optional
-            Marker style of the lollipops. More valid marker styles can be found at [1]_, by default "o"
+            Marker style of the lollipops. More valid marker styles can be found at [2]_, by default "o"
 
         markersize : Union[int, float], optional
             Markersize, by default 7
@@ -617,10 +611,6 @@ class XGBoostClassifier(BaseEstimator, ClassifierMixin):
 
         return_fig : bool, optional
             Whether to return figure object, by default False
-
-        References
-        ----------
-        .. [1] https://matplotlib.org/stable/api/markers_api.html
 
         Returns
         -------
