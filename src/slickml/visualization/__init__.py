@@ -3,11 +3,15 @@ from slickml.visualization._metrics import (
     plot_regression_metrics,
 )
 from slickml.visualization._shap import plot_shap_summary, plot_shap_waterfall
-from slickml.visualization._xgboost import plot_xgb_feature_importance
+from slickml.visualization._xgboost import (
+    plot_xgb_cv_results,
+    plot_xgb_feature_importance,
+)
 
 __all__ = [
     "plot_regression_metrics",
     "plot_binary_classification_metrics",
+    "plot_xgb_cv_results",
     "plot_xgb_feature_importance",
     "plot_shap_summary",
     "plot_shap_waterfall",

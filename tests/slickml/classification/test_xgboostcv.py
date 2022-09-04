@@ -11,13 +11,13 @@ from matplotlib.figure import Figure
 from pytest import FixtureRequest
 from sklearn.model_selection import train_test_split
 
-from slickml.classification import XGBoostClassifier
+from slickml.classification import XGBoostCVClassifier
 from tests.utils import _ids, _load_test_data_from_csv
 
 
 # TODO(amir): Currently `SHAP` raises a lot of warnings. Please figure out a way to dump these warnings
-class TestXGBoostClassifier:
-    """Validates `XGBoostClassifier` instantiation."""
+class TestXGBoostCVClassifier:
+    """Validates `XGBoostClassifierCV` instantiation."""
 
     @staticmethod
     @pytest.fixture(scope="module")
@@ -66,13 +66,20 @@ class TestXGBoostClassifier:
             {"sparse_matrix": True, "scale_mean": True},
             {"params": ["auc"]},
             {"importance_type": "total_weight"},
+            {"n_splits": "4"},
+            {"early_stopping_rounds": "20"},
+            {"random_state": "42"},
+            {"stratified": 1},
+            {"shuffle": 0},
+            {"verbose": 0},
+            {"callbacks": 1},
         ],
         ids=_ids,
     )
-    def test_xgboostclassifier_instantiation__fails__with_invalid_inputs(self, kwargs) -> None:
-        """Validates `XGBoostClassifier` cannot be instantiated with invalid inputs."""
+    def test_xgboostcvclassifier_instantiation__fails__with_invalid_inputs(self, kwargs) -> None:
+        """Validates `XGBoostCVClassifier` cannot be instantiated with invalid inputs."""
         with pytest.raises((ValueError, TypeError)):
-            XGBoostClassifier(**kwargs)
+            XGBoostCVClassifier(**kwargs)
 
     @pytest.mark.parametrize(
         ("clf_x_y_data"),
@@ -84,7 +91,7 @@ class TestXGBoostClassifier:
         indirect=["clf_x_y_data"],
         ids=_ids,
     )
-    def test_xgboostclassifier__passes__with_defaults(
+    def test_xgboostcvclassifier__passes__with_defaults(
         self,
         clf_x_y_data: Tuple[
             Union[pd.DataFrame, np.ndarray],
@@ -95,7 +102,7 @@ class TestXGBoostClassifier:
     ) -> None:
         """Validates `XGBoostClassifier` instanation passes with default inputs."""
         X_train, X_test, y_train, y_test = clf_x_y_data
-        clf = XGBoostClassifier()
+        clf = XGBoostCVClassifier()
         clf.fit(X_train, y_train)
         # Note: we pass `y_test` for the sake of testing while in inference we might night have
         # access to ground truth and both `predict_proba()` and `predict()` functions would be able
@@ -105,6 +112,11 @@ class TestXGBoostClassifier:
         params = clf.get_params()
         default_params = clf.get_default_params()
         feature_importance = clf.get_feature_importance()
+        cv_results = clf.get_cv_results()
+        cv_results_fig = clf.plot_cv_results(
+            display_plot=False,
+            return_fig=True,
+        )
         feature_importance_fig = clf.plot_feature_importance(
             display_plot=False,
             return_fig=True,
@@ -129,13 +141,28 @@ class TestXGBoostClassifier:
             display_plot=False,
         )
 
-        assert_that(clf).is_instance_of(XGBoostClassifier)
+        assert_that(clf).is_instance_of(XGBoostCVClassifier)
         assert_that(clf.num_boost_round).is_instance_of(int)
         assert_that(clf.num_boost_round).is_equal_to(200)
+        assert_that(clf.n_splits).is_instance_of(int)
+        assert_that(clf.n_splits).is_equal_to(4)
+        assert_that(clf.early_stopping_rounds).is_instance_of(int)
+        assert_that(clf.early_stopping_rounds).is_equal_to(20)
+        assert_that(clf.random_state).is_instance_of(int)
+        assert_that(clf.random_state).is_equal_to(1367)
         assert_that(clf.metrics).is_instance_of(str)
         assert_that(clf.metrics).is_equal_to("auc")
         assert_that(clf.sparse_matrix).is_instance_of(bool)
         assert_that(clf.sparse_matrix).is_false()
+        assert_that(clf.stratified).is_instance_of(bool)
+        assert_that(clf.stratified).is_true()
+        assert_that(clf.shuffle).is_instance_of(bool)
+        assert_that(clf.shuffle).is_true()
+        assert_that(clf.shuffle).is_instance_of(bool)
+        assert_that(clf.shuffle).is_true()
+        assert_that(clf.verbose).is_instance_of(bool)
+        assert_that(clf.verbose).is_true()
+        assert_that(clf.callbacks).is_none()
         assert_that(clf.scale_mean).is_instance_of(bool)
         assert_that(clf.scale_mean).is_false()
         assert_that(clf.scale_std).is_instance_of(bool)
@@ -161,6 +188,8 @@ class TestXGBoostClassifier:
                 "scale_pos_weight": 1,
             },
         )
+        assert_that(clf.cv_results_).is_instance_of(pd.DataFrame)
+        assert_that(clf.cv_results_.shape[1]).is_equal_to(4)
         assert_that(clf.feature_importance_).is_instance_of(pd.DataFrame)
         assert_that(clf.feature_importance_.shape[0]).is_equal_to(X_train.shape[1])
         assert_that(clf.feature_importance_.columns.tolist()).contains("total_gain")
@@ -178,23 +207,31 @@ class TestXGBoostClassifier:
         assert_that(clf.dtrain_).is_instance_of(xgb.DMatrix)
         assert_that(clf.dtest_).is_instance_of(xgb.DMatrix)
         assert_that(y_pred_proba).is_instance_of(np.ndarray)
-        npt.assert_almost_equal(np.mean(y_pred_proba), 0.800523, decimal=5)
+        npt.assert_almost_equal(np.mean(y_pred_proba), 0.80043, decimal=5)
         assert_that(y_pred).is_instance_of(np.ndarray)
-        npt.assert_almost_equal(np.mean(y_pred), 0.88461, decimal=5)
+        npt.assert_almost_equal(np.mean(y_pred), 0.93589, decimal=5)
         assert_that(params).is_instance_of(dict)
         assert_that(default_params).is_instance_of(dict)
         assert_that(feature_importance).is_instance_of(pd.DataFrame)
+        assert_that(cv_results).is_instance_of(pd.DataFrame)
+        assert_that(cv_results_fig).is_instance_of(Figure)
         assert_that(feature_importance_fig).is_instance_of(Figure)
         assert_that(shap_waterfall_test_fig).is_instance_of(Figure)
         assert_that(shap_waterfall_train_fig).is_instance_of(Figure)
-        npt.assert_almost_equal(np.mean(clf.shap_values_test_), 0.09268, decimal=5)
-        npt.assert_almost_equal(np.mean(clf.shap_values_train_), 0.11710, decimal=5)
+        npt.assert_almost_equal(np.mean(clf.shap_values_test_), 0.02838, decimal=5)
+        npt.assert_almost_equal(np.mean(clf.shap_values_train_), 0.03783, decimal=5)
 
     @pytest.mark.parametrize(
         ("clf_x_y_data", "kwargs"),
         [
+            ("dataframe", {"n_splits": 10}),
+            ("dataframe", {"early_stopping_rounds": 100}),
             ("dataframe", {"num_boost_round": 300}),
             ("dataframe", {"metrics": "aucpr"}),
+            ("dataframe", {"shuffle": False}),
+            ("dataframe", {"verbose": False}),
+            ("dataframe", {"callbacks": True}),
+            ("dataframe", {"stratified": False}),
             ("dataframe", {"sparse_matrix": True}),
             ("dataframe", {"sparse_matrix": True, "scale_std": True}),
             ("dataframe", {"scale_mean": True}),
@@ -206,7 +243,7 @@ class TestXGBoostClassifier:
         indirect=["clf_x_y_data"],
         ids=_ids,
     )
-    def test_xgboostclassifier__passes__with_valid_inputs(
+    def test_xgboostcvclassifier__passes__with_valid_inputs(
         self,
         clf_x_y_data: Tuple[
             Union[pd.DataFrame, np.ndarray],
@@ -216,9 +253,9 @@ class TestXGBoostClassifier:
         ],
         kwargs: Optional[Dict[str, Any]],
     ) -> None:
-        """Validates `XGBoostClassifier` instanation passes with valid inputs."""
+        """Validates `XGBoostCVClassifier` instanation passes with valid inputs."""
         X_train, X_test, y_train, y_test = clf_x_y_data
-        clf = XGBoostClassifier(**kwargs)
+        clf = XGBoostCVClassifier(**kwargs)
         clf.fit(X_train, y_train)
         # Note: we pass `y_test` for the sake of testing while in inference we might night have
         # access to ground truth and both `predict_proba()` and `predict()` functions would be able
@@ -228,6 +265,11 @@ class TestXGBoostClassifier:
         params = clf.get_params()
         default_params = clf.get_default_params()
         feature_importance = clf.get_feature_importance()
+        cv_results = clf.get_cv_results()
+        cv_results_fig = clf.plot_cv_results(
+            display_plot=False,
+            return_fig=True,
+        )
         feature_importance_fig = clf.plot_feature_importance(
             display_plot=False,
             return_fig=True,
@@ -252,7 +294,7 @@ class TestXGBoostClassifier:
             display_plot=False,
         )
 
-        assert_that(clf).is_instance_of(XGBoostClassifier)
+        assert_that(clf).is_instance_of(XGBoostCVClassifier)
         assert_that(clf.num_boost_round).is_instance_of(int)
         assert_that(clf.metrics).is_instance_of(str)
         assert_that(clf.sparse_matrix).is_instance_of(bool)
@@ -272,14 +314,17 @@ class TestXGBoostClassifier:
         npt.assert_array_equal(clf.y_test, y_test)
         assert_that(clf.dtrain_).is_instance_of(xgb.DMatrix)
         assert_that(clf.dtest_).is_instance_of(xgb.DMatrix)
+        assert_that(clf.cv_results_).is_instance_of(pd.DataFrame)
         assert_that(y_pred_proba).is_instance_of(np.ndarray)
         assert_that(y_pred).is_instance_of(np.ndarray)
         assert_that(params).is_instance_of(dict)
         assert_that(default_params).is_instance_of(dict)
         assert_that(feature_importance).is_instance_of(pd.DataFrame)
+        assert_that(cv_results).is_instance_of(pd.DataFrame)
         assert_that(feature_importance_fig).is_instance_of(Figure)
         assert_that(shap_waterfall_test_fig).is_instance_of(Figure)
         assert_that(shap_waterfall_train_fig).is_instance_of(Figure)
+        assert_that(cv_results_fig).is_instance_of(Figure)
 
     @pytest.mark.parametrize(
         (
@@ -332,15 +377,15 @@ class TestXGBoostClassifier:
         indirect=["clf_x_y_data"],
         ids=_ids,
     )
-    def test_xgboostclassifier_shap_plots__passes__with_valid_inputs(
+    def test_xgboostcvclassifier_shap_plots__passes__with_valid_inputs(
         self,
         clf_x_y_data: Tuple[pd.DataFrame, pd.DataFrame, np.ndarray, np.ndarray],
         waterfall_kwargs: Dict[str, Any],
         summary_kwargs: Dict[str, Any],
     ) -> None:
-        """Validates `XGBoostClassifier` Shap plots passes with valid inputs."""
+        """Validates `XGBoostCVClassifier` Shap plots passes with valid inputs."""
         X_train, X_test, y_train, y_test = clf_x_y_data
-        clf = XGBoostClassifier()
+        clf = XGBoostCVClassifier()
         clf.fit(X_train, y_train)
         _ = clf.predict_proba(X_test, y_test)
         shap_waterfall_fig = clf.plot_shap_waterfall(**waterfall_kwargs)
@@ -348,3 +393,6 @@ class TestXGBoostClassifier:
         clf.plot_shap_summary(**summary_kwargs)
 
         assert_that(shap_waterfall_fig).is_instance_of(Figure)
+
+
+# TODO(amir): we have to test the callbacks + verbose logs

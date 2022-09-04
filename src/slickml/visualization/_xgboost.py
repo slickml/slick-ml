@@ -31,7 +31,7 @@ def plot_xgb_feature_importance(
     markeredgewidth: Optional[Union[int, float]] = 1,
     fontsize: Optional[Union[int, float]] = 12,
     save_path: Optional[str] = None,
-    display_plot: Optional[bool] = False,
+    display_plot: Optional[bool] = True,
     return_fig: Optional[bool] = False,
 ) -> Optional[Figure]:
     """Visualizes the XGBoost feature importance as bar chart.
@@ -76,7 +76,7 @@ def plot_xgb_feature_importance(
         "myplot.png" or "../../myplot.pdf", by default None
 
     display_plot : bool, optional
-        Whether to show the plot, by default False
+        Whether to show the plot, by default True
 
     return_fig : bool, optional
         Whether to return figure object, by default False
@@ -211,6 +211,199 @@ def plot_xgb_feature_importance(
         axis="both",
         which="major",
         labelsize=fontsize,
+    )
+
+    if save_path:
+        plt.savefig(
+            save_path,
+            bbox_inches="tight",
+            dpi=200,
+        )
+
+    if display_plot:
+        plt.show()
+
+    if return_fig:
+        return fig
+
+    return None
+
+
+def plot_xgb_cv_results(
+    cv_results: pd.DataFrame,
+    figsize: Optional[Tuple[Union[int, float], Union[int, float]]] = (8, 5),
+    linestyle: Optional[str] = "--",
+    train_label: Optional[str] = "Train",
+    test_label: Optional[str] = "Test",
+    train_color: Optional[str] = "navy",
+    train_std_color: Optional[str] = "#B3C3F3",
+    test_color: Optional[str] = "purple",
+    test_std_color: Optional[str] = "#D0AAF3",
+    save_path: Optional[str] = None,
+    display_plot: Optional[bool] = False,
+    return_fig: Optional[bool] = False,
+):
+    """Visualizes the cv_results of ``XGBoostCVClassifier``.
+
+    Parameters
+    ----------
+    cv_results : pd.DataFrame
+        Cross-validation results
+
+    figsize : Tuple[Union[int, float], Union[int, float]], optional
+        Figure size, by default (8, 5)
+
+    linestyle : str, optional
+        Style of lines [1]_, by default "--"
+
+    train_label : str, optional
+        Label in the figure legend for the train line, by default "Train"
+
+    test_label : str, optional
+        Label in the figure legend for the test line, by default "Test"
+
+    train_color : str, optional
+        Color of the training line, by default "navy"
+
+    train_std_color : str, optional
+        Color of the edge color of the training std bars, by default "#B3C3F3"
+
+    test_color : str, optional
+        Color of the testing line, by default "purple"
+
+    test_std_color : str, optional
+        Color of the edge color of the testing std bars, by default "#D0AAF3"
+
+    save_path : str, optional
+        The full or relative path to save the plot including the image format such as
+        "myplot.png" or "../../myplot.pdf", by default None
+
+    display_plot : bool, optional
+        Whether to show the plot, by default False
+
+    return_fig : bool, optional
+        Whether to return figure object, by default False
+
+    See Also
+    --------
+    :class:`slickml.classification.XGBoostCVClassifier`
+
+    References
+    ----------
+    .. [1] https://matplotlib.org/stable/gallery/lines_bars_and_markers/linestyles.html
+
+    Returns
+    -------
+    Figure, optional
+    """
+    check_var(
+        figsize,
+        var_name="figsize",
+        dtypes=tuple,
+    )
+    check_var(
+        linestyle,
+        var_name="linestyle",
+        dtypes=str,
+    )
+    check_var(
+        train_label,
+        var_name="train_label",
+        dtypes=str,
+    )
+    check_var(
+        test_label,
+        var_name="test_label",
+        dtypes=str,
+    )
+    check_var(
+        train_color,
+        var_name="train_color",
+        dtypes=str,
+    )
+    check_var(
+        train_std_color,
+        var_name="train_std_color",
+        dtypes=str,
+    )
+    check_var(
+        test_color,
+        var_name="test_color",
+        dtypes=str,
+    )
+    check_var(
+        test_std_color,
+        var_name="test_std_color",
+        dtypes=str,
+    )
+    # TODO(amir): double check this
+    if save_path:
+        check_var(
+            save_path,
+            var_name="save_path",
+            dtypes=str,
+        )
+
+    # TODO(amir): optimize this part
+    # update metrics capitalizations for title/labels
+    metric = cv_results.columns.tolist()[0].split("-")[1]
+    metrics = [
+        "AUC",
+        "AUCPR",
+        "Error",
+        "LogLoss",
+        "MAE",
+        "RMSE",
+        "RMSLE",
+    ]
+    for m in metrics:
+        if m.lower() == metric:
+            metric = m
+
+    fig, ax = plt.subplots(
+        figsize=figsize,
+    )
+    ax.errorbar(
+        x=range(cv_results.shape[0]),
+        y=cv_results.iloc[:, 0],
+        yerr=cv_results.iloc[:, 1],
+        fmt=linestyle,
+        ecolor=train_std_color,
+        c=train_color,
+        label=train_label,
+    )
+    ax.errorbar(
+        x=range(cv_results.shape[0]),
+        y=cv_results.iloc[:, 2],
+        yerr=cv_results.iloc[:, 3],
+        fmt=linestyle,
+        ecolor=test_std_color,
+        c=test_color,
+        label=test_label,
+    )
+    ax.set_xlabel(
+        "# of Boosting Rounds",
+        fontsize=12,
+    )
+    ax.set_ylabel(
+        f"""{metric}""",
+        fontsize=12,
+    )
+    ax.set_title(
+        f"""{metric} Evolution vs Boosting Rounds""",
+        fontsize=12,
+    )
+    ax.tick_params(
+        axis="both",
+        which="major",
+        labelsize=12,
+    )
+    ax.legend(
+        loc=0,
+        prop={
+            "size": 12,
+        },
+        framealpha=0.0,
     )
 
     if save_path:
