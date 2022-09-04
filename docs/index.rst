@@ -104,6 +104,7 @@ community. This is a good place to discuss your questions and ideas or in genera
    License <pages/license>
    Code of Conduct <pages/code_of_conduct>
    Contact Us <pages/contact_us>
+   API Reference <autoapi/index>
 
 .. FUTURE PAGES:
    Examples <pages/examples>

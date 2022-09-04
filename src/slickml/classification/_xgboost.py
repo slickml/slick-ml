@@ -24,8 +24,8 @@ from slickml.visualization import (
 class XGBoostClassifier(BaseEstimator, ClassifierMixin):
     """XGBoost Classifier.
 
-    This is wrapper using XGBoost classifier to train a XGBoost [1]_ model with using the optimum
-    number of boosting rounds from the inputs. This is also the base class for ``XGBoostCVClassifier``.
+    This is wrapper using XGBoost classifier to train a XGBoost [1]_ model using the number of
+    boosting rounds from the inputs. This is also the base class for ``XGBoostCVClassifier``.
 
     Parameters
     ----------
@@ -147,9 +147,9 @@ class XGBoostClassifier(BaseEstimator, ClassifierMixin):
     scale_mean: Optional[bool] = False
     scale_std: Optional[bool] = False
     importance_type: Optional[str] = "total_gain"
-    params: Optional[dict] = None
+    params: Optional[Dict] = None
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         """Post instantiation validations and assignments."""
         check_var(
             self.num_boost_round,
@@ -232,6 +232,10 @@ class XGBoostClassifier(BaseEstimator, ClassifierMixin):
 
         y_train : Union[List[float], np.ndarray, pd.Series]
             Input ground truth for training (targets)
+
+        See Also
+        --------
+        :meth:`xgboost.train()`
 
         Returns
         -------
@@ -340,7 +344,7 @@ class XGBoostClassifier(BaseEstimator, ClassifierMixin):
         markeredgewidth: Optional[Union[int, float]] = 1,
         fontsize: Optional[Union[int, float]] = 12,
         save_path: Optional[str] = None,
-        display_plot: Optional[bool] = False,
+        display_plot: Optional[bool] = True,
         return_fig: Optional[bool] = False,
     ) -> Optional[Figure]:
         """Visualizes the XGBoost feature importance as bar chart.
@@ -350,7 +354,7 @@ class XGBoostClassifier(BaseEstimator, ClassifierMixin):
         feature importance : pd.DataFrame
             Feature importance (``feature_importance_`` attribute)
 
-        figsize : tuple, optional
+        figsize : Tuple[Union[int, float], Union[int, float]], optional
             Figure size, by default (8, 5)
 
         color : str, optional
@@ -379,7 +383,7 @@ class XGBoostClassifier(BaseEstimator, ClassifierMixin):
             "myplot.png" or "../../myplot.pdf", by default None
 
         display_plot : bool, optional
-            Whether to show the plot, by default False
+            Whether to show the plot, by default True
 
         return_fig : bool, optional
             Whether to return figure object, by default False
@@ -550,7 +554,7 @@ class XGBoostClassifier(BaseEstimator, ClassifierMixin):
         save_path: Optional[str] = None,
         display_plot: Optional[bool] = True,
         return_fig: Optional[bool] = False,
-    ):
+    ) -> Optional[Figure]:
         """Visualizes the Shapley values as a waterfall plot.
 
         Notes
@@ -661,7 +665,6 @@ class XGBoostClassifier(BaseEstimator, ClassifierMixin):
         See Also
         --------
         :meth:`get_default_params()`
-
 
         Returns
         -------
