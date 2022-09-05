@@ -167,6 +167,10 @@ class XGBoostCVClassifier(XGBoostClassifier):
 
     References
     ----------
+
+    .. [1] https://xgboost.readthedocs.io/en/latest/python/python_api.html
+    .. [2] https://matplotlib.org/stable/api/markers_api.html
+    .. [3] https://shap-lrjball.readthedocs.io/en/latest/generated/shap.summary_plot.html
     .. [4] https://xgboost.readthedocs.io/en/latest/python/python_api.html#callback-api
     .. [5] https://matplotlib.org/3.1.0/gallery/lines_bars_and_markers/linestyles.html
     """
