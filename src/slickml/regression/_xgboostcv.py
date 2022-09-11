@@ -6,19 +6,16 @@ import pandas as pd
 import xgboost as xgb
 from matplotlib.figure import Figure
 
-from slickml.classification import XGBoostClassifier
+from slickml.regression import XGBoostRegressor
 from slickml.utils import Colors, check_var
 from slickml.visualization import plot_xgb_cv_results
 
 
-# TODO(amir): currently there is a bug in `sphinx-autoapi` that ignores the doc for inherited classes
-# https://github.com/readthedocs/sphinx-autoapi/issues/272
-# for now, I have turned on `"private-members"`
 @dataclass
-class XGBoostCVClassifier(XGBoostClassifier):
-    """XGBoost CV Classifier.
+class XGBoostCVRegressor(XGBoostRegressor):
+    """XGBoost CV Regressor.
 
-    This is wrapper using ``XGBoostClassifier`` to train a XGBoost [1]_ model with using the optimum
+    This is wrapper using ``XGBoostRegressor`` to train a XGBoost [1]_ model with using the optimum
     number of boosting rounds from the inputs. It used ``xgboost.cv()`` model with n-folds
     cross-validation and train model based on the best number of boosting round to avoid over-fitting.
 
@@ -31,9 +28,9 @@ class XGBoostCVClassifier(XGBoostClassifier):
         Number of folds for cross-validation, by default 4
 
     metrics : str, optional
-        Metrics to be tracked at fitting time with possible values of "auc", "aucpr", "error",
-        "logloss". Note this is different than `eval_metric` that needs to be passed to `params`
-        dict, by default "auc"
+        Metrics to be tracked at fitting time with possible values of ``"rmse"``, ``"rmsle"``,
+        ``"mae"``. Note this is different than `eval_metric` that needs to be passed to `params`
+        dict, by default "rmse"
 
     early_stopping_rounds : int, optional
         The criterion to early abort the ``xgboost.cv()`` phase if the test metric is not improved,
@@ -41,10 +38,6 @@ class XGBoostCVClassifier(XGBoostClassifier):
 
     random_state : int, optional
         Random seed number, by default 1367
-
-    stratified : bool, optional
-        Whether to use stratificaiton of the targets to run ``xgboost.cv()`` to find the best number
-        of boosting round at each fold of each iteration, by default True
 
     shuffle : bool, optional
         Whether to shuffle data to have the ability of building stratified folds in ``xgboost.cv()``,
@@ -76,10 +69,11 @@ class XGBoostCVClassifier(XGBoostClassifier):
         ``"total_gain"``, ``"cover"``, ``"total_cover"``, by default "total_gain"
 
     params : Dict[str, Union[str, float, int]], optional
-        Set of parameters required for fitting a Booster, by default {"eval_metric": "auc",
-        "tree_method": "hist", "objective": "binary:logistic", "learning_rate": 0.05,
+        Set of parameters required for fitting a Booster, by default {"eval_metric": "rmse",
+        "tree_method": "hist", "objective": "reg:squarederror", "learning_rate": 0.05,
         "max_depth": 2, "min_child_weight": 1, "gamma": 0.0, "reg_alpha": 0.0, "reg_lambda": 1.0,
-        "subsample": 0.9, "max_delta_step": 1, "verbosity": 0, "nthread": 4, "scale_pos_weight": 1}
+        "subsample": 0.9, "max_delta_step": 1, "verbosity": 0, "nthread": 4}
+        Other options for objective: ``"reg:logistic"``, ``"reg:squaredlogerror"``
 
     verbose : bool, optional
         Whether to log the final results of ``xgboost.cv()``, by default True
@@ -95,17 +89,8 @@ class XGBoostCVClassifier(XGBoostClassifier):
         options i.e. ``sparse_matrix``, ``scale_mean``, ``scale_std`` is being created based on the
         passed ``X_train`` and ``y_train``
 
-    predict_proba(X_test, y_test)
-        Returns prediction probabilities for the positive class. ``predict_proba()`` only reports
-        the probability of the positive class, while the sklearn API returns for both and slicing
-        like ``pred_proba[:, 1]`` is needed for positive class predictions. Additionally, ``y_test``
-        is optional while the targets might not be available in validiation (inference)
-
-    predict(X_test, y_test, threshold=0.5)
-        Returns prediction classes based on the threshold. The default ``threshold=0.5`` might not
-        give you the best results while you can find the optimum thresholds based on different
-        algorithms including Youden Index, maximizing the area under sensitivity-specificity curve,
-        and maximizing the area under precision-recall curve by using ``BinaryClassificationMetrics``
+    predict(X_test, y_test)
+        Returns prediction target values
 
     get_cv_results()
         Returns the mean value of the metrics in ``n_splits`` cross-validation for each boosting round
@@ -165,11 +150,10 @@ class XGBoostCVClassifier(XGBoostClassifier):
 
     See Also
     --------
-    :class:`slickml.classification.XGBoostClassifier`
+    :class:`slickml.regression.XGBoostRegressor`
 
     References
     ----------
-
     .. [1] https://xgboost.readthedocs.io/en/latest/python/python_api.html
     .. [2] https://matplotlib.org/stable/api/markers_api.html
     .. [3] https://shap-lrjball.readthedocs.io/en/latest/generated/shap.summary_plot.html
@@ -179,10 +163,9 @@ class XGBoostCVClassifier(XGBoostClassifier):
 
     num_boost_round: Optional[int] = 200
     n_splits: Optional[int] = 4
-    metrics: Optional[str] = "auc"
+    metrics: Optional[str] = "rmse"
     early_stopping_rounds: Optional[int] = 20
     random_state: Optional[int] = 1367
-    stratified: Optional[bool] = True
     shuffle: Optional[bool] = True
     sparse_matrix: Optional[bool] = False
     scale_mean: Optional[bool] = False
@@ -192,8 +175,7 @@ class XGBoostCVClassifier(XGBoostClassifier):
     verbose: Optional[bool] = True
     callbacks: Optional[bool] = False
 
-    def __post_init__(self) -> None:
-        """Post instantiation validations and assignments."""
+    def __post_init__(self):
         super().__post_init__()
         check_var(
             self.n_splits,
@@ -209,11 +191,6 @@ class XGBoostCVClassifier(XGBoostClassifier):
             self.random_state,
             var_name="random_state",
             dtypes=int,
-        )
-        check_var(
-            self.stratified,
-            var_name="stratified",
-            dtypes=bool,
         )
         check_var(
             self.shuffle,
@@ -363,7 +340,6 @@ class XGBoostCVClassifier(XGBoostClassifier):
             dtrain=self.dtrain_,
             num_boost_round=self.num_boost_round,
             nfold=self.n_splits,
-            stratified=self.stratified,
             metrics=self.metrics,
             early_stopping_rounds=self.early_stopping_rounds,
             seed=self.random_state,
