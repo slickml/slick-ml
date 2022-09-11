@@ -62,7 +62,7 @@ Please note that before starting any major work, open an issue describing what y
   # Linux Users
   sudo apt install build-essential gfortran
   ```
-- All developments are done via [*python-poetry*](https://python-poetry.org/). To begin with, first install `poetry` following the [*installation documentation*](https://python-poetry.org/docs/#installation) depending on your operating system.
+- All developments are done via [*python-poetry*](https://python-poetry.org/). To begin with, first install `poetry` (version >=1.2.0) following the [*installation documentation*](https://python-poetry.org/docs/#installation) depending on your operating system.
 - You can also easily [*manage your Python environments*](https://python-poetry.org/docs/managing-environments#managing-environments) and easily switch between environments via `poetry`. To set the `poetry` environment using your preferred `python` version (i.e. `3.9.13`), which is already installed on your system preferably via `pyenv`, simply run 🏃‍♀️ :
   ```
   poetry env use 3.9.13

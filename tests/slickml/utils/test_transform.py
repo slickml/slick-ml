@@ -102,21 +102,9 @@ def test_df_to_csr__passes__when_verbose_is_true(
 @pytest.mark.parametrize(
     "kwargs",
     [
-        {
-            "df": [42],
-            "fillna": 0.0,
-            "verbose": False,
-        },
-        {
-            "df": pd.DataFrame(),
-            "fillna": 0,
-            "verbose": False,
-        },
-        {
-            "df": pd.DataFrame(),
-            "fillna": 0.0,
-            "verbose": 1,
-        },
+        {"df": [42], "fillna": 0.0, "verbose": False},
+        {"df": pd.DataFrame(), "fillna": 0, "verbose": False},
+        {"df": pd.DataFrame(), "fillna": 0.0, "verbose": 1},
     ],
     ids=_ids,
 )
@@ -129,15 +117,9 @@ def test_df_to_csr__fails__with_invalid_inputs(kwargs: Dict[str, Any]) -> None:
 @pytest.mark.parametrize(
     "kwargs",
     [
-        {
-            "csr": [42],
-        },
-        {
-            "csr": pd.DataFrame(),
-        },
-        {
-            "csr": np.arange(10),
-        },
+        {"csr": [42]},
+        {"csr": pd.DataFrame()},
+        {"csr": np.arange(10)},
     ],
     ids=_ids,
 )
@@ -162,12 +144,8 @@ def test_memory_use_csr__passes__with_default_inputs(
 @pytest.mark.parametrize(
     "kwargs",
     [
-        {
-            "X": pd.DataFrame({"foo": [1, 2, 3, 4, 5]}),
-        },
-        {
-            "X": np.array([[1, 2, 3, 4, 5]]),
-        },
+        {"X": pd.DataFrame({"foo": [1, 2, 3, 4, 5]})},
+        {"X": np.array([[1, 2, 3, 4, 5]])},
     ],
     ids=_ids,
 )
@@ -186,14 +164,8 @@ def test_add_noisy_features__passes__with_default_inputs(kwargs: Dict[str, Any])
     "kwargs",
     [
         {"X": [42]},
-        {
-            "X": pd.DataFrame({"foo": [42]}),
-            "random_state": "one",
-        },
-        {
-            "X": pd.DataFrame({"foo": [42]}),
-            "prefix": 42,
-        },
+        {"X": pd.DataFrame({"foo": [42]}), "random_state": "one"},
+        {"X": pd.DataFrame({"foo": [42]}), "prefix": 42},
     ],
     ids=_ids,
 )
@@ -206,24 +178,11 @@ def test_add_noisy_features__fails__with_invalid_inputs(kwargs: Dict[str, Any]) 
 @pytest.mark.parametrize(
     "kwargs",
     [
-        {
-            "X": [42],
-        },
-        {
-            "X": pd.DataFrame(),
-        },
-        {
-            "X": {"X": 42},
-        },
-        {
-            "X": np.array(([42])),
-            "prefix": 123,
-        },
-        {
-            "X": np.array(([42])),
-            "prefix": "123",
-            "delimiter": 123,
-        },
+        {"X": [42]},
+        {"X": pd.DataFrame()},
+        {"X": {"X": 42}},
+        {"X": np.array(([42])), "prefix": 123},
+        {"X": np.array(([42])), "prefix": "123", "delimiter": 123},
     ],
     ids=_ids,
 )

@@ -55,8 +55,9 @@ exclude = [
 python = ">=3.8,<3.11"
 
 # --- scientific-computing ---
-# TODO(amir): currently numpy version "^1.23" has clash with numba since shap still uses numba
-numpy = "^1.22"
+# TODO(amir): since numpy "^1.23" distutils is deprecated which glmnet needs it
+# wait for `glmnet` for a new release; then upgrade this 
+numpy = "^1.22,<1.23"
 pandas = "^1.4"
 scipy = "^1.9"
 statsmodels = "^0.13"
@@ -80,11 +81,6 @@ seaborn = "^0.11"
 
 # --- package-management ---
 pip = "^22.2"
-# TODO(amir): remove me once the issue is resolved; currently `poetry update` job fails
-# somehow, poetry tries to downgrade `llvmlite` to version 0.34!!!
-# same for `numba`; prolly the issue is regarding `numpy` version `1.23` and `shap`
-llvmlite = "^0.38"
-numba = "^0.55"
 
 # --- task-management ---
 poethepoet = "^0.13"
@@ -126,7 +122,6 @@ assertpy = "^1.1"
 
 # --- docs ----
 sphinx = "^4.5"
-sphinx-rtd-theme = "^1.0"
 sphinx-autoapi = "^1.9"
 sphinx_design = "^0.2"
 myst-parser = "^0.17"
@@ -141,7 +136,7 @@ watchdog = "^2.1"
 
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
+requires = ["poetry-core>=1.1.0"]
 build-backend = "poetry.core.masonry.api"
 
 

@@ -51,6 +51,11 @@ class XGBoostRegressor(BaseEstimator, RegressorMixin):
         it worse. The ``StandardScaler`` object can be accessed via ``cls.scaler_`` if ``scale_mean`` or
         ``scale_strd`` is used unless it is ``None``, by default False
 
+    scale_std : bool, optional
+        Whether to scale the feauture matrix to have unit variance (or equivalently, unit standard
+        deviation) per feature. The ``StandardScaler`` object can be accessed via ``cls.scaler_``
+        if ``scale_mean`` or ``scale_strd`` is used unless it is ``None``, by default False
+
     importance_type : str, optional
         Importance type of ``xgboost.train()`` with possible values ``"weight"``, ``"gain"``,
         ``"total_gain"``, ``"cover"``, ``"total_cover"``, by default "total_gain"
