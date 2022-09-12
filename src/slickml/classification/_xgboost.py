@@ -41,7 +41,7 @@ class XGBoostClassifier(BaseEstimator, ClassifierMixin):
         Whether to convert the input features to sparse matrix with csr format or not. This would
         increase the speed of feature selection for relatively large/sparse datasets. Consequently,
         this would actually act like an un-optimize solution for dense feature matrix. Additionally,
-        this feature cannot be used along with ``scale_mean=True`` standardizing the feature matrix
+        this parameter cannot be used along with ``scale_mean=True`` standardizing the feature matrix
         to have a mean value of zeros would turn the feature matrix into a dense matrix. Therefore,
         by default our API banned this feature, by default False
 
@@ -98,6 +98,9 @@ class XGBoostClassifier(BaseEstimator, ClassifierMixin):
     get_feature_importance()
         Returns the feature importance of the trained booster based on the given ``importance_type``
 
+    get_shap_explainer()
+        Returns the ``shap.TreeExplainer``
+
     plot_shap_summary()
         Visualizes Shapley values summary plot
 
@@ -133,6 +136,12 @@ class XGBoostClassifier(BaseEstimator, ClassifierMixin):
 
     shap_values_test_ : np.ndarray
         Shapley values from ``TreeExplainer`` using ``X_test_``
+
+    shap_explainer_ : shap.TreeExplainer
+        Shap TreeExplainer object
+
+    model_ : xgboost.Booster
+        XGBoost Booster object
 
     References
     ----------
@@ -328,8 +337,6 @@ class XGBoostClassifier(BaseEstimator, ClassifierMixin):
             output_margin=False,
         )
         self.y_pred_ = (self.y_pred_proba_ >= threshold).astype(int)
-        # TODO(amir): delete me once the new way worked
-        # self.y_pred_ = [1 if p >= threshold else 0 for p in self.y_pred_proba_]
 
         return self.y_pred_
 
@@ -438,7 +445,7 @@ class XGBoostClassifier(BaseEstimator, ClassifierMixin):
 
         Parameters
         ----------
-        validation : bool, optional, (default=True)
+        validation : bool, optional
             Whether to calculate Shap values of using the validation data ``X_test`` or not. When
             ``validation=False``, Shap values are calculated using ``X_train``, be default True
 
@@ -499,15 +506,7 @@ class XGBoostClassifier(BaseEstimator, ClassifierMixin):
         -------
         None
         """
-        self.explainer_ = shap.TreeExplainer(
-            model=self.model_,
-        )
-        self.shap_values_test_ = self.explainer_.shap_values(
-            X=self.X_test_,
-        )
-        self.shap_values_train_ = self.explainer_.shap_values(
-            X=self.X_train_,
-        )
+        self._explainer()
 
         if validation:
             shap_values = self.shap_values_test_
@@ -566,7 +565,7 @@ class XGBoostClassifier(BaseEstimator, ClassifierMixin):
 
         Parameters
         ----------
-        validation : bool, optional, (default=True)
+        validation : bool, optional
             Whether to calculate Shap values of using the validation data ``X_test`` or not. When
             ``validation=False``, Shap values are calculated using ``X_train``, be default True
 
@@ -591,8 +590,8 @@ class XGBoostClassifier(BaseEstimator, ClassifierMixin):
         markeredgecolor : str, optional
             Marker edge color, by default "purple"
 
-        markerfacecolor: str, optional, (default="purple")
-            Marker face color
+        markerfacecolor: str, optional
+            Marker face color, by default "purple"
 
         markeredgewidth : Union[int, float], optional
             Marker edge width, by default 1
@@ -620,15 +619,7 @@ class XGBoostClassifier(BaseEstimator, ClassifierMixin):
         -------
         Figure, optional
         """
-        self.explainer_ = shap.TreeExplainer(
-            self.model_,
-        )
-        self.shap_values_test_ = self.explainer_.shap_values(
-            self.X_test_,
-        )
-        self.shap_values_train_ = self.explainer_.shap_values(
-            self.X_train_,
-        )
+        self._explainer()
 
         if validation:
             shap_values = self.shap_values_test_
@@ -695,6 +686,16 @@ class XGBoostClassifier(BaseEstimator, ClassifierMixin):
         pd.DataFrame
         """
         return self.feature_importance_
+
+    def get_shap_explainer(self) -> shap.TreeExplainer:
+        """Returns the ``shap.TreeExplainer`` object.
+
+        Returns
+        -------
+        shap.TreeExplainer
+        """
+        self._explainer()
+        return self.shap_explainer_
 
     # TODO(amir): check the `y_train` type; maybe we need to have `list_to_array()` in utils?
     def _dtrain(
@@ -885,6 +886,25 @@ class XGBoostClassifier(BaseEstimator, ClassifierMixin):
             dtrain=self.dtrain_,
             num_boost_round=self.num_boost_round - 1,
         )
+
+    def _explainer(self) -> None:
+        """Fits a ``shap.TreeExplainer`` on the ``X_train_`` and ``X_test_`` data.
+
+        Returns
+        -------
+        None
+        """
+        self.shap_explainer_ = shap.TreeExplainer(
+            model=self.model_,
+        )
+        self.shap_values_test_ = self.shap_explainer_.shap_values(
+            X=self.X_test_,
+        )
+        self.shap_values_train_ = self.shap_explainer_.shap_values(
+            X=self.X_train_,
+        )
+
+        return None
 
     def _imp_to_df(self) -> pd.DataFrame:
         """Converts the feature importance object to ``pd.DataFrame``.

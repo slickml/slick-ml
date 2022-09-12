@@ -3,22 +3,21 @@ from typing import Any, Dict, List, Optional, Tuple, Union
 import numpy as np
 import numpy.testing as npt
 import pandas as pd
-import pandas.testing as pdt
 import pytest
 import shap
-import xgboost as xgb
 from assertpy import assert_that
 from matplotlib.figure import Figure
 from pytest import FixtureRequest
 from sklearn.model_selection import train_test_split
 
-from slickml.classification import XGBoostClassifier
+from slickml.classification import GLMNetCVClassifier
 from tests.utils import _ids, _load_test_data_from_csv
 
 
-# TODO(amir): Currently `SHAP` raises a lot of warnings. Please figure out a way to dump these warnings
-class TestXGBoostClassifier:
-    """Validates `XGBoostClassifier` instantiation."""
+# TODO(amir): add lolipop plot for coeff + unit-test
+# TODO(amir): add test for lambda-path param
+class TestGLMNetCVClassifier:
+    """Validates `GLMNetCVClassifier` instantiation."""
 
     @staticmethod
     @pytest.fixture(scope="module")
@@ -59,21 +58,22 @@ class TestXGBoostClassifier:
     @pytest.mark.parametrize(
         ("kwargs"),
         [
-            {"num_boost_round": "100"},
-            {"metrics": "roc_auc"},
+            {"alpha": "0.1"},
+            {"n_lambda": "100"},
+            {"n_splits": "4"},
+            {"metric": "auc_pr"},
+            {"scale": 1},
             {"sparse_matrix": 1},
-            {"scale_mean": 1},
-            {"scale_std": 1},
-            {"sparse_matrix": True, "scale_mean": True},
-            {"params": ["auc"]},
-            {"importance_type": "total_weight"},
+            {"sparse_matrix": True, "scale": True},
+            {"fit_intercept": 1},
+            {"random_state": "42"},
         ],
         ids=_ids,
     )
-    def test_xgboostclassifier_instantiation__fails__with_invalid_inputs(self, kwargs) -> None:
-        """Validates `XGBoostClassifier` cannot be instantiated with invalid inputs."""
+    def test_glmnetcvclassifier_instantiation__fails__with_invalid_inputs(self, kwargs) -> None:
+        """Validates `GLMNetCVClassifier` cannot be instantiated with invalid inputs."""
         with pytest.raises((ValueError, TypeError)):
-            XGBoostClassifier(**kwargs)
+            GLMNetCVClassifier(**kwargs)
 
     @pytest.mark.parametrize(
         ("clf_x_y_data"),
@@ -85,7 +85,7 @@ class TestXGBoostClassifier:
         indirect=["clf_x_y_data"],
         ids=_ids,
     )
-    def test_xgboostclassifier__passes__with_defaults_and_no_test_targets(
+    def test_glmnetcvclassifier__passes__with_defaults_and_no_test_targets(
         self,
         clf_x_y_data: Tuple[
             Union[pd.DataFrame, np.ndarray],
@@ -94,17 +94,21 @@ class TestXGBoostClassifier:
             Union[np.ndarray, List],
         ],
     ) -> None:
-        """Validates `XGBoostClassifier` instanation passes with default inputs."""
+        """Validates `GLMNetCVClassifier` instanation passes with default inputs."""
         X_train, X_test, y_train, _ = clf_x_y_data
-        clf = XGBoostClassifier()
+        clf = GLMNetCVClassifier()
         clf.fit(X_train, y_train)
         y_pred_proba = clf.predict_proba(X_test)
         y_pred = clf.predict(X_test)
         params = clf.get_params()
-        default_params = clf.get_default_params()
-        feature_importance = clf.get_feature_importance()
+        cv_results = clf.get_cv_results()
+        results = clf.get_results()
         shap_explainer = clf.get_shap_explainer()
-        feature_importance_fig = clf.plot_feature_importance(
+        cv_result_fig = clf.plot_cv_results(
+            display_plot=False,
+            return_fig=True,
+        )
+        coeff_path_fig = clf.plot_coeff_path(
             display_plot=False,
             return_fig=True,
         )
@@ -128,67 +132,56 @@ class TestXGBoostClassifier:
             display_plot=False,
         )
 
-        assert_that(clf).is_instance_of(XGBoostClassifier)
-        assert_that(clf.num_boost_round).is_instance_of(int)
-        assert_that(clf.num_boost_round).is_equal_to(200)
-        assert_that(clf.metrics).is_instance_of(str)
-        assert_that(clf.metrics).is_equal_to("auc")
+        assert_that(clf).is_instance_of(GLMNetCVClassifier)
+        assert_that(clf.alpha).is_instance_of(float)
+        assert_that(clf.alpha).is_equal_to(0.5)
+        assert_that(clf.n_lambda).is_instance_of(int)
+        assert_that(clf.n_lambda).is_equal_to(100)
+        assert_that(clf.n_splits).is_instance_of(int)
+        assert_that(clf.n_splits).is_equal_to(3)
+        assert_that(clf.metric).is_instance_of(str)
+        assert_that(clf.metric).is_equal_to("roc_auc")
+        assert_that(clf.scale).is_instance_of(bool)
+        assert_that(clf.scale).is_true()
         assert_that(clf.sparse_matrix).is_instance_of(bool)
         assert_that(clf.sparse_matrix).is_false()
-        assert_that(clf.scale_mean).is_instance_of(bool)
-        assert_that(clf.scale_mean).is_false()
-        assert_that(clf.scale_std).is_instance_of(bool)
-        assert_that(clf.scale_std).is_false()
-        assert_that(clf.importance_type).is_instance_of(str)
-        assert_that(clf.importance_type).is_equal_to("total_gain")
-        assert_that(clf.params).is_instance_of(dict)
-        assert_that(clf.params).is_equal_to(
-            {
-                "eval_metric": "auc",
-                "tree_method": "hist",
-                "objective": "binary:logistic",
-                "learning_rate": 0.05,
-                "max_depth": 2,
-                "min_child_weight": 1,
-                "gamma": 0.0,
-                "reg_alpha": 0.0,
-                "reg_lambda": 1.0,
-                "subsample": 0.9,
-                "max_delta_step": 1,
-                "verbosity": 0,
-                "nthread": 4,
-                "scale_pos_weight": 1,
-            },
-        )
-        assert_that(clf.feature_importance_).is_instance_of(pd.DataFrame)
-        assert_that(clf.feature_importance_.shape[0]).is_equal_to(X_train.shape[1])
-        assert_that(clf.feature_importance_.columns.tolist()).contains("total_gain")
-        assert_that(clf.scaler_).is_none()
+        assert_that(clf.fit_intercept).is_instance_of(bool)
+        assert_that(clf.fit_intercept).is_true()
+        assert_that(clf.cut_point).is_instance_of(float)
+        assert_that(clf.cut_point).is_equal_to(1.0)
+        assert_that(clf.min_lambda_ratio).is_instance_of(float)
+        assert_that(clf.min_lambda_ratio).is_equal_to(1e-4)
+        assert_that(clf.tolerance).is_instance_of(float)
+        assert_that(clf.tolerance).is_equal_to(1e-7)
+        assert_that(clf.max_iter).is_instance_of(int)
+        assert_that(clf.max_iter).is_equal_to(100000)
+        assert_that(clf.random_state).is_instance_of(int)
+        assert_that(clf.random_state).is_equal_to(1367)
+        assert_that(clf.lambda_path).is_none()
+        assert_that(clf.max_features).is_none()
         assert_that(clf.X_train).is_instance_of(pd.DataFrame)
-        assert_that(clf.X_train_).is_instance_of(pd.DataFrame)
         assert_that(clf.X_test).is_instance_of(pd.DataFrame)
-        assert_that(clf.X_test_).is_instance_of(pd.DataFrame)
         assert_that(clf.y_train).is_instance_of(np.ndarray)
         assert_that(clf.y_test).is_none()
-        pdt.assert_frame_equal(clf.X_train_, clf.X_train, check_dtype=True)
-        npt.assert_array_equal(clf.y_train, y_train)
-        pdt.assert_frame_equal(clf.X_test_, clf.X_test_, check_dtype=True)
-        assert_that(clf.dtrain_).is_instance_of(xgb.DMatrix)
-        assert_that(clf.dtest_).is_instance_of(xgb.DMatrix)
-        assert_that(clf.shap_explainer_).is_instance_of(shap.TreeExplainer)
+        assert_that(clf.results_).is_instance_of(dict)
+        assert_that(clf.shap_explainer_).is_instance_of(shap.LinearExplainer)
+        assert_that(clf.cv_results_).is_instance_of(pd.DataFrame)
+        assert_that(clf.shap_values_train_).is_instance_of(np.ndarray)
+        assert_that(clf.shap_values_test_).is_instance_of(np.ndarray)
         assert_that(y_pred_proba).is_instance_of(np.ndarray)
-        npt.assert_almost_equal(np.mean(y_pred_proba), 0.800523, decimal=5)
+        npt.assert_almost_equal(np.mean(y_pred_proba), 0.81188, decimal=5)
         assert_that(y_pred).is_instance_of(np.ndarray)
-        npt.assert_almost_equal(np.mean(y_pred), 0.88461, decimal=5)
-        assert_that(shap_explainer).is_instance_of(shap.TreeExplainer)
+        npt.assert_almost_equal(np.mean(y_pred), 0.96153, decimal=5)
         assert_that(params).is_instance_of(dict)
-        assert_that(default_params).is_instance_of(dict)
-        assert_that(feature_importance).is_instance_of(pd.DataFrame)
-        assert_that(feature_importance_fig).is_instance_of(Figure)
+        assert_that(cv_results).is_instance_of(pd.DataFrame)
+        assert_that(shap_explainer).is_instance_of(shap.LinearExplainer)
+        assert_that(results).is_instance_of(dict)
+        assert_that(cv_result_fig).is_instance_of(Figure)
+        assert_that(coeff_path_fig).is_instance_of(Figure)
         assert_that(shap_waterfall_test_fig).is_instance_of(Figure)
         assert_that(shap_waterfall_train_fig).is_instance_of(Figure)
-        npt.assert_almost_equal(np.mean(clf.shap_values_test_), 0.09268, decimal=5)
-        npt.assert_almost_equal(np.mean(clf.shap_values_train_), 0.11710, decimal=5)
+        npt.assert_almost_equal(np.mean(clf.shap_values_test_), 0.00529, decimal=5)
+        npt.assert_almost_equal(np.mean(clf.shap_values_train_), 0.01112, decimal=5)
 
     @pytest.mark.parametrize(
         ("clf_x_y_data"),
@@ -200,7 +193,7 @@ class TestXGBoostClassifier:
         indirect=["clf_x_y_data"],
         ids=_ids,
     )
-    def test_xgboostclassifier__passes__with_defaults(
+    def test_glmnetcvclassifier__passes__with_defaults(
         self,
         clf_x_y_data: Tuple[
             Union[pd.DataFrame, np.ndarray],
@@ -209,9 +202,9 @@ class TestXGBoostClassifier:
             Union[np.ndarray, List],
         ],
     ) -> None:
-        """Validates `XGBoostClassifier` instanation passes with default inputs."""
+        """Validates `GLMNetCVClassifier` instanation passes with default inputs."""
         X_train, X_test, y_train, y_test = clf_x_y_data
-        clf = XGBoostClassifier()
+        clf = GLMNetCVClassifier()
         clf.fit(X_train, y_train)
         # Note: we pass `y_test` for the sake of testing while in inference we might night have
         # access to ground truth and both `predict_proba()` and `predict()` functions would be able
@@ -219,9 +212,14 @@ class TestXGBoostClassifier:
         y_pred_proba = clf.predict_proba(X_test, y_test)
         y_pred = clf.predict(X_test, y_test)
         params = clf.get_params()
-        default_params = clf.get_default_params()
-        feature_importance = clf.get_feature_importance()
-        feature_importance_fig = clf.plot_feature_importance(
+        cv_results = clf.get_cv_results()
+        results = clf.get_results()
+        shap_explainer = clf.get_shap_explainer()
+        cv_result_fig = clf.plot_cv_results(
+            display_plot=False,
+            return_fig=True,
+        )
+        coeff_path_fig = clf.plot_coeff_path(
             display_plot=False,
             return_fig=True,
         )
@@ -245,84 +243,75 @@ class TestXGBoostClassifier:
             display_plot=False,
         )
 
-        assert_that(clf).is_instance_of(XGBoostClassifier)
-        assert_that(clf.num_boost_round).is_instance_of(int)
-        assert_that(clf.num_boost_round).is_equal_to(200)
-        assert_that(clf.metrics).is_instance_of(str)
-        assert_that(clf.metrics).is_equal_to("auc")
+        assert_that(clf).is_instance_of(GLMNetCVClassifier)
+        assert_that(clf.alpha).is_instance_of(float)
+        assert_that(clf.alpha).is_equal_to(0.5)
+        assert_that(clf.n_lambda).is_instance_of(int)
+        assert_that(clf.n_lambda).is_equal_to(100)
+        assert_that(clf.n_splits).is_instance_of(int)
+        assert_that(clf.n_splits).is_equal_to(3)
+        assert_that(clf.metric).is_instance_of(str)
+        assert_that(clf.metric).is_equal_to("roc_auc")
+        assert_that(clf.scale).is_instance_of(bool)
+        assert_that(clf.scale).is_true()
         assert_that(clf.sparse_matrix).is_instance_of(bool)
         assert_that(clf.sparse_matrix).is_false()
-        assert_that(clf.scale_mean).is_instance_of(bool)
-        assert_that(clf.scale_mean).is_false()
-        assert_that(clf.scale_std).is_instance_of(bool)
-        assert_that(clf.scale_std).is_false()
-        assert_that(clf.importance_type).is_instance_of(str)
-        assert_that(clf.importance_type).is_equal_to("total_gain")
-        assert_that(clf.params).is_instance_of(dict)
-        assert_that(clf.params).is_equal_to(
-            {
-                "eval_metric": "auc",
-                "tree_method": "hist",
-                "objective": "binary:logistic",
-                "learning_rate": 0.05,
-                "max_depth": 2,
-                "min_child_weight": 1,
-                "gamma": 0.0,
-                "reg_alpha": 0.0,
-                "reg_lambda": 1.0,
-                "subsample": 0.9,
-                "max_delta_step": 1,
-                "verbosity": 0,
-                "nthread": 4,
-                "scale_pos_weight": 1,
-            },
-        )
-        assert_that(clf.feature_importance_).is_instance_of(pd.DataFrame)
-        assert_that(clf.feature_importance_.shape[0]).is_equal_to(X_train.shape[1])
-        assert_that(clf.feature_importance_.columns.tolist()).contains("total_gain")
-        assert_that(clf.scaler_).is_none()
+        assert_that(clf.fit_intercept).is_instance_of(bool)
+        assert_that(clf.fit_intercept).is_true()
+        assert_that(clf.cut_point).is_instance_of(float)
+        assert_that(clf.cut_point).is_equal_to(1.0)
+        assert_that(clf.min_lambda_ratio).is_instance_of(float)
+        assert_that(clf.min_lambda_ratio).is_equal_to(1e-4)
+        assert_that(clf.tolerance).is_instance_of(float)
+        assert_that(clf.tolerance).is_equal_to(1e-7)
+        assert_that(clf.max_iter).is_instance_of(int)
+        assert_that(clf.max_iter).is_equal_to(100000)
+        assert_that(clf.random_state).is_instance_of(int)
+        assert_that(clf.random_state).is_equal_to(1367)
+        assert_that(clf.lambda_path).is_none()
+        assert_that(clf.max_features).is_none()
         assert_that(clf.X_train).is_instance_of(pd.DataFrame)
-        assert_that(clf.X_train_).is_instance_of(pd.DataFrame)
         assert_that(clf.X_test).is_instance_of(pd.DataFrame)
-        assert_that(clf.X_test_).is_instance_of(pd.DataFrame)
         assert_that(clf.y_train).is_instance_of(np.ndarray)
         assert_that(clf.y_test).is_instance_of(np.ndarray)
-        pdt.assert_frame_equal(clf.X_train_, clf.X_train, check_dtype=True)
-        npt.assert_array_equal(clf.y_train, y_train)
-        pdt.assert_frame_equal(clf.X_test_, clf.X_test_, check_dtype=True)
-        npt.assert_array_equal(clf.y_test, y_test)
-        assert_that(clf.dtrain_).is_instance_of(xgb.DMatrix)
-        assert_that(clf.dtest_).is_instance_of(xgb.DMatrix)
+        assert_that(clf.results_).is_instance_of(dict)
+        assert_that(clf.cv_results_).is_instance_of(pd.DataFrame)
+        assert_that(clf.shap_explainer_).is_instance_of(shap.LinearExplainer)
         assert_that(y_pred_proba).is_instance_of(np.ndarray)
-        npt.assert_almost_equal(np.mean(y_pred_proba), 0.800523, decimal=5)
+        assert_that(clf.shap_values_train_).is_instance_of(np.ndarray)
+        assert_that(clf.shap_values_test_).is_instance_of(np.ndarray)
+        npt.assert_almost_equal(np.mean(y_pred_proba), 0.81188, decimal=5)
         assert_that(y_pred).is_instance_of(np.ndarray)
-        npt.assert_almost_equal(np.mean(y_pred), 0.88461, decimal=5)
+        npt.assert_almost_equal(np.mean(y_pred), 0.96153, decimal=5)
         assert_that(params).is_instance_of(dict)
-        assert_that(default_params).is_instance_of(dict)
-        assert_that(feature_importance).is_instance_of(pd.DataFrame)
-        assert_that(feature_importance_fig).is_instance_of(Figure)
+        assert_that(cv_results).is_instance_of(pd.DataFrame)
+        assert_that(results).is_instance_of(dict)
+        assert_that(shap_explainer).is_instance_of(shap.LinearExplainer)
+        assert_that(cv_result_fig).is_instance_of(Figure)
+        assert_that(coeff_path_fig).is_instance_of(Figure)
         assert_that(shap_waterfall_test_fig).is_instance_of(Figure)
         assert_that(shap_waterfall_train_fig).is_instance_of(Figure)
-        npt.assert_almost_equal(np.mean(clf.shap_values_test_), 0.09268, decimal=5)
-        npt.assert_almost_equal(np.mean(clf.shap_values_train_), 0.11710, decimal=5)
+        npt.assert_almost_equal(np.mean(clf.shap_values_test_), 0.00529, decimal=5)
+        npt.assert_almost_equal(np.mean(clf.shap_values_train_), 0.01112, decimal=5)
 
+    # TODO(amir): add a test for `lambda_path` parameter
     @pytest.mark.parametrize(
         ("clf_x_y_data", "kwargs"),
         [
-            ("dataframe", {"num_boost_round": 300}),
-            ("dataframe", {"metrics": "aucpr"}),
-            ("dataframe", {"sparse_matrix": True}),
-            ("dataframe", {"sparse_matrix": True, "scale_std": True}),
-            ("dataframe", {"scale_mean": True}),
-            ("dataframe", {"scale_std": True}),
-            ("dataframe", {"scale_std": True, "scale_mean": True}),
-            ("dataframe", {"importance_type": "cover"}),
-            ("dataframe", {"params": {"max_depth": 4, "min_child_weight": 5}}),
+            ("dataframe", {"alpha": 0.9}),
+            ("dataframe", {"n_lambda": 200}),
+            ("dataframe", {"n_splits": 10}),
+            ("dataframe", {"metric": "average_precision"}),
+            ("dataframe", {"scale": False, "sparse_matrix": True}),
+            ("dataframe", {"fit_intercept": False}),
+            ("dataframe", {"cut_point": 2.0}),
+            ("dataframe", {"random_state": 42}),
+            ("dataframe", {"max_features": 10}),
         ],
         indirect=["clf_x_y_data"],
         ids=_ids,
     )
-    def test_xgboostclassifier__passes__with_valid_inputs(
+    def test_glmnetcvclassifier__passes__with_valid_inputs(
         self,
         clf_x_y_data: Tuple[
             Union[pd.DataFrame, np.ndarray],
@@ -332,9 +321,9 @@ class TestXGBoostClassifier:
         ],
         kwargs: Optional[Dict[str, Any]],
     ) -> None:
-        """Validates `XGBoostClassifier` instanation passes with valid inputs."""
+        """Validates `GLMNetCVClassifier` instanation passes with valid inputs."""
         X_train, X_test, y_train, y_test = clf_x_y_data
-        clf = XGBoostClassifier(**kwargs)
+        clf = GLMNetCVClassifier(**kwargs)
         clf.fit(X_train, y_train)
         # Note: we pass `y_test` for the sake of testing while in inference we might night have
         # access to ground truth and both `predict_proba()` and `predict()` functions would be able
@@ -342,9 +331,17 @@ class TestXGBoostClassifier:
         y_pred_proba = clf.predict_proba(X_test, y_test)
         y_pred = clf.predict(X_test, y_test)
         params = clf.get_params()
-        default_params = clf.get_default_params()
-        feature_importance = clf.get_feature_importance()
-        feature_importance_fig = clf.plot_feature_importance(
+        cv_results = clf.get_cv_results()
+        results = clf.get_results()
+        coeff_df = clf.get_coeffs(output="dataframe")
+        coeff_dict = clf.get_coeffs(output="dict")
+        intercept = clf.get_intercept()
+        shap_explainer = clf.get_shap_explainer()
+        cv_result_fig = clf.plot_cv_results(
+            display_plot=False,
+            return_fig=True,
+        )
+        coeff_path_fig = clf.plot_coeff_path(
             display_plot=False,
             return_fig=True,
         )
@@ -368,32 +365,40 @@ class TestXGBoostClassifier:
             display_plot=False,
         )
 
-        assert_that(clf).is_instance_of(XGBoostClassifier)
-        assert_that(clf.num_boost_round).is_instance_of(int)
-        assert_that(clf.metrics).is_instance_of(str)
+        assert_that(clf).is_instance_of(GLMNetCVClassifier)
+        assert_that(clf.alpha).is_instance_of(float)
+        assert_that(clf.n_lambda).is_instance_of(int)
+        assert_that(clf.n_splits).is_instance_of(int)
+        assert_that(clf.metric).is_instance_of(str)
+        assert_that(clf.scale).is_instance_of(bool)
         assert_that(clf.sparse_matrix).is_instance_of(bool)
-        assert_that(clf.scale_mean).is_instance_of(bool)
-        assert_that(clf.scale_std).is_instance_of(bool)
-        assert_that(clf.importance_type).is_instance_of(str)
-        assert_that(clf.params).is_instance_of(dict)
-        assert_that(clf.feature_importance_).is_instance_of(pd.DataFrame)
-        assert_that(clf.feature_importance_.shape[0]).is_equal_to(X_train.shape[1])
+        assert_that(clf.fit_intercept).is_instance_of(bool)
+        assert_that(clf.cut_point).is_instance_of(float)
+        assert_that(clf.min_lambda_ratio).is_instance_of(float)
+        assert_that(clf.tolerance).is_instance_of(float)
+        assert_that(clf.max_iter).is_instance_of(int)
+        assert_that(clf.random_state).is_instance_of(int)
+        assert_that(clf.lambda_path).is_none()
         assert_that(clf.X_train).is_instance_of(pd.DataFrame)
-        assert_that(clf.X_train_).is_instance_of(pd.DataFrame)
         assert_that(clf.X_test).is_instance_of(pd.DataFrame)
-        assert_that(clf.X_test_).is_instance_of(pd.DataFrame)
         assert_that(clf.y_train).is_instance_of(np.ndarray)
         assert_that(clf.y_test).is_instance_of(np.ndarray)
-        npt.assert_array_equal(clf.y_train, y_train)
-        npt.assert_array_equal(clf.y_test, y_test)
-        assert_that(clf.dtrain_).is_instance_of(xgb.DMatrix)
-        assert_that(clf.dtest_).is_instance_of(xgb.DMatrix)
+        assert_that(clf.results_).is_instance_of(dict)
+        assert_that(clf.cv_results_).is_instance_of(pd.DataFrame)
+        assert_that(clf.intercept_).is_instance_of(float)
+        assert_that(clf.coeff_).is_instance_of(pd.DataFrame)
+        assert_that(clf.shap_explainer_).is_instance_of(shap.LinearExplainer)
         assert_that(y_pred_proba).is_instance_of(np.ndarray)
         assert_that(y_pred).is_instance_of(np.ndarray)
         assert_that(params).is_instance_of(dict)
-        assert_that(default_params).is_instance_of(dict)
-        assert_that(feature_importance).is_instance_of(pd.DataFrame)
-        assert_that(feature_importance_fig).is_instance_of(Figure)
+        assert_that(cv_results).is_instance_of(pd.DataFrame)
+        assert_that(results).is_instance_of(dict)
+        assert_that(shap_explainer).is_instance_of(shap.LinearExplainer)
+        assert_that(coeff_df).is_instance_of(pd.DataFrame)
+        assert_that(coeff_dict).is_instance_of(dict)
+        assert_that(intercept).is_instance_of(float)
+        assert_that(cv_result_fig).is_instance_of(Figure)
+        assert_that(coeff_path_fig).is_instance_of(Figure)
         assert_that(shap_waterfall_test_fig).is_instance_of(Figure)
         assert_that(shap_waterfall_train_fig).is_instance_of(Figure)
 
@@ -448,15 +453,15 @@ class TestXGBoostClassifier:
         indirect=["clf_x_y_data"],
         ids=_ids,
     )
-    def test_xgboostclassifier_shap_plots__passes__with_valid_inputs(
+    def test_glmnetcvclassifier_shap_plots__passes__with_valid_inputs(
         self,
         clf_x_y_data: Tuple[pd.DataFrame, pd.DataFrame, np.ndarray, np.ndarray],
         waterfall_kwargs: Dict[str, Any],
         summary_kwargs: Dict[str, Any],
     ) -> None:
-        """Validates `XGBoostClassifier` Shap plots passes with valid inputs."""
+        """Validates `GLMNetCVClassifier` Shap plots passes with valid inputs."""
         X_train, X_test, y_train, y_test = clf_x_y_data
-        clf = XGBoostClassifier()
+        clf = GLMNetCVClassifier()
         clf.fit(X_train, y_train)
         _ = clf.predict_proba(X_test, y_test)
         shap_waterfall_fig = clf.plot_shap_waterfall(**waterfall_kwargs)

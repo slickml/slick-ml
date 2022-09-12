@@ -88,6 +88,9 @@ class XGBoostRegressor(BaseEstimator, RegressorMixin):
     get_feature_importance()
         Returns the feature importance of the trained booster based on the given ``importance_type``
 
+    get_shap_explainer()
+        Returns the ``shap.TreeExplainer``
+
     plot_shap_summary()
         Visualizes Shapley values summary plot
 
@@ -123,6 +126,12 @@ class XGBoostRegressor(BaseEstimator, RegressorMixin):
 
     shap_values_test_ : np.ndarray
         Shapley values from ``TreeExplainer`` using ``X_test_``
+
+    shap_explainer_ : shap.TreeExplainer
+        Shap TreeExplainer object
+
+    model_ : xgboost.Booster
+        XGBoost Booster object
 
     References
     ----------
@@ -374,7 +383,7 @@ class XGBoostRegressor(BaseEstimator, RegressorMixin):
 
         Parameters
         ----------
-        validation : bool, optional, (default=True)
+        validation : bool, optional
             Whether to calculate Shap values of using the validation data ``X_test`` or not. When
             ``validation=False``, Shap values are calculated using ``X_train``, be default True
 
@@ -435,15 +444,7 @@ class XGBoostRegressor(BaseEstimator, RegressorMixin):
         -------
         None
         """
-        self.explainer_ = shap.TreeExplainer(
-            model=self.model_,
-        )
-        self.shap_values_test_ = self.explainer_.shap_values(
-            X=self.X_test_,
-        )
-        self.shap_values_train_ = self.explainer_.shap_values(
-            X=self.X_train_,
-        )
+        self._explainer()
 
         if validation:
             shap_values = self.shap_values_test_
@@ -502,7 +503,7 @@ class XGBoostRegressor(BaseEstimator, RegressorMixin):
 
         Parameters
         ----------
-        validation : bool, optional, (default=True)
+        validation : bool, optional
             Whether to calculate Shap values of using the validation data ``X_test`` or not. When
             ``validation=False``, Shap values are calculated using ``X_train``, be default True
 
@@ -527,8 +528,8 @@ class XGBoostRegressor(BaseEstimator, RegressorMixin):
         markeredgecolor : str, optional
             Marker edge color, by default "purple"
 
-        markerfacecolor: str, optional, (default="purple")
-            Marker face color
+        markerfacecolor: str, optional
+            Marker face color, by default "purple"
 
         markeredgewidth : Union[int, float], optional
             Marker edge width, by default 1
@@ -556,15 +557,7 @@ class XGBoostRegressor(BaseEstimator, RegressorMixin):
         -------
         Figure, optional
         """
-        self.explainer_ = shap.TreeExplainer(
-            self.model_,
-        )
-        self.shap_values_test_ = self.explainer_.shap_values(
-            self.X_test_,
-        )
-        self.shap_values_train_ = self.explainer_.shap_values(
-            self.X_train_,
-        )
+        self._explainer()
 
         if validation:
             shap_values = self.shap_values_test_
@@ -631,6 +624,16 @@ class XGBoostRegressor(BaseEstimator, RegressorMixin):
         pd.DataFrame
         """
         return self.feature_importance_
+
+    def get_shap_explainer(self) -> shap.TreeExplainer:
+        """Returns the ``shap.TreeExplainer`` object.
+
+        Returns
+        -------
+        shap.TreeExplainer
+        """
+        self._explainer()
+        return self.shap_explainer_
 
     # TODO(amir): check the `y_train` type; maybe we need to have `list_to_array()` in utils?
     def _dtrain(
@@ -850,6 +853,25 @@ class XGBoostRegressor(BaseEstimator, RegressorMixin):
                 drop=True,
             )
         )
+
+    def _explainer(self) -> None:
+        """Fits a ``shap.TreeExplainer`` on the ``X_train_`` and ``X_test_`` data.
+
+        Returns
+        -------
+        None
+        """
+        self.shap_explainer_ = shap.TreeExplainer(
+            model=self.model_,
+        )
+        self.shap_values_test_ = self.shap_explainer_.shap_values(
+            X=self.X_test_,
+        )
+        self.shap_values_train_ = self.shap_explainer_.shap_values(
+            X=self.X_train_,
+        )
+
+        return None
 
     @staticmethod
     def _default_params() -> Dict[str, Union[str, float, int]]:

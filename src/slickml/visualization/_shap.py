@@ -312,8 +312,8 @@ def plot_shap_waterfall(
     markeredgecolor : str, optional
         Marker edge color, by default "purple"
 
-    markerfacecolor: str, optional, (default="purple")
-        Marker face color
+    markerfacecolor: str, optional
+        Marker face color, by default "purple"
 
     markeredgewidth : Union[int, float], optional
         Marker edge width, by default 1

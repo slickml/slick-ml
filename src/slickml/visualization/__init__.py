@@ -1,3 +1,4 @@
+from slickml.visualization._glmnet import plot_glmnet_coeff_path, plot_glmnet_cv_results
 from slickml.visualization._metrics import (
     plot_binary_classification_metrics,
     plot_regression_metrics,
@@ -15,4 +16,6 @@ __all__ = [
     "plot_xgb_feature_importance",
     "plot_shap_summary",
     "plot_shap_waterfall",
+    "plot_glmnet_coeff_path",
+    "plot_glmnet_cv_results",
 ]

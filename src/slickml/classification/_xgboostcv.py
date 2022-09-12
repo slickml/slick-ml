@@ -121,6 +121,9 @@ class XGBoostCVClassifier(XGBoostClassifier):
     get_feature_importance()
         Returns the feature importance of the trained booster based on the given ``importance_type``
 
+    get_shap_explainer()
+        Returns the ``shap.TreeExplainer``
+
     plot_cv_results()
         Visualizes cross-validation results
 
@@ -162,6 +165,12 @@ class XGBoostCVClassifier(XGBoostClassifier):
 
     shap_values_test_ : np.ndarray
         Shapley values from ``TreeExplainer`` using ``X_test_``
+
+    shap_explainer_ : shap.TreeExplainer
+        Shap TreeExplainer object
+
+    model_ : xgboost.Booster
+        XGBoost Booster object
 
     See Also
     --------
@@ -373,7 +382,7 @@ class XGBoostCVClassifier(XGBoostClassifier):
         )
 
     def _model(self) -> xgb.Booster:
-        """Fits a ``XGBoost.Booster`` based on the best number of boosting round on ``dtrain_`` matrix.
+        """Fits a ``xgboost.Booster`` based on the best number of boosting round on ``dtrain_`` matrix.
 
         Returns
         -------

@@ -106,6 +106,9 @@ class XGBoostCVRegressor(XGBoostRegressor):
     get_feature_importance()
         Returns the feature importance of the trained booster based on the given ``importance_type``
 
+    get_shap_explainer()
+        Returns the ``shap.TreeExplainer``
+
     plot_cv_results()
         Visualizes cross-validation results
 
@@ -148,6 +151,12 @@ class XGBoostCVRegressor(XGBoostRegressor):
     shap_values_test_ : np.ndarray
         Shapley values from ``TreeExplainer`` using ``X_test_``
 
+    shap_explainer_ : shap.TreeExplainer
+        Shap TreeExplainer object
+
+    model_ : xgboost.Booster
+        XGBoost Booster object
+
     See Also
     --------
     :class:`slickml.regression.XGBoostRegressor`
@@ -175,7 +184,7 @@ class XGBoostCVRegressor(XGBoostRegressor):
     verbose: Optional[bool] = True
     callbacks: Optional[bool] = False
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         super().__post_init__()
         check_var(
             self.n_splits,
