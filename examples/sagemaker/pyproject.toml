@@ -1,0 +1,22 @@
+# TODO(trace) update this the info
+[tool.poetry]
+name = "sagemaker"
+version = "0.1.0"
+description = "TODO description"
+authors = ["Trace Smith"]
+readme = "README.md"
+
+packages = [
+    { include = "sagemaker", from = "src" },
+]
+
+[tool.poetry.dependencies]
+# TODO(amir) update python version and slickml once slickml version 0.2.0 is out
+python = ">=3.8,<3.10"
+
+slickml = "0.2.0b0"
+
+
+[build-system]
+requires = ["poetry-core>=1.1.0"]
+build-backend = "poetry.core.masonry.api"
