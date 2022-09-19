@@ -5,6 +5,7 @@ import numpy.testing as npt
 import pandas as pd
 import pandas.testing as pdt
 import pytest
+import shap
 import xgboost as xgb
 from assertpy import assert_that
 from matplotlib.figure import Figure
@@ -112,6 +113,7 @@ class TestXGBoostCVRegressor:
         params = reg.get_params()
         default_params = reg.get_default_params()
         cv_results = reg.get_cv_results()
+        shap_explainer = reg.get_shap_explainer()
         cv_results_fig = reg.plot_cv_results(
             display_plot=False,
             return_fig=True,
@@ -197,10 +199,12 @@ class TestXGBoostCVRegressor:
         npt.assert_array_equal(reg.y_test, y_test)
         assert_that(reg.dtrain_).is_instance_of(xgb.DMatrix)
         assert_that(reg.dtest_).is_instance_of(xgb.DMatrix)
+        assert_that(reg.shap_explainer_).is_instance_of(shap.TreeExplainer)
         assert_that(y_pred).is_instance_of(np.ndarray)
         npt.assert_almost_equal(np.mean(y_pred), 0.97498, decimal=5)
         assert_that(params).is_instance_of(dict)
         assert_that(default_params).is_instance_of(dict)
+        assert_that(shap_explainer).is_instance_of(shap.TreeExplainer)
         assert_that(feature_importance).is_instance_of(pd.DataFrame)
         assert_that(feature_importance_fig).is_instance_of(Figure)
         assert_that(shap_waterfall_test_fig).is_instance_of(Figure)
@@ -236,6 +240,7 @@ class TestXGBoostCVRegressor:
         y_pred = reg.predict(X_test)
         params = reg.get_params()
         default_params = reg.get_default_params()
+        shap_explainer = reg.get_shap_explainer()
         feature_importance = reg.get_feature_importance()
         feature_importance_fig = reg.plot_feature_importance(
             display_plot=False,
@@ -314,6 +319,7 @@ class TestXGBoostCVRegressor:
         assert_that(reg.X_train_).is_instance_of(pd.DataFrame)
         assert_that(reg.X_test).is_instance_of(pd.DataFrame)
         assert_that(reg.X_test_).is_instance_of(pd.DataFrame)
+        assert_that(reg.shap_explainer_).is_instance_of(shap.TreeExplainer)
         assert_that(reg.y_train).is_instance_of(np.ndarray)
         assert_that(reg.y_test).is_none()
         pdt.assert_frame_equal(reg.X_train_, reg.X_train, check_dtype=True)
@@ -326,6 +332,7 @@ class TestXGBoostCVRegressor:
         assert_that(params).is_instance_of(dict)
         assert_that(default_params).is_instance_of(dict)
         assert_that(cv_results).is_instance_of(pd.DataFrame)
+        assert_that(shap_explainer).is_instance_of(shap.TreeExplainer)
         assert_that(cv_results_fig).is_instance_of(Figure)
         assert_that(feature_importance).is_instance_of(pd.DataFrame)
         assert_that(feature_importance_fig).is_instance_of(Figure)
@@ -377,6 +384,7 @@ class TestXGBoostCVRegressor:
         default_params = reg.get_default_params()
         feature_importance = reg.get_feature_importance()
         cv_results = reg.get_cv_results()
+        shap_explainer = reg.get_shap_explainer()
         cv_results_fig = reg.plot_cv_results(
             display_plot=False,
             return_fig=True,
@@ -418,6 +426,7 @@ class TestXGBoostCVRegressor:
         assert_that(reg.X_train_).is_instance_of(pd.DataFrame)
         assert_that(reg.X_test).is_instance_of(pd.DataFrame)
         assert_that(reg.X_test_).is_instance_of(pd.DataFrame)
+        assert_that(reg.shap_explainer_).is_instance_of(shap.TreeExplainer)
         assert_that(reg.y_train).is_instance_of(np.ndarray)
         assert_that(reg.y_test).is_instance_of(np.ndarray)
         npt.assert_array_equal(reg.y_train, y_train)
@@ -427,6 +436,7 @@ class TestXGBoostCVRegressor:
         assert_that(y_pred).is_instance_of(np.ndarray)
         assert_that(params).is_instance_of(dict)
         assert_that(default_params).is_instance_of(dict)
+        assert_that(shap_explainer).is_instance_of(shap.TreeExplainer)
         assert_that(cv_results).is_instance_of(pd.DataFrame)
         assert_that(feature_importance).is_instance_of(pd.DataFrame)
         assert_that(feature_importance_fig).is_instance_of(Figure)

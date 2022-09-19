@@ -24,7 +24,7 @@ def plot_xgb_feature_importance(
     *,
     figsize: Optional[Tuple[Union[int, float], Union[int, float]]] = (8, 5),
     color: Optional[str] = "#87CEEB",
-    marker: Optional[str] = None,
+    marker: Optional[str] = "o",
     markersize: Optional[Union[int, float]] = 10,
     markeredgecolor: Optional[str] = "#1F77B4",
     markerfacecolor: Optional[str] = "#1F77B4",
@@ -85,8 +85,8 @@ def plot_xgb_feature_importance(
     --------
     :class:`slickml.classification.XGBoostClassifier`
     :class:`slickml.classification.XGBoostCVClassifier`
-    :class:`slickml.classification.XGBoostRegressor`
-    :class:`slickml.classification.XGBoostCVRegressor`
+    :class:`slickml.regression.XGBoostRegressor`
+    :class:`slickml.regression.XGBoostCVRegressor`
 
     References
     ----------
@@ -231,6 +231,7 @@ def plot_xgb_feature_importance(
 
 def plot_xgb_cv_results(
     cv_results: pd.DataFrame,
+    *,
     figsize: Optional[Tuple[Union[int, float], Union[int, float]]] = (8, 5),
     linestyle: Optional[str] = "--",
     train_label: Optional[str] = "Train",

@@ -5,6 +5,7 @@ import numpy.testing as npt
 import pandas as pd
 import pandas.testing as pdt
 import pytest
+import shap
 import xgboost as xgb
 from assertpy import assert_that
 from matplotlib.figure import Figure
@@ -104,6 +105,7 @@ class TestXGBoostRegressor:
         y_pred = reg.predict(X_test, y_test)
         params = reg.get_params()
         default_params = reg.get_default_params()
+        shap_explainer = reg.get_shap_explainer()
         feature_importance = reg.get_feature_importance()
         feature_importance_fig = reg.plot_feature_importance(
             display_plot=False,
@@ -164,6 +166,7 @@ class TestXGBoostRegressor:
         assert_that(reg.feature_importance_.shape[0]).is_equal_to(11)
         assert_that(reg.feature_importance_.columns.tolist()).contains("total_gain")
         assert_that(reg.scaler_).is_none()
+        assert_that(reg.shap_explainer_).is_instance_of(shap.TreeExplainer)
         assert_that(reg.X_train).is_instance_of(pd.DataFrame)
         assert_that(reg.X_train_).is_instance_of(pd.DataFrame)
         assert_that(reg.X_test).is_instance_of(pd.DataFrame)
@@ -180,6 +183,7 @@ class TestXGBoostRegressor:
         npt.assert_almost_equal(np.mean(y_pred), 0.97498, decimal=5)
         assert_that(params).is_instance_of(dict)
         assert_that(default_params).is_instance_of(dict)
+        assert_that(shap_explainer).is_instance_of(shap.TreeExplainer)
         assert_that(feature_importance).is_instance_of(pd.DataFrame)
         assert_that(feature_importance_fig).is_instance_of(Figure)
         assert_that(shap_waterfall_test_fig).is_instance_of(Figure)
@@ -213,6 +217,7 @@ class TestXGBoostRegressor:
         y_pred = reg.predict(X_test)
         params = reg.get_params()
         default_params = reg.get_default_params()
+        shap_explainer = reg.get_shap_explainer()
         feature_importance = reg.get_feature_importance()
         feature_importance_fig = reg.plot_feature_importance(
             display_plot=False,
@@ -273,6 +278,7 @@ class TestXGBoostRegressor:
         assert_that(reg.feature_importance_.shape[0]).is_equal_to(11)
         assert_that(reg.feature_importance_.columns.tolist()).contains("total_gain")
         assert_that(reg.scaler_).is_none()
+        assert_that(reg.shap_explainer_).is_instance_of(shap.TreeExplainer)
         assert_that(reg.X_train).is_instance_of(pd.DataFrame)
         assert_that(reg.X_train_).is_instance_of(pd.DataFrame)
         assert_that(reg.X_test).is_instance_of(pd.DataFrame)
@@ -288,6 +294,7 @@ class TestXGBoostRegressor:
         npt.assert_almost_equal(np.mean(y_pred), 0.97498, decimal=5)
         assert_that(params).is_instance_of(dict)
         assert_that(default_params).is_instance_of(dict)
+        assert_that(shap_explainer).is_instance_of(shap.TreeExplainer)
         assert_that(feature_importance).is_instance_of(pd.DataFrame)
         assert_that(feature_importance_fig).is_instance_of(Figure)
         assert_that(shap_waterfall_test_fig).is_instance_of(Figure)
@@ -331,6 +338,7 @@ class TestXGBoostRegressor:
         y_pred = reg.predict(X_test, y_test)
         params = reg.get_params()
         default_params = reg.get_default_params()
+        shap_explainer = reg.get_shap_explainer()
         feature_importance = reg.get_feature_importance()
         feature_importance_fig = reg.plot_feature_importance(
             display_plot=False,
@@ -365,6 +373,7 @@ class TestXGBoostRegressor:
         assert_that(reg.importance_type).is_instance_of(str)
         assert_that(reg.params).is_instance_of(dict)
         assert_that(reg.feature_importance_).is_instance_of(pd.DataFrame)
+        assert_that(reg.shap_explainer_).is_instance_of(shap.TreeExplainer)
         assert_that(reg.X_train).is_instance_of(pd.DataFrame)
         assert_that(reg.X_train_).is_instance_of(pd.DataFrame)
         assert_that(reg.X_test).is_instance_of(pd.DataFrame)
@@ -378,6 +387,7 @@ class TestXGBoostRegressor:
         assert_that(y_pred).is_instance_of(np.ndarray)
         assert_that(params).is_instance_of(dict)
         assert_that(default_params).is_instance_of(dict)
+        assert_that(shap_explainer).is_instance_of(shap.TreeExplainer)
         assert_that(feature_importance).is_instance_of(pd.DataFrame)
         assert_that(feature_importance_fig).is_instance_of(Figure)
         assert_that(shap_waterfall_test_fig).is_instance_of(Figure)

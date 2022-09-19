@@ -5,6 +5,7 @@ import numpy.testing as npt
 import pandas as pd
 import pandas.testing as pdt
 import pytest
+import shap
 import xgboost as xgb
 from assertpy import assert_that
 from matplotlib.figure import Figure
@@ -113,6 +114,7 @@ class TestXGBoostCVClassifier:
         default_params = clf.get_default_params()
         feature_importance = clf.get_feature_importance()
         cv_results = clf.get_cv_results()
+        shap_explainer = clf.get_shap_explainer()
         cv_results_fig = clf.plot_cv_results(
             display_plot=False,
             return_fig=True,
@@ -196,6 +198,7 @@ class TestXGBoostCVClassifier:
         assert_that(clf.X_train_).is_instance_of(pd.DataFrame)
         assert_that(clf.X_test).is_instance_of(pd.DataFrame)
         assert_that(clf.X_test_).is_instance_of(pd.DataFrame)
+        assert_that(clf.shap_explainer_).is_instance_of(shap.TreeExplainer)
         assert_that(clf.y_train).is_instance_of(np.ndarray)
         assert_that(clf.y_test).is_instance_of(np.ndarray)
         pdt.assert_frame_equal(clf.X_train_, clf.X_train, check_dtype=True)
@@ -212,6 +215,7 @@ class TestXGBoostCVClassifier:
         assert_that(default_params).is_instance_of(dict)
         assert_that(feature_importance).is_instance_of(pd.DataFrame)
         assert_that(cv_results).is_instance_of(pd.DataFrame)
+        assert_that(shap_explainer).is_instance_of(shap.TreeExplainer)
         assert_that(cv_results_fig).is_instance_of(Figure)
         assert_that(feature_importance_fig).is_instance_of(Figure)
         assert_that(shap_waterfall_test_fig).is_instance_of(Figure)
@@ -246,6 +250,7 @@ class TestXGBoostCVClassifier:
         y_pred = clf.predict(X_test)
         params = clf.get_params()
         default_params = clf.get_default_params()
+        shap_explainer = clf.get_shap_explainer()
         feature_importance = clf.get_feature_importance()
         cv_results = clf.get_cv_results()
         cv_results_fig = clf.plot_cv_results(
@@ -338,12 +343,14 @@ class TestXGBoostCVClassifier:
         pdt.assert_frame_equal(clf.X_test_, clf.X_test_, check_dtype=True)
         assert_that(clf.dtrain_).is_instance_of(xgb.DMatrix)
         assert_that(clf.dtest_).is_instance_of(xgb.DMatrix)
+        assert_that(clf.shap_explainer_).is_instance_of(shap.TreeExplainer)
         assert_that(y_pred_proba).is_instance_of(np.ndarray)
         npt.assert_almost_equal(np.mean(y_pred_proba), 0.80043, decimal=5)
         assert_that(y_pred).is_instance_of(np.ndarray)
         npt.assert_almost_equal(np.mean(y_pred), 0.93589, decimal=5)
         assert_that(params).is_instance_of(dict)
         assert_that(default_params).is_instance_of(dict)
+        assert_that(shap_explainer).is_instance_of(shap.TreeExplainer)
         assert_that(feature_importance).is_instance_of(pd.DataFrame)
         assert_that(cv_results).is_instance_of(pd.DataFrame)
         assert_that(cv_results_fig).is_instance_of(Figure)
@@ -396,6 +403,7 @@ class TestXGBoostCVClassifier:
         y_pred = clf.predict(X_test, y_test)
         params = clf.get_params()
         default_params = clf.get_default_params()
+        shap_explainer = clf.get_shap_explainer()
         feature_importance = clf.get_feature_importance()
         cv_results = clf.get_cv_results()
         cv_results_fig = clf.plot_cv_results(
@@ -440,6 +448,7 @@ class TestXGBoostCVClassifier:
         assert_that(clf.X_train_).is_instance_of(pd.DataFrame)
         assert_that(clf.X_test).is_instance_of(pd.DataFrame)
         assert_that(clf.X_test_).is_instance_of(pd.DataFrame)
+        assert_that(clf.shap_explainer_).is_instance_of(shap.TreeExplainer)
         assert_that(clf.y_train).is_instance_of(np.ndarray)
         assert_that(clf.y_test).is_instance_of(np.ndarray)
         npt.assert_array_equal(clf.y_train, y_train)
@@ -452,6 +461,7 @@ class TestXGBoostCVClassifier:
         assert_that(params).is_instance_of(dict)
         assert_that(default_params).is_instance_of(dict)
         assert_that(feature_importance).is_instance_of(pd.DataFrame)
+        assert_that(shap_explainer).is_instance_of(shap.TreeExplainer)
         assert_that(cv_results).is_instance_of(pd.DataFrame)
         assert_that(feature_importance_fig).is_instance_of(Figure)
         assert_that(shap_waterfall_test_fig).is_instance_of(Figure)

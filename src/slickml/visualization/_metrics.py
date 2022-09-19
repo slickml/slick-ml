@@ -22,7 +22,7 @@ def plot_binary_classification_metrics(
     save_path: Optional[str] = None,
     display_plot: Optional[bool] = False,
     return_fig: Optional[bool] = False,
-    **kwargs,
+    **kwargs: Dict[str, Any],
 ) -> Optional[Figure]:
     """Visualizes binary classification metrics using ``plotting_dict_`` attribute of ``BinaryClassificationMetrics``.
 
