@@ -58,7 +58,7 @@ python = ">=3.8,<3.11"
 # TODO(amir): since numpy "^1.23" distutils is deprecated which glmnet needs it
 # wait for `glmnet` for a new release; then upgrade this 
 numpy = "^1.22,<1.23"
-pandas = "^1.4"
+pandas = "^1.5"
 scipy = "^1.9"
 statsmodels = "^0.13"
 
@@ -73,8 +73,10 @@ bayesian-optimization = "^1.2"
 hyperopt = "^0.2"
 
 # --- visualization ---
-matplotlib = "^3.5"
-seaborn = "^0.11"
+# TODO(amir): matplotlib v>=3.6 comes with breaking changes
+# make sure to apply the upgrade and fix the issues once the API refactor is done
+matplotlib = "^3.5,<3.6"
+seaborn = "^0.12"
 
 
 [tool.poetry.dev-dependencies]
@@ -83,15 +85,15 @@ seaborn = "^0.11"
 pip = "^22.2"
 
 # --- task-management ---
-poethepoet = "^0.13"
+poethepoet = "^0.16"
 
 # --- testenv-management ---
-tox = "^3.25"
+tox = "^3.26"
 
 # --- formatting ---
 add-trailing-comma = "^2.2"
 isort = "^5.10"
-black = "^22.3"
+black = "^22.8"
 jupyter-black = "^0.3"
 
 # --- linting ---
@@ -115,20 +117,20 @@ mypy = "^0.971"
 # --- unit-testing ---
 pytest = "^7.1"
 pytest-cov = "^3.0"
-pytest-mock = "^3.7"
+pytest-mock = "^3.8"
 mock = "^4.0"
 coverage = "^6.4"
 assertpy = "^1.1"
 
 # --- docs ----
-sphinx = "^4.5"
+sphinx = "^5.1"
 sphinx-autoapi = "^1.9"
-sphinx_design = "^0.2"
-myst-parser = "^0.17"
-furo = "^2022.6"
+sphinx_design = "^0.3"
+myst-parser = "^0.18"
+furo = "^2022.9"
 
 # --- jupyter ---
-ipykernel = "^6.13"
+ipykernel = "^6.15"
 jupytext = "^1.14"
 
 # --- monitoring ---
@@ -136,7 +138,7 @@ watchdog = "^2.1"
 
 
 [build-system]
-requires = ["poetry-core>=1.1.0"]
+requires = ["poetry-core>=1.2.0"]
 build-backend = "poetry.core.masonry.api"
 
 
