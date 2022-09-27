@@ -26,9 +26,9 @@ jobs:
       # ----- check-out repo and set-up python -----
       #----------------------------------------------
       - name: Checkout Repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Setup Python v${{ matrix.python-version }}
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
       #----------------------------------------------
@@ -45,7 +45,7 @@ jobs:
       #----------------------------------------------
       - name: Load Cached venv
         id: cached-poetry-dependencies
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: .venv
           key: venv-${{ runner.os }}-${{ hashFiles('**/poetry.lock') }}

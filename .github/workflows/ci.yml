@@ -22,6 +22,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        # TODO(amir): turn on `macos-latest` and `windows-latest`
         os: [ubuntu-latest]
         python-version: ["3.8", "3.9", "3.10"]
     steps:
@@ -29,9 +30,9 @@ jobs:
       # ----- check-out repo and set-up python -----
       #----------------------------------------------
       - name: Checkout Repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Setup Python v${{ matrix.python-version }}
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
       #----------------------------------------------
@@ -48,9 +49,14 @@ jobs:
       #----------------------------------------------
       - name: Load Cached venv
         id: cached-poetry-dependencies
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: .venv
+          # TODO(amir): here, we explicitly set the key independent of what `python-version` we are running
+          # the main issue is with `glmnet` that does not currently support `python v3.9 and 3.10`
+          # therefore, all the CI jobs for those python versions failed at first, then we re-run the
+          # jobs, the cached venv using `python v3.8` will be retrieved and the jobs will run successfully
+          # ideally, we should be able to add `python-versions` here to distinguish between caches
           key: venv-${{ runner.os }}-${{ hashFiles('**/poetry.lock') }}
       #----------------------------------------------
       #  -----  install dependencies  -----
@@ -78,7 +84,7 @@ jobs:
       #  ---  Upload test coverage to Codecov  ---
       #----------------------------------------------
       - name: Codecov
-        # TODO(amir): only run code coverage with one Python Version; the rest is not needed
+        # NOTE: only run code coverage with one Python Version and OS; the rest is not needed
         if: ${{ matrix.python-version == '3.9' && matrix.os == 'ubuntu-latest' }}
         uses: codecov/codecov-action@v2
         with:
