@@ -35,7 +35,7 @@
 at accelerating the experimentation time for ML applications with tabular data while maximizing the amount of information can be inferred. Data Scientists'
 tasks can often be repetitive such as feature selection, model tuning, or
 evaluating metrics for classification and regression problems. We strongly believe that a good portion of the tasks based on tabular data can be addressed via gradient boosting and generalized linear models<sup>[1](https://arxiv.org/pdf/2207.08815.pdf)</sup>. SlickML provides
-Data Scientists with a toolbox to quickly prototype solutions for a given problem with minimal code while maximizing the amound of information that can be inferred.
+Data Scientists with a toolbox to quickly prototype solutions for a given problem with minimal code while maximizing the amount of information that can be inferred.
 
 
 ## 📖 Documentation
