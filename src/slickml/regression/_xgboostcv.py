@@ -6,7 +6,7 @@ import pandas as pd
 import xgboost as xgb
 from matplotlib.figure import Figure
 
-from slickml.regression import XGBoostRegressor
+from slickml.regression._xgboost import XGBoostRegressor
 from slickml.utils import Colors, check_var
 from slickml.visualization import plot_xgb_cv_results
 
@@ -15,7 +15,7 @@ from slickml.visualization import plot_xgb_cv_results
 class XGBoostCVRegressor(XGBoostRegressor):
     """XGBoost CV Regressor.
 
-    This is wrapper using ``XGBoostRegressor`` to train a XGBoost [1]_ model with using the optimum
+    This is wrapper using ``XGBoostRegressor`` to train a XGBoost [xgboost-api]_ model with using the optimum
     number of boosting rounds from the inputs. It used ``xgboost.cv()`` model with n-folds
     cross-validation and train model based on the best number of boosting round to avoid over-fitting.
 
@@ -163,11 +163,8 @@ class XGBoostCVRegressor(XGBoostRegressor):
 
     References
     ----------
-    .. [1] https://xgboost.readthedocs.io/en/latest/python/python_api.html
-    .. [2] https://matplotlib.org/stable/api/markers_api.html
-    .. [3] https://shap-lrjball.readthedocs.io/en/latest/generated/shap.summary_plot.html
-    .. [4] https://xgboost.readthedocs.io/en/latest/python/python_api.html#callback-api
-    .. [5] https://matplotlib.org/3.1.0/gallery/lines_bars_and_markers/linestyles.html
+    .. [callback-api] https://xgboost.readthedocs.io/en/latest/python/python_api.html#callback-api
+    .. [linestyles-api] https://matplotlib.org/3.1.0/gallery/lines_bars_and_markers/linestyles.html
     """
 
     num_boost_round: Optional[int] = 200
@@ -288,7 +285,7 @@ class XGBoostCVRegressor(XGBoostRegressor):
             Figure size, by default (8, 5)
 
         linestyle : str, optional
-            Style of lines [5]_, by default "--"
+            Style of lines [linestyles-api]_, by default "--"
 
         train_label : str, optional
             Label in the figure legend for the train line, by default "Train"
@@ -375,7 +372,7 @@ class XGBoostCVRegressor(XGBoostRegressor):
         """Returns a list of callbacks.
 
         The implemented callbacks are including ``xgboost.callback.EvaluationMonitor`` and
-        ``xgboost.callback.EarlyStopping`` [4]_.
+        ``xgboost.callback.EarlyStopping`` [callback-api]_.
 
         Returns
         -------

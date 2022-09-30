@@ -120,6 +120,18 @@ class RegressionMetrics:
     plotting_dict_ : Dict[str, Any]
         Plotting properties
 
+    References
+    ----------
+    .. [Tahmassebi-et-al] Tahmassebi, A., Gandomi, A. H., & Meyer-Baese, A. (2018, July).
+        A Pareto front based evolutionary model for airfoil self-noise prediction. In 2018 IEEE
+        Congress on Evolutionary Computation (CEC) (pp. 1-8). IEEE.
+        https://www.amirhessam.com/assets/pdf/projects/cec-airfoil2018.pdf
+
+    .. [rec-curve] Bi, J., & Bennett, K. P. (2003). Regression error characteristic curves.
+        In Proceedings of the 20th international conference on machine learning
+        (ICML-03) (pp. 43-50).
+        https://www.aaai.org/Papers/ICML/2003/ICML03-009.pdf
+
     Examples
     --------
     >>> from slickml.metrics import RegressionMetrics
@@ -367,14 +379,7 @@ class RegressionMetrics:
         -----
         Simpson method is used as the integral method to calculate the area under regression error
         characteristics (REC) and the REC algorithm is implemented based on "Regression error
-        characteristic curves" paper [1]_.
-
-        References
-        ----------
-        .. [1] Bi, J., & Bennett, K. P. (2003). Regression error characteristic curves.
-           In Proceedings of the 20th international conference on machine learning
-           (ICML-03) (pp. 43-50).
-           https://www.aaai.org/Papers/ICML/2003/ICML03-009.pdf
+        characteristic curves" paper [rec-curve]_.
 
         Returns
         -------
@@ -406,15 +411,7 @@ class RegressionMetrics:
     def _ratio_hist(self) -> Tuple[np.ndarray, float, float, float]:
         """Calculates the histogram elements of y_pred/y_true ratio.
 
-        This would report the coefficient of variation CV as std(ratio)/mean(ratio) based on "A
-        Pareto front based evolutionary model for airfoil self-noise prediction" paper [1]_.
-
-        References
-        ----------
-        .. [1] Tahmassebi, A., Gandomi, A. H., & Meyer-Baese, A. (2018, July). A Pareto front based
-           evolutionary model for airfoil self-noise prediction. In 2018 IEEE Congress on
-           Evolutionary Computation (CEC) (pp. 1-8). IEEE.
-           https://www.amirhessam.com/assets/pdf/projects/cec-airfoil2018.pdf
+        This would report the coefficient of variation CV as std(ratio)/mean(ratio) based [Tahmassebi-et-al]_.
 
         Returns
         -------

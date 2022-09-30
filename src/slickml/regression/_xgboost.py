@@ -22,7 +22,7 @@ from slickml.visualization import (
 class XGBoostRegressor(BaseEstimator, RegressorMixin):
     """XGBoost Regressor.
 
-    This is wrapper using XGBoost regressor to train a XGBoost [1]_ model using the number of
+    This is wrapper using XGBoost regressor to train a XGBoost [xgboost-api]_ model using the number of
     boosting rounds from the inputs. This is also the base class for ``XGBoostCVRegressor``.
 
     Parameters
@@ -135,9 +135,9 @@ class XGBoostRegressor(BaseEstimator, RegressorMixin):
 
     References
     ----------
-    .. [1] https://xgboost.readthedocs.io/en/latest/python/python_api.html
-    .. [2] https://matplotlib.org/stable/api/markers_api.html
-    .. [3] https://shap-lrjball.readthedocs.io/en/latest/generated/shap.summary_plot.html
+    .. [xgboost-api] https://xgboost.readthedocs.io/en/latest/python/python_api.html
+    .. [markers-api] https://matplotlib.org/stable/api/markers_api.html
+    .. [shap-api] https://shap-lrjball.readthedocs.io/en/latest/generated/shap.summary_plot.html
     """
 
     num_boost_round: Optional[int] = 200
@@ -306,7 +306,7 @@ class XGBoostRegressor(BaseEstimator, RegressorMixin):
             Color of the horizontal lines of lollipops, by default "#87CEEB"
 
         marker : str, optional
-            Marker style of the lollipops. More valid marker styles can be found at [2]_, by default "o"
+            Marker style of the lollipops. More valid marker styles can be found at [markers-api]_, by default "o"
 
         markersize : Union[int, float], optional
             Markersize, by default 10
@@ -378,7 +378,7 @@ class XGBoostRegressor(BaseEstimator, RegressorMixin):
         This is a helper function to plot the ``shap`` summary plot based on all types of
         ``shap.Explainer`` including ``shap.LinearExplainer`` for linear models, ``shap.TreeExplainer``
         for tree-based models, and ``shap.DeepExplainer`` deep neural network models. More on details
-        are available at [3]_. Note that this function should be ran after the ``predict()``
+        are available at [shap-api]_. Note that this function should be ran after the ``predict()``
         to make sure the ``X_test`` is being instansiated or set ``validation=False``.
 
         Parameters

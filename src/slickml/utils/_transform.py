@@ -43,7 +43,7 @@ def df_to_csr(
     fillna: Optional[float] = 0.0,
     verbose: Optional[bool] = False,
 ) -> csr_matrix:
-    """Transforms a pandas DataFrame into a Compressed Sparse Row (CSR) matrix [1]_.
+    """Transforms a pandas DataFrame into a Compressed Sparse Row (CSR) matrix [csr-api]_.
 
     Parameters
     ----------
@@ -73,7 +73,7 @@ def df_to_csr(
 
     References
     ----------
-    .. [1] https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html
+    .. [csr-api] https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html
 
     Examples
     --------

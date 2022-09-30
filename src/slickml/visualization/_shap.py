@@ -46,7 +46,7 @@ def plot_shap_summary(
     This is a helper function to plot the ``shap`` summary plot based on all types of
     ``shap.Explainer`` including ``shap.LinearExplainer`` for linear models, ``shap.TreeExplainer``
     for tree-based models, and ``shap.DeepExplainer`` deep neural network models. More on details
-    are available at [1]_.
+    are available at [shap-api]_.
 
     Parameters
     ----------
@@ -115,7 +115,7 @@ def plot_shap_summary(
 
     References
     ----------
-    .. [1] https://shap-lrjball.readthedocs.io/en/latest/generated/shap.summary_plot.html
+    .. [shap-api] https://shap-lrjball.readthedocs.io/en/latest/generated/shap.summary_plot.html
 
     Returns
     -------
@@ -304,7 +304,7 @@ def plot_shap_waterfall(
         Color of the line plot, by default "purple"
 
     marker : str, optional
-        Marker style of the lollipops. More valid marker styles can be found at [1]_, by default "o"
+        Marker style of the lollipops. More valid marker styles can be found at [markers-api]_, by default "o"
 
     markersize : Union[int, float], optional
         Markersize, by default 7
@@ -339,7 +339,7 @@ def plot_shap_waterfall(
 
     References
     ----------
-    .. [1] https://matplotlib.org/stable/api/markers_api.html
+    .. [markers-api] https://matplotlib.org/stable/api/markers_api.html
 
     Returns
     -------

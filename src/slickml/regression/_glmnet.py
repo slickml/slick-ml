@@ -23,7 +23,7 @@ from slickml.visualization import (
 class GLMNetCVRegressor(BaseEstimator, RegressorMixin):
     """GLMNetCVRegressor.
 
-    This is wrapper using GLM-Net [1]_ to train a Regularized Linear Model via ElasticNet regression and
+    This is wrapper using GLM-Net [glmnet-api]_ to train a Regularized Linear Model via ElasticNet regression and
     find the optimal penalty values through N-Folds cross validation. In principle, GLMNet (also known
     as ElasticNet) can also be used for feature selection and dimensionality reduction using the LASSO
     (Least Absolute Shrinkage and Selection Operator) Regression part of the alogrithm while reaching
@@ -178,10 +178,10 @@ class GLMNetCVRegressor(BaseEstimator, RegressorMixin):
 
     References
     ----------
-    .. [1] https://web.stanford.edu/~hastie/glmnet/glmnet_alpha.html
-    .. [2] https://matplotlib.org/stable/api/markers_api.html
-    .. [3] https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.yscale.html
-    .. [4] https://shap-lrjball.readthedocs.io/en/latest/generated/shap.summary_plot.html
+    .. [glmnet-api] https://web.stanford.edu/~hastie/glmnet/glmnet_alpha.html
+    .. [markers-api] https://matplotlib.org/stable/api/markers_api.html
+    .. [yscale] https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.yscale.html
+    .. [shap-api] https://shap-lrjball.readthedocs.io/en/latest/generated/shap.summary_plot.html
     """
 
     alpha: Optional[float] = 0.5
@@ -414,7 +414,7 @@ class GLMNetCVRegressor(BaseEstimator, RegressorMixin):
 
         marker : str, optional
             Marker style of the metric to distinguish the error bars. More valid marker styles can be
-            found at [2]_, by default "o"
+            found at [markers-api]_, by default "o"
 
         markersize : Union[int, float], optional
             Markersize, by default 5
@@ -551,7 +551,7 @@ class GLMNetCVRegressor(BaseEstimator, RegressorMixin):
 
         yscale : str, optiona
             Scale for y-axis (coefficients). Possible options are ``"linear"``, ``"log"``, ``"symlog"``,
-            ``"logit"`` [3]_, by default "linear"
+            ``"logit"`` [yscale]_, by default "linear"
 
         bbox_to_anchor : Tuple[float, float], optional
             Relative coordinates for legend location outside of the plot, by default (1.1, 0.5)
@@ -617,7 +617,7 @@ class GLMNetCVRegressor(BaseEstimator, RegressorMixin):
         This is a helper function to plot the ``shap`` summary plot based on all types of
         ``shap.Explainer`` including ``shap.LinearExplainer`` for linear models, ``shap.TreeExplainer``
         for tree-based models, and ``shap.DeepExplainer`` deep neural network models. More on details
-        are available at [4]_. Note that this function should be ran after the ``predict_proba()``
+        are available at [shap-api]_. Note that this function should be ran after the ``predict_proba()``
         to make sure the ``X_test`` is being instansiated or set ``validation=False``.
 
         Parameters

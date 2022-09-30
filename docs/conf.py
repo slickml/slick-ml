@@ -165,7 +165,6 @@ autoapi_file_patterns = [
 ]
 autoapi_generate_api_docs = True
 # TODO(amir): currently, auto-api has a bug that does not show the inherited members
-# example is `XGBoostCVClassifier`; so, I decided to turn on `"private-members"` option temporarily
 # https://github.com/readthedocs/sphinx-autoapi/issues/183
 # https://github.com/readthedocs/sphinx-autoapi/issues/272
 autoapi_options = [
@@ -176,7 +175,7 @@ autoapi_options = [
     "special-members",
     "imported-members",
     "inherited-members",
-    "private-members",
+    # "private-members",
 ]
 autoapi_ignore = [
     "*migrations*",
