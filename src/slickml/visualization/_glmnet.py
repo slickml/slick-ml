@@ -48,7 +48,7 @@ def plot_glmnet_cv_results(
 
     marker : str, optional
         Marker style of the metric to distinguish the error bars. More valid marker styles can be
-        found at [1]_, by default "o"
+        found at [markers-api]_, by default "o"
 
     markersize : Union[int, float], optional
         Markersize, by default 5
@@ -110,7 +110,7 @@ def plot_glmnet_cv_results(
 
     References
     ----------
-    .. [1] https://matplotlib.org/stable/api/markers_api.html
+    .. [markers-api] https://matplotlib.org/stable/api/markers_api.html
 
     Returns
     -------
@@ -347,7 +347,7 @@ def plot_glmnet_coeff_path(
 
     yscale : str, optional
         Scale for y-axis (coefficients). Possible options are ``"linear"``, ``"log"``, ``"symlog"``,
-        ``"logit"`` [1]_, by default "linear"
+        ``"logit"`` [yscale]_, by default "linear"
 
     bbox_to_anchor : Tuple[float, float], optional
         Relative coordinates for legend location outside of the plot, by default (1.1, 0.5)
@@ -367,7 +367,7 @@ def plot_glmnet_coeff_path(
 
     References
     ----------
-    .. [1] https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.yscale.html
+    .. [yscale] https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.yscale.html
 
     Returns
     -------

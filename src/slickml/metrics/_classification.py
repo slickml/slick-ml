@@ -33,7 +33,7 @@ class BinaryClassificationMetrics:
 
     Binary metrics are computed based on three methods for calculating the thresholds to binarize
     the prediction probabilities. Threshold computations including:
-        1) Youden Index [1]_.
+        1) Youden Index [youden-j-index]_.
         2) Maximizing Precision-Recall.
         3) Maximizing Sensitivity-Specificity.
 
@@ -176,7 +176,7 @@ class BinaryClassificationMetrics:
 
     References
     ----------
-    .. [1] https://en.wikipedia.org/wiki/Youden%27s_J_statistic
+    .. [youden-j-index] https://en.wikipedia.org/wiki/Youden%27s_J_statistic
 
     Examples
     --------

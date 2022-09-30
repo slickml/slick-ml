@@ -54,7 +54,7 @@ def plot_xgb_feature_importance(
         Color of the horizontal lines of lollipops, by default "#87CEEB"
 
     marker : str, optional
-        Marker style of the lollipops. More valid marker styles can be found at [1]_, by default "o"
+        Marker style of the lollipops. More valid marker styles can be found at [markers-api]_, by default "o"
 
     markersize : Union[int, float], optional
         Markersize, by default 10
@@ -90,7 +90,7 @@ def plot_xgb_feature_importance(
 
     References
     ----------
-    .. [1] https://matplotlib.org/stable/api/markers_api.html
+    .. [markers-api] https://matplotlib.org/stable/api/markers_api.html
 
     Returns
     -------
@@ -255,7 +255,7 @@ def plot_xgb_cv_results(
         Figure size, by default (8, 5)
 
     linestyle : str, optional
-        Style of lines [1]_, by default "--"
+        Style of lines [linestyles-api]_, by default "--"
 
     train_label : str, optional
         Label in the figure legend for the train line, by default "Train"
@@ -291,7 +291,7 @@ def plot_xgb_cv_results(
 
     References
     ----------
-    .. [1] https://matplotlib.org/stable/gallery/lines_bars_and_markers/linestyles.html
+    .. [linestyles-api] https://matplotlib.org/stable/gallery/lines_bars_and_markers/linestyles.html
 
     Returns
     -------
