@@ -30,11 +30,6 @@ class XGBoostRegressor(BaseEstimator, RegressorMixin):
     num_boost_round : int, optional
         Number of boosting rounds to fit a model, by default 200
 
-    metrics : str, optional
-        Metrics to be tracked at fitting time with possible values of ``"rmse"``, ``"rmsle"``,
-        ``"mae"``. Note this is different than `eval_metric` that needs to be passed to `params`
-        dict, by default "rmse"
-
     sparse_matrix : bool, optional
         Whether to convert the input features to sparse matrix with csr format or not. This would
         increase the speed of feature selection for relatively large/sparse datasets. Consequently,
@@ -141,7 +136,6 @@ class XGBoostRegressor(BaseEstimator, RegressorMixin):
     """
 
     num_boost_round: Optional[int] = 200
-    metrics: Optional[str] = "rmse"
     sparse_matrix: Optional[bool] = False
     scale_mean: Optional[bool] = False
     scale_std: Optional[bool] = False
@@ -154,16 +148,6 @@ class XGBoostRegressor(BaseEstimator, RegressorMixin):
             self.num_boost_round,
             var_name="num_boost_round",
             dtypes=int,
-        )
-        check_var(
-            self.metrics,
-            var_name="metrics",
-            dtypes=str,
-            values=(
-                "rmse",
-                "rmsle",
-                "mae",
-            ),
         )
         check_var(
             self.sparse_matrix,

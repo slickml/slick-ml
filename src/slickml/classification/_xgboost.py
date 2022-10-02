@@ -18,7 +18,6 @@ from slickml.visualization import (
 )
 
 
-# TODO(amir): add the functionality to receive multiple metrics as `List[str]` as well
 # TODO(amir): add the functionality for mulit-class classification as well
 @dataclass
 class XGBoostClassifier(BaseEstimator, ClassifierMixin):
@@ -31,11 +30,6 @@ class XGBoostClassifier(BaseEstimator, ClassifierMixin):
     ----------
     num_boost_round : int, optional
         Number of boosting rounds to fit a model, by default 200
-
-    metrics : str, optional
-        Metrics to be tracked at fitting time with possible values of "auc", "aucpr", "error",
-        "logloss". Note this is different than `eval_metric` that needs to be passed to `params`
-        dict, by default "auc"
 
     sparse_matrix : bool, optional
         Whether to convert the input features to sparse matrix with csr format or not. This would
@@ -151,7 +145,6 @@ class XGBoostClassifier(BaseEstimator, ClassifierMixin):
     """
 
     num_boost_round: Optional[int] = 200
-    metrics: Optional[str] = "auc"
     sparse_matrix: Optional[bool] = False
     scale_mean: Optional[bool] = False
     scale_std: Optional[bool] = False
@@ -164,17 +157,6 @@ class XGBoostClassifier(BaseEstimator, ClassifierMixin):
             self.num_boost_round,
             var_name="num_boost_round",
             dtypes=int,
-        )
-        check_var(
-            self.metrics,
-            var_name="metrics",
-            dtypes=str,
-            values=(
-                "auc",
-                "aucpr",
-                "error",
-                "logloss",
-            ),
         )
         check_var(
             self.sparse_matrix,

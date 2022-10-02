@@ -61,7 +61,6 @@ class TestXGBoostRegressor:
         ("kwargs"),
         [
             {"num_boost_round": "100"},
-            {"metrics": "rms"},
             {"sparse_matrix": 1},
             {"scale_mean": 1},
             {"scale_std": 1},
@@ -134,8 +133,6 @@ class TestXGBoostRegressor:
         assert_that(reg).is_instance_of(XGBoostRegressor)
         assert_that(reg.num_boost_round).is_instance_of(int)
         assert_that(reg.num_boost_round).is_equal_to(200)
-        assert_that(reg.metrics).is_instance_of(str)
-        assert_that(reg.metrics).is_equal_to("rmse")
         assert_that(reg.sparse_matrix).is_instance_of(bool)
         assert_that(reg.sparse_matrix).is_false()
         assert_that(reg.scale_mean).is_instance_of(bool)
@@ -246,8 +243,6 @@ class TestXGBoostRegressor:
         assert_that(reg).is_instance_of(XGBoostRegressor)
         assert_that(reg.num_boost_round).is_instance_of(int)
         assert_that(reg.num_boost_round).is_equal_to(200)
-        assert_that(reg.metrics).is_instance_of(str)
-        assert_that(reg.metrics).is_equal_to("rmse")
         assert_that(reg.sparse_matrix).is_instance_of(bool)
         assert_that(reg.sparse_matrix).is_false()
         assert_that(reg.scale_mean).is_instance_of(bool)
@@ -306,7 +301,6 @@ class TestXGBoostRegressor:
         ("reg_x_y_data", "kwargs"),
         [
             ("dataframe", {"num_boost_round": 300}),
-            ("dataframe", {"metrics": "mae"}),
             ("dataframe", {"sparse_matrix": True}),
             ("dataframe", {"sparse_matrix": True, "scale_std": True}),
             ("dataframe", {"scale_mean": True}),
@@ -366,7 +360,6 @@ class TestXGBoostRegressor:
 
         assert_that(reg).is_instance_of(XGBoostRegressor)
         assert_that(reg.num_boost_round).is_instance_of(int)
-        assert_that(reg.metrics).is_instance_of(str)
         assert_that(reg.sparse_matrix).is_instance_of(bool)
         assert_that(reg.scale_mean).is_instance_of(bool)
         assert_that(reg.scale_std).is_instance_of(bool)

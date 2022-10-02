@@ -28,9 +28,9 @@ class XGBoostCVRegressor(XGBoostRegressor):
         Number of folds for cross-validation, by default 4
 
     metrics : str, optional
-        Metrics to be tracked at fitting time with possible values of ``"rmse"``, ``"rmsle"``,
-        ``"mae"``. Note this is different than `eval_metric` that needs to be passed to `params`
-        dict, by default "rmse"
+        Metrics to be tracked at cross-validation fitting time with possible values of ``"rmse"``,
+        ``"rmsle"``, ``"mae"``. Note this is different than `eval_metric` that needs to be passed to
+        `params` dict, by default "rmse"
 
     early_stopping_rounds : int, optional
         The criterion to early abort the ``xgboost.cv()`` phase if the test metric is not improved,
@@ -187,6 +187,16 @@ class XGBoostCVRegressor(XGBoostRegressor):
             self.n_splits,
             var_name="n_splits",
             dtypes=int,
+        )
+        check_var(
+            self.metrics,
+            var_name="metrics",
+            dtypes=str,
+            values=(
+                "rmse",
+                "rmsle",
+                "mae",
+            ),
         )
         check_var(
             self.early_stopping_rounds,

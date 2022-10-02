@@ -14,6 +14,7 @@ from slickml.visualization import plot_xgb_cv_results
 # TODO(amir): currently there is a bug in `sphinx-autoapi` that ignores the doc for inherited classes
 # https://github.com/readthedocs/sphinx-autoapi/issues/272
 # for now, I have turned on `"private-members"`
+# TODO(amir): add the functionality to receive multiple metrics as `List[str]` as well
 @dataclass
 class XGBoostCVClassifier(XGBoostClassifier):
     """XGBoost CV Classifier.
@@ -31,8 +32,8 @@ class XGBoostCVClassifier(XGBoostClassifier):
         Number of folds for cross-validation, by default 4
 
     metrics : str, optional
-        Metrics to be tracked at fitting time with possible values of "auc", "aucpr", "error",
-        "logloss". Note this is different than `eval_metric` that needs to be passed to `params`
+        Metrics to be tracked at cross-validation fitting time with possible values of "auc", "aucpr",
+        "error", "logloss". Note this is different than `eval_metric` that needs to be passed to `params`
         dict, by default "auc"
 
     early_stopping_rounds : int, optional
@@ -204,6 +205,17 @@ class XGBoostCVClassifier(XGBoostClassifier):
             self.n_splits,
             var_name="n_splits",
             dtypes=int,
+        )
+        check_var(
+            self.metrics,
+            var_name="metrics",
+            dtypes=str,
+            values=(
+                "auc",
+                "aucpr",
+                "error",
+                "logloss",
+            ),
         )
         check_var(
             self.early_stopping_rounds,

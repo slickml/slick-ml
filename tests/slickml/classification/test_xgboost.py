@@ -60,7 +60,6 @@ class TestXGBoostClassifier:
         ("kwargs"),
         [
             {"num_boost_round": "100"},
-            {"metrics": "roc_auc"},
             {"sparse_matrix": 1},
             {"scale_mean": 1},
             {"scale_std": 1},
@@ -131,8 +130,6 @@ class TestXGBoostClassifier:
         assert_that(clf).is_instance_of(XGBoostClassifier)
         assert_that(clf.num_boost_round).is_instance_of(int)
         assert_that(clf.num_boost_round).is_equal_to(200)
-        assert_that(clf.metrics).is_instance_of(str)
-        assert_that(clf.metrics).is_equal_to("auc")
         assert_that(clf.sparse_matrix).is_instance_of(bool)
         assert_that(clf.sparse_matrix).is_false()
         assert_that(clf.scale_mean).is_instance_of(bool)
@@ -248,8 +245,6 @@ class TestXGBoostClassifier:
         assert_that(clf).is_instance_of(XGBoostClassifier)
         assert_that(clf.num_boost_round).is_instance_of(int)
         assert_that(clf.num_boost_round).is_equal_to(200)
-        assert_that(clf.metrics).is_instance_of(str)
-        assert_that(clf.metrics).is_equal_to("auc")
         assert_that(clf.sparse_matrix).is_instance_of(bool)
         assert_that(clf.sparse_matrix).is_false()
         assert_that(clf.scale_mean).is_instance_of(bool)
@@ -310,7 +305,6 @@ class TestXGBoostClassifier:
         ("clf_x_y_data", "kwargs"),
         [
             ("dataframe", {"num_boost_round": 300}),
-            ("dataframe", {"metrics": "aucpr"}),
             ("dataframe", {"sparse_matrix": True}),
             ("dataframe", {"sparse_matrix": True, "scale_std": True}),
             ("dataframe", {"scale_mean": True}),
@@ -370,7 +364,6 @@ class TestXGBoostClassifier:
 
         assert_that(clf).is_instance_of(XGBoostClassifier)
         assert_that(clf.num_boost_round).is_instance_of(int)
-        assert_that(clf.metrics).is_instance_of(str)
         assert_that(clf.sparse_matrix).is_instance_of(bool)
         assert_that(clf.scale_mean).is_instance_of(bool)
         assert_that(clf.scale_std).is_instance_of(bool)
