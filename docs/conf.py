@@ -181,7 +181,7 @@ autoapi_ignore = [
     "*migrations*",
     "*TODO*",
 ]
-autoapi_add_toctree_entry = True
+autoapi_add_toctree_entry = False
 autoapi_python_class_content = "class"
 autoapi_member_order = "alphabetical"
 autoapi_python_use_implicit_namespaces = False
