@@ -127,7 +127,7 @@ Please note that before starting any major work, open an issue describing what y
 
 
 ### 🧪 Testing
-- We believe in [Modern Test Driven Development (TDD)](https://testdriven.io/blog/modern-tdd/) and mainly use [*pydantic*](https://pydantic-docs.helpmanual.io/), [*pytest*](https://docs.pytest.org/en/7.1.x/), [*assertpy*](https://github.com/assertpy/assertpy) along with [*pytest-cov*](https://github.com/pytest-dev/pytest-cov) with more specification laid out in [*.coveragerc*](https://github.com/slickml/slick-ml/blob/master/.coveragerc) to develop our unit-tests.
+- We believe in [Modern Test Driven Development (TDD)](https://testdriven.io/blog/modern-tdd/) and mainly use [*pytest*](https://docs.pytest.org/en/7.1.x/), [*assertpy*](https://github.com/assertpy/assertpy) along with various plugins including [*pytest-cov*](https://github.com/pytest-dev/pytest-cov) with more specification laid out in [*.coveragerc*](https://github.com/slickml/slick-ml/blob/master/.coveragerc) to develop our unit-tests.
 - All unit-tests live in `tests/` directory separted from the source code.
 - All unit-test files should begin with the word `test` i.e. `test_foo.py`.
 - Our naming convention for naming tests is `test_<method_under_test>__<when>__<then>` pattern which would increase the code readbility.
@@ -150,7 +150,7 @@ Please note that before starting any major work, open an issue describing what y
   poe sphinx
   ```
 - The generated API documentation file can be found at `docs/_build/index.html`.
-- You can also add a new page in `.rst` or `md` formats under `docs/page`.
+- You can also add a new page in `.rst` or `md` formats under `docs/pages`.
 - All `sphinx` configurations that we are using are available in `docs/conf.py`.
 
 ## 🔥 Pull Requests

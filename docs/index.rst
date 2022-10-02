@@ -43,16 +43,16 @@ of information that can be inferred.
         :link: pages/installation
         :link-type: doc
 
-        Learn more on the requirements and how to set up your Python environment to install SlickML ...
+        Learn more about the requirements and how to set up your Python environment to install SlickML smoothly ...
 
     .. grid-item-card:: :doc:`📌 Quick Start <pages/quick_start>`
         :link: pages/quick_start
         :link-type: doc
 
-        Wanna take a glimpse at some of key functionalities? Quick start is the best place to start your journey ...
+        Wanna take a glimpse at some of the key functionalities? Quick start is the best place to start your journey ...
 
-    .. grid-item-card:: :doc:`🎯 API Reference <autoapi/index>`
-        :link: autoapi/index
+    .. grid-item-card:: :doc:`🎯 API Reference <pages/api>`
+        :link: pages/api
         :link-type: doc
 
         Explore SlickML API Reference and hopefully scrutinize the source code ...
@@ -104,7 +104,7 @@ community. This is a good place to discuss your questions and ideas or in genera
    License <pages/license>
    Code of Conduct <pages/code_of_conduct>
    Contact Us <pages/contact_us>
-   API Reference <autoapi/index>
+   API Reference <pages/api>
 
 .. FUTURE PAGES:
    Examples <pages/examples>
