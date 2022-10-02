@@ -34,7 +34,7 @@ def plot_xgb_feature_importance(
     display_plot: Optional[bool] = True,
     return_fig: Optional[bool] = False,
 ) -> Optional[Figure]:
-    """Visualizes the XGBoost feature importance as bar chart.
+    """Visualizes the XGBoost feature importance as a bar chart.
 
     Notes
     -----

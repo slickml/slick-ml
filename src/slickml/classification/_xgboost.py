@@ -23,7 +23,7 @@ from slickml.visualization import (
 class XGBoostClassifier(BaseEstimator, ClassifierMixin):
     """XGBoost Classifier.
 
-    This is wrapper using XGBoost classifier to train a XGBoost [xgboost-api]_ model using the number of
+    This is a wrapper using XGBoost classifier to train a XGBoost [xgboost-api]_ model using the number of
     boosting rounds from the inputs. This is also the base class for ``XGBoostCVClassifier``.
 
     Parameters
