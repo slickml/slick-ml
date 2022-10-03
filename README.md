@@ -31,11 +31,15 @@
 </div>
 
 ## 🧠 SlickML🧞 Philosophy
-**SlickML** is an open-source machine learning library written in Python aimed
-at accelerating the experimentation time for ML applications with tabular data while maximizing the amount of information can be inferred. Data Scientists'
-tasks can often be repetitive such as feature selection, model tuning, or
-evaluating metrics for classification and regression problems. We strongly believe that a good portion of the tasks based on tabular data can be addressed via gradient boosting and generalized linear models<sup>[1](https://arxiv.org/pdf/2207.08815.pdf)</sup>. SlickML provides
-Data Scientists with a toolbox to quickly prototype solutions for a given problem with minimal code while maximizing the amount of information that can be inferred.
+**SlickML** is an open-source machine learning library written in Python aimed at accelerating the
+experimentation time for ML applications with tabular data while maximizing the amount of information
+can be inferred. Data Scientists' tasks can often be repetitive such as feature selection, model
+tuning, or evaluating metrics for classification and regression problems. We strongly believe that a
+good portion of the tasks based on tabular data can be addressed via gradient boosting and generalized
+linear models<sup>[1](https://arxiv.org/pdf/2207.08815.pdf)</sup>. SlickML provides Data Scientists
+with a toolbox to quickly prototype solutions for a given problem with minimal code while maximizing
+the amount of information that can be inferred. Additionally, the prototype solutions can be easily
+promoted and served in production with our recommended recipes. 
 
 
 ## 📖 Documentation
@@ -138,7 +142,7 @@ clf.plot_shap_waterfall()
 ✅ An example to train/validate a `GLMNetCV Classifier` with `Cross-Validation` and `Coefficients` visualizations:
 ```python
 from slickml.classification import GLMNetCVClassifier
-clf = GLMNetCVClassifier(alpha=0.3, n_splits=4, metric="roc_auc")
+clf = GLMNetCVClassifier(alpha=0.3, n_splits=4, metric="auc")
 clf.fit(X_train, y_train)
 y_pred_proba = clf.predict_proba(X_test)
 

@@ -31,7 +31,7 @@ with tabular data while maximizing the amount of information can be inferred. Da
 selection, model tuning, or evaluating metrics for classification and regression problems. We strongly believe that a good portion of the tasks
 based on tabular data can be addressed via gradient boosting and generalized linear models `[1] <https://arxiv.org/pdf/2207.08815.pdf>`_.
 SlickML provides Data Scientists with a toolbox to quickly prototype solutions for a given problem with minimal code while maximizing the amound
-of information that can be inferred.
+of information that can be inferred. Additionally, the prototype solutions can be easily promoted and served in production with our recommended recipes. 
 
 
 .. grid:: 1 2 2 2
