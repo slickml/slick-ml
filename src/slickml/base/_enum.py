@@ -13,8 +13,8 @@ class ExtendedEnum(Enum):
     values()
         Returns a list of Enum values as string
 
-    pairs()
-        Returns a dictionary of all Enum name-value pairs as string
+    to_dict()
+        Returns a dictionary of all Enum name-value pairs
 
     Examples
     --------

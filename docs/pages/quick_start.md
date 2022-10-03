@@ -81,7 +81,7 @@ clf.plot_shap_waterfall()
 An example to train/validate a `GLMNetCVClassifier` with Cross-Validation and Coefficients visualizations:
 ```python
 from slickml.classification import GLMNetCVClassifier
-clf = GLMNetCVClassifier(alpha=0.3, n_splits=4, metric="roc_auc")
+clf = GLMNetCVClassifier(alpha=0.3, n_splits=4, metric="auc")
 clf.fit(X_train, y_train)
 y_pred_proba = clf.predict_proba(X_test)
 
