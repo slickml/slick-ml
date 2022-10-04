@@ -5,7 +5,7 @@
 
 [tool.poetry]
 name = "slickml"
-version = "0.2.0-beta"
+version = "0.2.0-beta.1"
 description = "SlickML: Slick Machine Learning in Python"
 license = "MIT"
 authors = [

@@ -14,6 +14,28 @@
 
 ---
 
+## 📍 Version 0.2.0-beta.1 - 2022-10-04
+
+### 🛠 Fixed
+- [#143](https://github.com/slickml/slick-ml/pull/143), [#123](https://github.com/slickml/slick-ml/pull/123) fixed `CI/CD` workflows.
+- [#141](https://github.com/slickml/slick-ml/pull/141), [#144](https://github.com/slickml/slick-ml/pull/144) refactored `GLMNetCVClassifier`.
+- [#137](https://github.com/slickml/slick-ml/pull/137), [#135](https://github.com/slickml/slick-ml/pull/135) refactored `XGBoostCVRegressor`.
+- [#133](https://github.com/slickml/slick-ml/pull/133), [#126](https://github.com/slickml/slick-ml/pull/126) refactored `XGBoostCVClassifier`.
+- [#147](https://github.com/slickml/slick-ml/pull/147), [#113](https://github.com/slickml/slick-ml/pull/113), [#108](https://github.com/slickml/slick-ml/pull/108), [#109](https://github.com/slickml/slick-ml/pull/109) refactored `Metrics`.
+- [#95](https://github.com/slickml/slick-ml/pull/95), [#100](https://github.com/slickml/slick-ml/pull/100), [#100](https://github.com/slickml/slick-ml/pull/110) fixed `Format / Lint`.
+- [#96](https://github.com/slickml/slick-ml/pull/96), [#98](https://github.com/slickml/slick-ml/pull/98), [#112](https://github.com/slickml/slick-ml/pull/112) fixed `Utils` functions and transformations.
+- [#105](https://github.com/slickml/slick-ml/pull/105), [#150](https://github.com/slickml/slick-ml/pull/150), [#148](https://github.com/slickml/slick-ml/pull/148), [#145](https://github.com/slickml/slick-ml/pull/145), [#114](https://github.com/slickml/slick-ml/pull/114), [#127](https://github.com/slickml/slick-ml/pull/127), [#115](https://github.com/slickml/slick-ml/pull/115),  [#129](https://github.com/slickml/slick-ml/pull/129), [#130](https://github.com/slickml/slick-ml/pull/130), [#117](https://github.com/slickml/slick-ml/pull/117), [#116](https://github.com/slickml/slick-ml/pull/116), [#111](https://github.com/slickml/slick-ml/pull/111), [#124](https://github.com/slickml/slick-ml/pull/124) fixed `Sphinx Auto-Api Docs + README`.
+
+### 🔥 Added
+- [#142](https://github.com/slickml/slick-ml/pull/142) added `Poetry v1.2` dependencies.
+- [#138](https://github.com/slickml/slick-ml/pull/138) added `codecov.yml`.
+- [#131](https://github.com/slickml/slick-ml/pull/131) added `py.typed` to comply with `PEP-561`.
+- [#104](https://github.com/slickml/slick-ml/pull/104) added Workflow for API Docs Deploy.
+- [#103](https://github.com/slickml/slick-ml/pull/103) added Check-Var Utilities.
+- [#99](https://github.com/slickml/slick-ml/pull/99) added PR template.
+
+---
+
 ## 📍 Version 0.2.0-beta - 2022-05-29
 
 ### 🛠 Fixed
