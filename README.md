@@ -32,7 +32,7 @@
 
 ## 🧠 SlickML🧞 Philosophy
 **SlickML** is an open-source machine learning library written in Python aimed at accelerating the
-experimentation time for ML applications with tabular data while maximizing the amount of information
+experimentation time for ML applications with tabular data while maximizing the amount of information that
 can be inferred. Data Scientists' tasks can often be repetitive such as feature selection, model
 tuning, or evaluating metrics for classification and regression problems. We strongly believe that a
 good portion of the tasks based on tabular data can be addressed via gradient boosting and generalized
