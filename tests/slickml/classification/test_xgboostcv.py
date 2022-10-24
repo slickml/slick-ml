@@ -77,7 +77,10 @@ class TestXGBoostCVClassifier:
         ],
         ids=_ids,
     )
-    def test_xgboostcvclassifier_instantiation__fails__with_invalid_inputs(self, kwargs) -> None:
+    def test_xgboostcvclassifier_instantiation__fails__with_invalid_inputs(
+        self,
+        kwargs: List[Dict[str, Any]],
+    ) -> None:
         """Validates `XGBoostCVClassifier` cannot be instantiated with invalid inputs."""
         with pytest.raises((ValueError, TypeError)):
             XGBoostCVClassifier(**kwargs)
