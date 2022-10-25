@@ -5,6 +5,7 @@
 # - https://github.com/snok/install-poetry
 # - https://github.com/actions/setup-python#caching-packages-dependencies
 # - https://stackoverflow.com/questions/62977821/how-to-cache-poetry-install-for-github-actions
+# - https://github.com/codecov/codecov-action
 ####################################################################################################
 name: build
 
@@ -86,7 +87,7 @@ jobs:
       - name: Codecov
         # NOTE: only run code coverage with one Python Version and OS; the rest is not needed
         if: ${{ matrix.python-version == '3.9' && matrix.os == 'ubuntu-latest' }}
-        uses: codecov/codecov-action@v2
+        uses: codecov/codecov-action@v3
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           directory: ./xmlcov/
