@@ -9,52 +9,14 @@ import shap
 import xgboost as xgb
 from assertpy import assert_that
 from matplotlib.figure import Figure
-from pytest import FixtureRequest
-from sklearn.model_selection import train_test_split
 
 from slickml.classification import XGBoostClassifier
-from tests.utils import _ids, _load_test_data_from_csv
+from tests.conftest import _ids
 
 
 # TODO(amir): Currently `SHAP` raises a lot of warnings. Please figure out a way to dump these warnings
 class TestXGBoostClassifier:
     """Validates `XGBoostClassifier` instantiation."""
-
-    @staticmethod
-    @pytest.fixture(scope="module")
-    def clf_x_y_data(
-        request: FixtureRequest,
-    ) -> Tuple[
-        Union[pd.DataFrame, np.ndarray],
-        Union[pd.DataFrame, np.ndarray],
-        Union[np.ndarray, List],
-        Union[np.ndarray, List],
-    ]:
-        """Returns stratified train/test sets."""
-        df = _load_test_data_from_csv(
-            filename="clf_test_data.csv",
-        )
-        y = df["CLASS"].values
-        X = df.drop(
-            ["CLASS"],
-            axis=1,
-        )
-        X_train, X_test, y_train, y_test = train_test_split(
-            X,
-            y,
-            test_size=0.2,
-            shuffle=True,
-            stratify=y,
-            random_state=1367,
-        )
-        if request.param == "dataframe":
-            return (X_train, X_test, y_train, y_test)
-        elif request.param == "array":
-            return (X_train.values, X_test.values, y_train, y_test)
-        elif request.param == "list":
-            return (X_train, X_test, y_train.tolist(), y_test.tolist())
-        else:
-            return None
 
     @pytest.mark.parametrize(
         ("kwargs"),
@@ -75,18 +37,18 @@ class TestXGBoostClassifier:
             XGBoostClassifier(**kwargs)
 
     @pytest.mark.parametrize(
-        ("clf_x_y_data"),
+        ("clf_train_test_x_y"),
         [
             ("array"),
             ("dataframe"),
             ("list"),
         ],
-        indirect=["clf_x_y_data"],
+        indirect=["clf_train_test_x_y"],
         ids=_ids,
     )
     def test_xgboostclassifier__passes__with_defaults_and_no_test_targets(
         self,
-        clf_x_y_data: Tuple[
+        clf_train_test_x_y: Tuple[
             Union[pd.DataFrame, np.ndarray],
             Union[pd.DataFrame, np.ndarray],
             Union[np.ndarray, List],
@@ -94,7 +56,7 @@ class TestXGBoostClassifier:
         ],
     ) -> None:
         """Validates `XGBoostClassifier` instanation passes with default inputs."""
-        X_train, X_test, y_train, _ = clf_x_y_data
+        X_train, X_test, y_train, _ = clf_train_test_x_y
         clf = XGBoostClassifier()
         clf.fit(X_train, y_train)
         y_pred_proba = clf.predict_proba(X_test)
@@ -188,18 +150,18 @@ class TestXGBoostClassifier:
         npt.assert_almost_equal(np.mean(clf.shap_values_train_), 0.11710, decimal=5)
 
     @pytest.mark.parametrize(
-        ("clf_x_y_data"),
+        ("clf_train_test_x_y"),
         [
             ("array"),
             ("dataframe"),
             ("list"),
         ],
-        indirect=["clf_x_y_data"],
+        indirect=["clf_train_test_x_y"],
         ids=_ids,
     )
     def test_xgboostclassifier__passes__with_defaults(
         self,
-        clf_x_y_data: Tuple[
+        clf_train_test_x_y: Tuple[
             Union[pd.DataFrame, np.ndarray],
             Union[pd.DataFrame, np.ndarray],
             Union[np.ndarray, List],
@@ -207,7 +169,7 @@ class TestXGBoostClassifier:
         ],
     ) -> None:
         """Validates `XGBoostClassifier` instanation passes with default inputs."""
-        X_train, X_test, y_train, y_test = clf_x_y_data
+        X_train, X_test, y_train, y_test = clf_train_test_x_y
         clf = XGBoostClassifier()
         clf.fit(X_train, y_train)
         # Note: we pass `y_test` for the sake of testing while in inference we might night have
@@ -302,7 +264,7 @@ class TestXGBoostClassifier:
         npt.assert_almost_equal(np.mean(clf.shap_values_train_), 0.11710, decimal=5)
 
     @pytest.mark.parametrize(
-        ("clf_x_y_data", "kwargs"),
+        ("clf_train_test_x_y", "kwargs"),
         [
             ("dataframe", {"num_boost_round": 300}),
             ("dataframe", {"sparse_matrix": True}),
@@ -313,12 +275,12 @@ class TestXGBoostClassifier:
             ("dataframe", {"importance_type": "cover"}),
             ("dataframe", {"params": {"max_depth": 4, "min_child_weight": 5}}),
         ],
-        indirect=["clf_x_y_data"],
+        indirect=["clf_train_test_x_y"],
         ids=_ids,
     )
     def test_xgboostclassifier__passes__with_valid_inputs(
         self,
-        clf_x_y_data: Tuple[
+        clf_train_test_x_y: Tuple[
             Union[pd.DataFrame, np.ndarray],
             Union[pd.DataFrame, np.ndarray],
             Union[np.ndarray, List],
@@ -327,7 +289,7 @@ class TestXGBoostClassifier:
         kwargs: Optional[Dict[str, Any]],
     ) -> None:
         """Validates `XGBoostClassifier` instanation passes with valid inputs."""
-        X_train, X_test, y_train, y_test = clf_x_y_data
+        X_train, X_test, y_train, y_test = clf_train_test_x_y
         clf = XGBoostClassifier(**kwargs)
         clf.fit(X_train, y_train)
         # Note: we pass `y_test` for the sake of testing while in inference we might night have
@@ -392,7 +354,7 @@ class TestXGBoostClassifier:
 
     @pytest.mark.parametrize(
         (
-            "clf_x_y_data",
+            "clf_train_test_x_y",
             "waterfall_kwargs",
             "summary_kwargs",
         ),
@@ -438,17 +400,17 @@ class TestXGBoostClassifier:
                 },
             ),
         ],
-        indirect=["clf_x_y_data"],
+        indirect=["clf_train_test_x_y"],
         ids=_ids,
     )
     def test_xgboostclassifier_shap_plots__passes__with_valid_inputs(
         self,
-        clf_x_y_data: Tuple[pd.DataFrame, pd.DataFrame, np.ndarray, np.ndarray],
+        clf_train_test_x_y: Tuple[pd.DataFrame, pd.DataFrame, np.ndarray, np.ndarray],
         waterfall_kwargs: Dict[str, Any],
         summary_kwargs: Dict[str, Any],
     ) -> None:
         """Validates `XGBoostClassifier` Shap plots passes with valid inputs."""
-        X_train, X_test, y_train, y_test = clf_x_y_data
+        X_train, X_test, y_train, y_test = clf_train_test_x_y
         clf = XGBoostClassifier()
         clf.fit(X_train, y_train)
         _ = clf.predict_proba(X_test, y_test)

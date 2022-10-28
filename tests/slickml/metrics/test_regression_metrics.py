@@ -8,7 +8,7 @@ from assertpy import assert_that
 from matplotlib.figure import Figure
 
 from slickml.metrics import RegressionMetrics
-from tests.utils import _ids
+from tests.conftest import _ids
 
 
 # TODO(amir): tests for multi-outputs + "variance_weighted" and "raw_values" methods are still missing

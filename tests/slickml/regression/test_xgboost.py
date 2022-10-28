@@ -9,53 +9,15 @@ import shap
 import xgboost as xgb
 from assertpy import assert_that
 from matplotlib.figure import Figure
-from pytest import FixtureRequest
-from sklearn.model_selection import train_test_split
 
 from slickml.regression import XGBoostRegressor
-from tests.utils import _ids, _load_test_data_from_csv
+from tests.conftest import _ids
 
 
 # TODO(amir): Currently `SHAP` raises a lot of warnings. Please figure out a way to dump these warnings
 # TODO(amir): test out regression with multiple outputs (y1, y2)
 class TestXGBoostRegressor:
     """Validates `XGBoostRegressor` instantiation."""
-
-    @staticmethod
-    @pytest.fixture(scope="module")
-    def reg_x_y_data(
-        request: FixtureRequest,
-    ) -> Tuple[
-        Union[pd.DataFrame, np.ndarray],
-        Union[pd.DataFrame, np.ndarray],
-        Union[np.ndarray, List],
-        Union[np.ndarray, List],
-    ]:
-        """Returns train/test sets."""
-        df = _load_test_data_from_csv(
-            filename="reg_test_data.csv",
-        )
-        # TODO(amir): try to pull-out multi target regression as well here
-        y = df["TARGET1"].values
-        X = df.drop(
-            ["TARGET1", "TARGET2"],
-            axis=1,
-        )
-        X_train, X_test, y_train, y_test = train_test_split(
-            X,
-            y,
-            test_size=0.2,
-            shuffle=True,
-            random_state=1367,
-        )
-        if request.param == "dataframe":
-            return (X_train, X_test, y_train, y_test)
-        elif request.param == "array":
-            return (X_train.values, X_test.values, y_train, y_test)
-        elif request.param == "list":
-            return (X_train, X_test, y_train.tolist(), y_test.tolist())
-        else:
-            return None
 
     @pytest.mark.parametrize(
         ("kwargs"),
@@ -76,18 +38,18 @@ class TestXGBoostRegressor:
             XGBoostRegressor(**kwargs)
 
     @pytest.mark.parametrize(
-        ("reg_x_y_data"),
+        ("reg_train_test_x_y"),
         [
             ("array"),
             ("dataframe"),
             ("list"),
         ],
-        indirect=["reg_x_y_data"],
+        indirect=["reg_train_test_x_y"],
         ids=_ids,
     )
     def test_xgboostregressor__passes__with_defaults(
         self,
-        reg_x_y_data: Tuple[
+        reg_train_test_x_y: Tuple[
             Union[pd.DataFrame, np.ndarray],
             Union[pd.DataFrame, np.ndarray],
             Union[np.ndarray, List],
@@ -95,7 +57,7 @@ class TestXGBoostRegressor:
         ],
     ) -> None:
         """Validates `XGBoostRegressor` instanation passes with default inputs."""
-        X_train, X_test, y_train, y_test = reg_x_y_data
+        X_train, X_test, y_train, y_test = reg_train_test_x_y
         reg = XGBoostRegressor()
         reg.fit(X_train, y_train)
         # Note: we pass `y_test` for the sake of testing while in inference we might night have
@@ -189,18 +151,18 @@ class TestXGBoostRegressor:
         npt.assert_almost_equal(np.mean(reg.shap_values_train_), -1.98011e-08, decimal=5)
 
     @pytest.mark.parametrize(
-        ("reg_x_y_data"),
+        ("reg_train_test_x_y"),
         [
             ("array"),
             ("dataframe"),
             ("list"),
         ],
-        indirect=["reg_x_y_data"],
+        indirect=["reg_train_test_x_y"],
         ids=_ids,
     )
     def test_xgboostregressor__passes__with_defaults_and_no_test_targets(
         self,
-        reg_x_y_data: Tuple[
+        reg_train_test_x_y: Tuple[
             Union[pd.DataFrame, np.ndarray],
             Union[pd.DataFrame, np.ndarray],
             Union[np.ndarray, List],
@@ -208,7 +170,7 @@ class TestXGBoostRegressor:
         ],
     ) -> None:
         """Validates `XGBoostRegressor` instanation passes with default inputs."""
-        X_train, X_test, y_train, _ = reg_x_y_data
+        X_train, X_test, y_train, _ = reg_train_test_x_y
         reg = XGBoostRegressor()
         reg.fit(X_train, y_train)
         y_pred = reg.predict(X_test)
@@ -298,7 +260,7 @@ class TestXGBoostRegressor:
         npt.assert_almost_equal(np.mean(reg.shap_values_train_), -1.98011e-08, decimal=5)
 
     @pytest.mark.parametrize(
-        ("reg_x_y_data", "kwargs"),
+        ("reg_train_test_x_y", "kwargs"),
         [
             ("dataframe", {"num_boost_round": 300}),
             ("dataframe", {"sparse_matrix": True}),
@@ -309,12 +271,12 @@ class TestXGBoostRegressor:
             ("dataframe", {"importance_type": "cover"}),
             ("dataframe", {"params": {"max_depth": 4, "min_child_weight": 5}}),
         ],
-        indirect=["reg_x_y_data"],
+        indirect=["reg_train_test_x_y"],
         ids=_ids,
     )
     def test_xgboostregressor__passes__with_valid_inputs(
         self,
-        reg_x_y_data: Tuple[
+        reg_train_test_x_y: Tuple[
             Union[pd.DataFrame, np.ndarray],
             Union[pd.DataFrame, np.ndarray],
             Union[np.ndarray, List],
@@ -323,7 +285,7 @@ class TestXGBoostRegressor:
         kwargs: Optional[Dict[str, Any]],
     ) -> None:
         """Validates `XGBoostRegressor` instanation passes with valid inputs."""
-        X_train, X_test, y_train, y_test = reg_x_y_data
+        X_train, X_test, y_train, y_test = reg_train_test_x_y
         reg = XGBoostRegressor(**kwargs)
         reg.fit(X_train, y_train)
         # Note: we pass `y_test` for the sake of testing while in inference we might night have
@@ -388,7 +350,7 @@ class TestXGBoostRegressor:
 
     @pytest.mark.parametrize(
         (
-            "reg_x_y_data",
+            "reg_train_test_x_y",
             "waterfall_kwargs",
             "summary_kwargs",
         ),
@@ -433,17 +395,17 @@ class TestXGBoostRegressor:
                 },
             ),
         ],
-        indirect=["reg_x_y_data"],
+        indirect=["reg_train_test_x_y"],
         ids=_ids,
     )
     def test_xgboostregressor_shap_plots__passes__with_valid_inputs(
         self,
-        reg_x_y_data: Tuple[pd.DataFrame, pd.DataFrame, np.ndarray, np.ndarray],
+        reg_train_test_x_y: Tuple[pd.DataFrame, pd.DataFrame, np.ndarray, np.ndarray],
         waterfall_kwargs: Dict[str, Any],
         summary_kwargs: Dict[str, Any],
     ) -> None:
         """Validates `XGBoostRegressor` Shap plots passes with valid inputs."""
-        X_train, X_test, y_train, y_test = reg_x_y_data
+        X_train, X_test, y_train, y_test = reg_train_test_x_y
         reg = XGBoostRegressor()
         reg.fit(X_train, y_train)
         _ = reg.predict(X_test, y_test)
