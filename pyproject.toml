@@ -144,7 +144,14 @@ build-backend = "poetry.core.masonry.api"
 
 # -- try `poe --help` for options
 [tool.poe.tasks]
-greet = { cmd = """echo Welcome to SlickML $USER. The following commands can be used to ease the development process for you. Formatting: `poe format`, Linting: `poe check`, Testing: `poe test`, Environments Testing: `poe tox`""", help = "Runtime user greetings" }
+greet = { cmd = """echo "Welcome to SlickML ♡♡♡ $USER ♡♡♡ ...\n\n \
+███████╗██╗     ██╗ ██████╗██╗  ██╗███╗   ███╗██╗     
+██╔════╝██║     ██║██╔════╝██║ ██╔╝████╗ ████║██║     
+███████╗██║     ██║██║     █████╔╝ ██╔████╔██║██║     
+╚════██║██║     ██║██║     ██╔═██╗ ██║╚██╔╝██║██║     
+███████║███████╗██║╚██████╗██║  ██╗██║ ╚═╝ ██║███████╗
+╚══════╝╚══════╝╚═╝ ╚═════╝╚═╝  ╚═╝╚═╝     ╚═╝╚══════╝\
+" """, help = "Runtime user greetings" }
 clean = { cmd = "rm -rf .coverage dist/ .mypy_cache/ .pytest_cache/ .tox/ htmlcov/ xmlcov/ **/__pycache__/ **/.ipynb_checkpoints/", help = "Remove all the ignored directories/files" }
 add-trailing-comma = { cmd = "poetry run add-trailing-comma --exit-zero-even-if-changed src/**/*.py tests/**/*.py", help = "Format code style via add-trailing-comma" }
 black = { cmd = "poetry run black --line-length 100 .", help = "Format code style via black" }
@@ -155,11 +162,13 @@ test = { cmd = "poetry run python -m pytest --cov=src --cov-report=term --cov-re
 sphinx = { cmd = "poetry run sphinx-build -b html docs/ docs/_build", help = "Build API docs via sphinx" }
 tox = { cmd = "poetry run tox -c tox.ini .", help = "Test environments via tox" }
 format = [
+    { ref = "greet" },
     { ref = "add-trailing-comma" },
     { ref = "isort" },
     { ref = "black" },
 ]
 check = [
+    { ref = "greet" },
     { cmd = "poe black --check" },
     { cmd = "poe isort --check-only" },
     { ref = "flake8" },
