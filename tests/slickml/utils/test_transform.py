@@ -10,30 +10,12 @@ from pytest import CaptureFixture
 from scipy.sparse import csr_matrix
 
 from slickml.utils import add_noisy_features, array_to_df, df_to_csr, memory_use_csr
-from tests.utils import (
-    _captured_log,
-    _dummy_pandas_dataframe,
-    _dummy_sparse_matrix,
-    _ids,
-)
+from tests.conftest import _captured_log, _ids
 
 
-@pytest.fixture
-def datafarame_for_testing():
-    """Returns pandas.DataFrame as `pytest.fixture`"""
-    return _dummy_pandas_dataframe(
-        size=100,
-        random_state=1367,
-    )
-
-
-@pytest.fixture
-def sparse_matrix_for_testing():
-    """Returns csr matrix as `pytest.fixture`"""
-    return _dummy_sparse_matrix()
-
-
-def test_df_to_csr__passes__with_default_inputs(datafarame_for_testing: pd.DataFrame) -> None:
+def test_df_to_csr__passes__with_default_inputs(
+    datafarame_for_testing: pd.DataFrame,
+) -> None:
     """Validates conversion of a pandas DataFrame into CSR matrix with default inputs."""
     df = datafarame_for_testing
     csr = df_to_csr(df)

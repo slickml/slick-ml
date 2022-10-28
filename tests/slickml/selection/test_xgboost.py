@@ -5,62 +5,14 @@ import pandas as pd
 import pytest
 from assertpy import assert_that
 from matplotlib.figure import Figure
-from pytest import FixtureRequest
 from sklearn.preprocessing import StandardScaler
 
 from slickml.selection import XGBoostFeatureSelector
-from tests.utils import _ids, _load_test_data_from_csv
+from tests.conftest import _ids
 
 
 class TestXGBoostFeatureSelector:
     """Validates `XGBoostFeatureSelector` instantiation."""
-
-    @staticmethod
-    @pytest.fixture(scope="module")
-    def clf_x_y_data(
-        request: FixtureRequest,
-    ) -> Tuple[Union[pd.DataFrame, np.ndarray], Union[np.ndarray, List]]:
-        """Returns stratified train/test sets."""
-        df = _load_test_data_from_csv(
-            filename="clf_test_data.csv",
-        )
-        y = df["CLASS"].values
-        X = df.drop(
-            ["CLASS"],
-            axis=1,
-        )
-        if request.param == "dataframe":
-            return (X, y)
-        elif request.param == "array":
-            return (X.values, y)
-        elif request.param == "list":
-            return (X, y.tolist())
-        else:
-            return None
-
-    @staticmethod
-    @pytest.fixture(scope="module")
-    def reg_x_y_data(
-        request: FixtureRequest,
-    ) -> Tuple[Union[pd.DataFrame, np.ndarray], Union[np.ndarray, List]]:
-        """Returns train/test sets."""
-        df = _load_test_data_from_csv(
-            filename="reg_test_data.csv",
-        )
-        # TODO(amir): try to pull-out multi target regression as well here
-        y = df["TARGET1"].values
-        X = df.drop(
-            ["TARGET1", "TARGET2"],
-            axis=1,
-        )
-        if request.param == "dataframe":
-            return (X, y)
-        elif request.param == "array":
-            return (X.values, y)
-        elif request.param == "list":
-            return (X, y.tolist())
-        else:
-            return None
 
     @pytest.mark.parametrize(
         ("kwargs"),
@@ -93,24 +45,24 @@ class TestXGBoostFeatureSelector:
             XGBoostFeatureSelector(**kwargs)
 
     @pytest.mark.parametrize(
-        ("clf_x_y_data"),
+        ("clf_x_y"),
         [
             ("array"),
             ("dataframe"),
             ("list"),
         ],
-        indirect=["clf_x_y_data"],
+        indirect=["clf_x_y"],
         ids=_ids,
     )
     def test_clf_xgboostfeatureselector__passes__with_defaults(
         self,
-        clf_x_y_data: Tuple[
+        clf_x_y: Tuple[
             Union[pd.DataFrame, np.ndarray],
             Union[np.ndarray, List],
         ],
     ) -> None:
         """Validates `XGBoostFeatureSelector` instanation passes with default inputs for classification."""
-        X, y = clf_x_y_data
+        X, y = clf_x_y
         xfs = XGBoostFeatureSelector()
         xfs.fit(X, y)
         params = xfs.get_params()
@@ -192,24 +144,24 @@ class TestXGBoostFeatureSelector:
         assert_that(feature_frequency_fig).is_instance_of(Figure)
 
     @pytest.mark.parametrize(
-        ("reg_x_y_data"),
+        ("reg_x_y"),
         [
             ("array"),
             ("dataframe"),
             ("list"),
         ],
-        indirect=["reg_x_y_data"],
+        indirect=["reg_x_y"],
         ids=_ids,
     )
     def test_reg_xgboostfeatureselector__passes__with_defaults(
         self,
-        reg_x_y_data: Tuple[
+        reg_x_y: Tuple[
             Union[pd.DataFrame, np.ndarray],
             Union[np.ndarray, List],
         ],
     ) -> None:
         """Validates `XGBoostFeatureSelector` instanation passes with default inputs for regression."""
-        X, y = reg_x_y_data
+        X, y = reg_x_y
         xfs = XGBoostFeatureSelector(metrics="rmse")
         xfs.fit(X, y)
         params = xfs.get_params()
@@ -287,24 +239,24 @@ class TestXGBoostFeatureSelector:
 
     # TODO(amir): change the code for `callback=True` and add the unit-test
     @pytest.mark.parametrize(
-        ("clf_x_y_data"),
+        ("clf_x_y"),
         [
             ("array"),
             ("dataframe"),
             ("list"),
         ],
-        indirect=["clf_x_y_data"],
+        indirect=["clf_x_y"],
         ids=_ids,
     )
     def test_clf_xgboostfeatureselector__passes__with_valid_inputs(
         self,
-        clf_x_y_data: Tuple[
+        clf_x_y: Tuple[
             Union[pd.DataFrame, np.ndarray],
             Union[np.ndarray, List],
         ],
     ) -> None:
         """Validates `XGBoostFeatureSelector` instanation passes with valid inputs for classification."""
-        X, y = clf_x_y_data
+        X, y = clf_x_y
         # TODO(amir): callbacks=True has not been tested yet. The look of `self._cv()` would change
         # therefore the logic for `if _feature_gain["feature"].str.contains("noisy").sum() != 0:`
         # should be changed accordingly
@@ -394,24 +346,24 @@ class TestXGBoostFeatureSelector:
         assert_that(feature_frequency_fig).is_instance_of(Figure)
 
     @pytest.mark.parametrize(
-        ("reg_x_y_data"),
+        ("reg_x_y"),
         [
             ("array"),
             ("dataframe"),
             ("list"),
         ],
-        indirect=["reg_x_y_data"],
+        indirect=["reg_x_y"],
         ids=_ids,
     )
     def test_reg_xgboostfeatureselector__passes__with_valid_inputs(
         self,
-        reg_x_y_data: Tuple[
+        reg_x_y: Tuple[
             Union[pd.DataFrame, np.ndarray],
             Union[np.ndarray, List],
         ],
     ) -> None:
         """Validates `XGBoostFeatureSelector` instanation passes with valid inputs for regression."""
-        X, y = reg_x_y_data
+        X, y = reg_x_y
         xfs = XGBoostFeatureSelector(
             n_iter=1,
             metrics="rmse",

@@ -6,7 +6,7 @@ import pytest
 from assertpy import assert_that
 
 from slickml.utils import check_var
-from tests.utils import _ids
+from tests.conftest import _ids
 
 
 @pytest.mark.parametrize(

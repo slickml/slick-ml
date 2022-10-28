@@ -8,7 +8,7 @@ from assertpy import assert_that
 from matplotlib.figure import Figure
 
 from slickml.metrics import BinaryClassificationMetrics
-from tests.utils import _ids
+from tests.conftest import _ids
 
 
 # TODO(amir): the case for `average_method = None` which is in `__post_init__`
