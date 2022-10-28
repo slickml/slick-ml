@@ -76,10 +76,12 @@ jobs:
       - name: Test
         run: |
           source $VENV
+          poe greet
           poe test
       - name: Build
         run: |
           source $VENV
+          poe greet
           poetry build
       #----------------------------------------------
       #  ---  Upload test coverage to Codecov  ---

@@ -61,6 +61,7 @@ jobs:
       - name: Docs
         run: |
           source $VENV
+          poe greet
           poe sphinx
       #----------------------------------------------
       #  ---  Deploy docs to docs.slickml.com  ---
