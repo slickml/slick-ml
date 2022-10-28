@@ -82,18 +82,18 @@ seaborn = "^0.12"
 [tool.poetry.dev-dependencies]
 
 # --- package-management ---
-pip = "^22.2"
+pip = "^22.3"
 
 # --- task-management ---
 poethepoet = "^0.16"
 
 # --- testenv-management ---
-tox = "^3.26"
+tox = "^3.27"
 
 # --- formatting ---
 add-trailing-comma = "^2.2"
 isort = "^5.10"
-black = "^22.8"
+black = "^22.10"
 jupyter-black = "^0.3"
 
 # --- linting ---
@@ -115,15 +115,15 @@ flake8-commas = "^2.1"
 mypy = "^0.971"
 
 # --- unit-testing ---
-pytest = "^7.1"
-pytest-cov = "^3.0"
-pytest-mock = "^3.8"
+pytest = "^7.2"
+pytest-cov = "^4.0"
+pytest-mock = "^3.10"
 mock = "^4.0"
-coverage = "^6.4"
+coverage = "^6.5"
 assertpy = "^1.1"
 
 # --- docs ----
-sphinx = "^5.1"
+sphinx = "^5.3"
 sphinx-autoapi = "^1.9"
 sphinx_design = "^0.3"
 myst-parser = "^0.18"
