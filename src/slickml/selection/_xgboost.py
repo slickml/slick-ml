@@ -1045,6 +1045,10 @@ class XGBoostFeatureSelector:
         None
         """
         if self.callbacks:
+            # TODO(amir): ditch print with logger
+            print(
+                "Warning: The `cv` will break if the `early_stopping_rounds` criterion was not satisfied.",
+            )
             self.callbacks = [
                 xgb.callback.EvaluationMonitor(
                     rank=0,
