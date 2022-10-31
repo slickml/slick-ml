@@ -50,18 +50,20 @@ API Reference
 
         Learn more about the key visualization functions that is used across the API ...
 
+    .. grid-item-card:: 🔩 Base
+        :link: https://www.docs.slickml.com/autoapi/slickml/base/index.html
+        :link-type: url
+
+        Learn more about the base classes and protocols that are used across the core API ...  
+
     .. grid-item-card:: 🧰 Utils
         :link: https://www.docs.slickml.com/autoapi/slickml/utils/index.html
         :link-type: url
 
-        Learn more about the key utility functions that is used across the API ...
+        Learn more about the key utility functions that are used across the API ...
 
     .. grid-item-card:: β Beta
         :link: https://www.docs.slickml.com/autoapi/slickml/beta/index.html
         :link-type: url
 
         Learn more about the experimental functionalities across the API ...  
-
-
-
-

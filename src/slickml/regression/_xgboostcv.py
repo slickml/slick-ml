@@ -182,6 +182,7 @@ class XGBoostCVRegressor(XGBoostRegressor):
     callbacks: Optional[bool] = False
 
     def __post_init__(self) -> None:
+        """Post instantiation validations and assignments."""
         super().__post_init__()
         check_var(
             self.n_splits,
