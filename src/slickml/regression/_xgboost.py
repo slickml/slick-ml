@@ -7,10 +7,10 @@ import shap
 import xgboost as xgb
 from matplotlib.colors import LinearSegmentedColormap
 from matplotlib.figure import Figure
-from sklearn.base import BaseEstimator, RegressorMixin
-from sklearn.preprocessing import StandardScaler
+from sklearn.base import RegressorMixin
 
-from slickml.utils import array_to_df, check_var, df_to_csr
+from slickml.base import BaseXGBoostEstimator
+from slickml.utils import check_var
 from slickml.visualization import (
     plot_shap_summary,
     plot_shap_waterfall,
@@ -19,7 +19,7 @@ from slickml.visualization import (
 
 
 @dataclass
-class XGBoostRegressor(BaseEstimator, RegressorMixin):
+class XGBoostRegressor(BaseXGBoostEstimator, RegressorMixin):
     """XGBoost Regressor.
 
     This is wrapper using XGBoost regressor to train a XGBoost [xgboost-api]_ model using the number of
@@ -140,42 +140,11 @@ class XGBoostRegressor(BaseEstimator, RegressorMixin):
     scale_mean: Optional[bool] = False
     scale_std: Optional[bool] = False
     importance_type: Optional[str] = "total_gain"
-    params: Optional[Dict] = None
+    params: Optional[Dict[str, Union[str, float, int]]] = None
 
     def __post_init__(self) -> None:
         """Post instantiation validations and assignments."""
-        check_var(
-            self.num_boost_round,
-            var_name="num_boost_round",
-            dtypes=int,
-        )
-        check_var(
-            self.sparse_matrix,
-            var_name="sparse_matrix",
-            dtypes=bool,
-        )
-        check_var(
-            self.scale_mean,
-            var_name="scale_mean",
-            dtypes=bool,
-        )
-        check_var(
-            self.scale_std,
-            var_name="scale_std",
-            dtypes=bool,
-        )
-        check_var(
-            self.importance_type,
-            var_name="importance_type",
-            dtypes=str,
-            values=(
-                "weight",
-                "gain",
-                "total_gain",
-                "cover",
-                "total_cover",
-            ),
-        )
+        super().__post_init__()
 
         # The default set of params can be updated based on the given params by user
         _default_params = self._default_params()
@@ -189,11 +158,6 @@ class XGBoostRegressor(BaseEstimator, RegressorMixin):
             self.params = _default_params
         else:
             self.params = _default_params
-        # The `StandardScaler` with `mean=True` would turn a sparse matrix into a dense matrix
-        if self.sparse_matrix and self.scale_mean:
-            raise ValueError(
-                "The scale_mean should be False in conjuction of using sparse_matrix=True.",
-            )
 
     def fit(
         self,
@@ -618,183 +582,6 @@ class XGBoostRegressor(BaseEstimator, RegressorMixin):
         """
         self._explainer()
         return self.shap_explainer_
-
-    # TODO(amir): check the `y_train` type; maybe we need to have `list_to_array()` in utils?
-    def _dtrain(
-        self,
-        X_train: Union[pd.DataFrame, np.ndarray],
-        y_train: Union[List[float], np.ndarray, pd.Series],
-    ) -> xgb.DMatrix:
-        """Returns a proper dtrain matrix compatible with sparse/standardized matrices.
-
-        Parameters
-        ----------
-        X_train : Union[pd.DataFrame, np.ndarray]
-            Input data for training (features)
-
-        y_train : Union[List[float], np.ndarray, pd.Series]
-            Input ground truth for training (targets)
-
-        See Also
-        --------
-        :meth:`_dtest()`
-
-        Returns
-        -------
-        xgb.DMatrix
-        """
-        check_var(
-            X_train,
-            var_name="X_train",
-            dtypes=(
-                pd.DataFrame,
-                np.ndarray,
-            ),
-        )
-        check_var(
-            y_train,
-            var_name="y_train",
-            dtypes=(
-                list,
-                np.ndarray,
-                pd.Series,
-            ),
-        )
-
-        if isinstance(X_train, np.ndarray):
-            self.X_train = array_to_df(
-                X=X_train,
-                prefix="F",
-                delimiter="_",
-            )
-        else:
-            self.X_train = X_train
-
-        if not isinstance(y_train, np.ndarray):
-            self.y_train = np.array(y_train)
-        else:
-            self.y_train = y_train
-
-        # TODO(amir): move `StandardScaler` to utils
-        if self.scale_mean or self.scale_std:
-            self.scaler_ = StandardScaler(
-                copy=True,
-                with_mean=self.scale_mean,
-                with_std=self.scale_std,
-            )
-            self.X_train_ = pd.DataFrame(
-                self.scaler_.fit_transform(self.X_train),
-                columns=self.X_train.columns.tolist(),
-            )
-        else:
-            self.scaler_ = None
-            self.X_train_ = self.X_train
-
-        if not self.sparse_matrix:
-            dtrain = xgb.DMatrix(
-                data=self.X_train_,
-                label=self.y_train,
-            )
-        else:
-            dtrain = xgb.DMatrix(
-                data=df_to_csr(
-                    self.X_train_,
-                    fillna=0.0,
-                    verbose=False,
-                ),
-                label=self.y_train,
-                feature_names=self.X_train_.columns.tolist(),
-            )
-
-        return dtrain
-
-    def _dtest(
-        self,
-        X_test: Union[pd.DataFrame, np.ndarray],
-        y_test: Optional[Union[List[float], np.ndarray, pd.Series]] = None,
-    ) -> xgb.DMatrix:
-        """Returns a proper dtest matrix compatible with sparse/standardized matrices.
-
-        If ``scale_mean=True`` or ``scale_std=True``, the ``StandardScaler`` object ``(scaler_)``
-        which is being fitted on ``X_train`` will be used to **only** transform ``X_test`` to make
-        sure there is no data leak in the transformation. Additionally, ``y_test`` is optional since
-        it might not be available while validating the model (inference).
-
-        Parameters
-        ----------
-        X_test : Union[pd.DataFrame, np.ndarray]
-            Input data for testing (features)
-
-        y_test : Union[List[float], np.ndarray, pd.Series], optional
-            Input ground truth for testing (targets)
-
-        See Also
-        --------
-        :meth:`_dtrain()`
-
-        Returns
-        -------
-        xgb.DMatrix
-        """
-        check_var(
-            X_test,
-            var_name="X_test",
-            dtypes=(
-                pd.DataFrame,
-                np.ndarray,
-            ),
-        )
-        if y_test is not None:
-            check_var(
-                y_test,
-                var_name="y_test",
-                dtypes=(
-                    list,
-                    np.ndarray,
-                    pd.Series,
-                ),
-            )
-            if not isinstance(y_test, np.ndarray):
-                self.y_test = np.array(y_test)
-            else:
-                self.y_test = y_test
-        else:
-            self.y_test = y_test
-
-        if isinstance(X_test, np.ndarray):
-            self.X_test = array_to_df(
-                X=X_test,
-                prefix="F",
-                delimiter="_",
-            )
-        else:
-            self.X_test = X_test
-
-        if self.scale_mean or self.scale_std:
-            self.X_test_ = pd.DataFrame(
-                self.scaler_.transform(self.X_test),
-                columns=self.X_test.columns.tolist(),
-            )
-        else:
-            self.X_test_ = self.X_test
-
-        if not self.sparse_matrix:
-            dtest = xgb.DMatrix(
-                data=self.X_test_,
-                label=self.y_test,
-            )
-        else:
-            dtest = xgb.DMatrix(
-                data=df_to_csr(
-                    self.X_test_,
-                    fillna=0.0,
-                    verbose=False,
-                ),
-                label=self.y_test,
-                feature_names=self.X_test_.columns.tolist(),
-            )
-
-        return dtest
 
     def _model(self) -> xgb.Booster:
         """Fits a ``XGBoost.Booster`` based on the given number of boosting round on ``dtrain_`` matrix.

@@ -10,7 +10,8 @@ from matplotlib.figure import Figure
 from sklearn.model_selection import KFold, StratifiedKFold
 from sklearn.preprocessing import StandardScaler
 
-from slickml.utils import Colors, add_noisy_features, array_to_df, check_var, df_to_csr
+from slickml.base import BaseXGBoostEstimator
+from slickml.utils import Colors, add_noisy_features, check_var, df_to_csr
 from slickml.visualization import plot_xfs_cv_results, plot_xfs_feature_frequency
 
 
@@ -22,7 +23,7 @@ from slickml.visualization import plot_xfs_cv_results, plot_xfs_feature_frequenc
 # we can apply some stats (mean/median to be simple) on top of them and plot the `feature_importance`
 # as well
 @dataclass
-class XGBoostFeatureSelector:
+class XGBoostFeatureSelector(BaseXGBoostEstimator):
     """XGBoost Feature Selector.
 
     Notes
@@ -185,14 +186,10 @@ class XGBoostFeatureSelector:
 
     def __post_init__(self) -> None:
         """Post instantiation validations and assignments."""
+        super().__post_init__()
         check_var(
             self.n_iter,
             var_name="n_iter",
-            dtypes=int,
-        )
-        check_var(
-            self.num_boost_round,
-            var_name="num_boost_round",
             dtypes=int,
         )
         check_var(
@@ -240,36 +237,9 @@ class XGBoostFeatureSelector:
             dtypes=bool,
         )
         check_var(
-            self.sparse_matrix,
-            var_name="sparse_matrix",
-            dtypes=bool,
-        )
-        check_var(
-            self.scale_mean,
-            var_name="scale_mean",
-            dtypes=bool,
-        )
-        check_var(
-            self.scale_std,
-            var_name="scale_std",
-            dtypes=bool,
-        )
-        check_var(
             self.verbose_eval,
             var_name="verbose_eval",
             dtypes=bool,
-        )
-        check_var(
-            self.importance_type,
-            var_name="importance_type",
-            dtypes=str,
-            values=(
-                "weight",
-                "gain",
-                "total_gain",
-                "cover",
-                "total_cover",
-            ),
         )
         check_var(
             self.callbacks,
@@ -290,12 +260,6 @@ class XGBoostFeatureSelector:
             self.params = _default_params
         else:
             self.params = _default_params
-
-        # The `StandardScaler` with `mean=True` would turn a sparse matrix into a dense matrix
-        if self.sparse_matrix and self.scale_mean:
-            raise ValueError(
-                "The scale_mean should be False in conjuction of using sparse_matrix=True.",
-            )
 
     def fit(
         self,
@@ -774,51 +738,6 @@ class XGBoostFeatureSelector:
         return pd.DataFrame(
             data=self.cv_results_,
         )
-
-    def _check_X_y(
-        self,
-        X: Union[pd.DataFrame, np.ndarray],
-        y: Union[List[float], np.ndarray, pd.Series],
-    ) -> None:
-        """Validates/pre-processes the input matrices (features/targets).
-
-        Returns
-        -------
-        None
-        """
-        check_var(
-            X,
-            var_name="X",
-            dtypes=(
-                pd.DataFrame,
-                np.ndarray,
-            ),
-        )
-        check_var(
-            y,
-            var_name="y",
-            dtypes=(
-                list,
-                np.ndarray,
-                pd.Series,
-            ),
-        )
-
-        if isinstance(X, np.ndarray):
-            self.X = array_to_df(
-                X=X,
-                prefix="F",
-                delimiter="_",
-            )
-        else:
-            self.X = X
-
-        if not isinstance(y, np.ndarray):
-            self.y = np.array(y)
-        else:
-            self.y = y
-
-        return None
 
     def _dtrain(
         self,
