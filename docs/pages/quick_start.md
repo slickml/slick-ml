@@ -23,8 +23,8 @@ xfs.plot_frequency()
 ## ✅ Hyper-parameter Tuning
 An example to quickly find the tuned hyper-parameter with Bayesian Optimization:
 ```python
-from slickml.optimization import XGBoostClassifierBayesianOpt
-xbo = XGBoostClassifierBayesianOpt()
+from slickml.optimization import XGBoostBayesianOptimizer
+xbo = XGBoostBayesianOptimizer()
 xbo.fit(X_train, y_train)
 ```
 ![clfbo](https://raw.githubusercontent.com/slickml/slick-ml/master/assets/images/clf_hyper_params.png)

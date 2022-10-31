@@ -13,12 +13,12 @@ from slickml.utils._transform import array_to_df, check_var, df_to_csr
 
 @dataclass
 class BaseXGBoostEstimator(ABC, BaseEstimator):
-    """Base Estimator for XGBoost [xgboost-api]_.
+    """Base Estimator for XGBoost.
 
     Notes
     -----
-    This is an `abstractbaseclass` using XGBoost that can be used for any estimator using XGBoost
-    as the base estimator such as ``XGBoostCVClassifier``, ``XGBoostRegressor``,
+    This is an `abstractbaseclass` using XGBoost [xgboost-api]_ that can be used for any estimator using
+    XGBoost as the base estimator such as ``XGBoostCVClassifier``, ``XGBoostRegressor``,
     ``XGBoostFeatureSelector``, ``XGBoostBayesianOptimizer``, and so on. This base estimator comes
     with the base validation utilities that can reduce the amount of copy/paste codes in the
     downstream classes.
@@ -53,7 +53,7 @@ class BaseXGBoostEstimator(ABC, BaseEstimator):
         Importance type of ``xgboost.train()`` with possible values ``"weight"``, ``"gain"``,
         ``"total_gain"``, ``"cover"``, ``"total_cover"``
 
-    params : Dict[str, Union[str, float, int]]
+    params : Dict[str, Union[str, float, int]], optional
         Set of parameters required for fitting a Booster
 
     Methods
@@ -71,7 +71,7 @@ class BaseXGBoostEstimator(ABC, BaseEstimator):
     scale_mean: bool
     scale_std: bool
     importance_type: str
-    params: Dict[str, Union[str, float, int]]
+    params: Optional[Dict[str, Union[str, float, int]]] = None
 
     def __post_init__(self) -> None:
         """Post instantiation validations and assignments."""

@@ -250,7 +250,7 @@ class XGBoostFeatureSelector(BaseXGBoostEstimator):
 
         # The default set of params can be updated based on the given params by user
         _default_params = self._default_params()
-        if self.params:
+        if self.params is not None:
             check_var(
                 self.params,
                 var_name="params",
