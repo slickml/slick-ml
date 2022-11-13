@@ -19,6 +19,10 @@ take couple minutes ⏳ 🤦‍♂️. You can also check the standalone `gfortr
   ```
   pip install slickml
   ```
+  or if you are a [python poetry](https://python-poetry.org/) user, simply run 🏃‍♀️ :
+  ```
+  poetry add slickml
+  ```
 - In order to avoid any potential conflicts with other installed Python packages, it is
 recommended to use a virtual environment, e.g. [python poetry](https://python-poetry.org/), [python virtualenv](https://docs.python.org/3/library/venv.html), [pyenv virtualenv](https://github.com/pyenv/pyenv-virtualenv), or [conda environment](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html).
 - We highly recommend to manage your projects using `python-poetry`. All **SlickML** developments are done via [*python-poetry*](https://python-poetry.org/). To begin with, first install `poetry` following the [*installation documentation*](https://python-poetry.org/docs/#installation) depending on your operating system.

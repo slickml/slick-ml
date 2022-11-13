@@ -51,6 +51,11 @@ from [PyPI](https://pypi.org/project/slickml/) simply run 🏃‍♀️ :
 ```
 pip install slickml
 ```
+or if you are a [python poetry](https://python-poetry.org/) user, simply run 🏃‍♀️ :
+```
+poetry add slickml
+```
+
 📣  Please note that a working [Fortran Compiler](https://gcc.gnu.org/install/) (`gfortran`) is also required to build the package. If you do not have `gcc` installed, the following commands depending on your operating system will take care of this requirement.
 ```
 # Mac Users
@@ -86,8 +91,8 @@ xfs.plot_frequency()
 
 ✅ An example to quickly find the `tuned hyper-parameter` with `Bayesian Optimization`:
 ```python
-from slickml.optimization import XGBoostClassifierBayesianOpt
-xbo = XGBoostClassifierBayesianOpt()
+from slickml.optimization import XGBoostBayesianOptimizer
+xbo = XGBoostBayesianOptimizer()
 xbo.fit(X_train, y_train)
 ```
 ![clfbo](https://raw.githubusercontent.com/slickml/slick-ml/master/assets/images/clf_hyper_params.png)
