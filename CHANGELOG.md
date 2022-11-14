@@ -13,7 +13,7 @@
 ### 🔥 Added
 ---
 
-## 📍 Version 0.2.0-beta.1 - 2022-11-13
+## 📍 Version 0.2.0-beta.2 - 2022-11-13
 
 ### 🛠 Fixed
 - [#167](https://github.com/slickml/slick-ml/pull/167), [#160](https://github.com/slickml/slick-ml/pull/160) fixed `dependencies`, `tox.ini` and `README.md`.
