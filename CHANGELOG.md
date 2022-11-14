@@ -4,13 +4,28 @@
 - We follow [Semantic Versioning](http://semver.org/) to document any notable changes.
 - Please checkout [SlickML Official Releases](https://github.com/slickml/slick-ml/releases) for more details.
 
----
 
+---
 ## 📍 Unreleased Version X.X.X - XXXX-XX-XX
 
 ### 🛠 Fixed
 
 ### 🔥 Added
+---
+
+## 📍 Version 0.2.0-beta.1 - 2022-11-13
+
+### 🛠 Fixed
+- [#167](https://github.com/slickml/slick-ml/pull/167), [#160](https://github.com/slickml/slick-ml/pull/160) fixed `dependencies`, `tox.ini` and `README.md`.
+- [#164](https://github.com/slickml/slick-ml/pull/164) refactored `XGBoostBayesianOptimizer` class.
+- [#161](https://github.com/slickml/slick-ml/pull/161) fixed `XGBoostFeatureSelector` `callbacks` to work smoothly.
+- [#157](https://github.com/slickml/slick-ml/pull/157) fixed `codecov-action` to use `v3`.
+- [#156](https://github.com/slickml/slick-ml/pull/156) refactored `XGBoostFeatureSelector` class.
+- [#155](https://github.com/slickml/slick-ml/pull/155) fixed default PR reviewers.
+### 🔥 Added
+- [#162](https://github.com/slickml/slick-ml/pull/162) added `BaseXGBoostEstimator` class.
+- [#158](https://github.com/slickml/slick-ml/pull/158) added `conftest.py` for `pytest` unit-tests.
+- [#153](https://github.com/slickml/slick-ml/pull/153), [#159](https://github.com/slickml/slick-ml/pull/159) added ascii banner arts to `poe greet` command.
 
 ---
 

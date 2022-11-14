@@ -1,13 +1,17 @@
+<div align="center">
+
 [![build](https://github.com/slickml/slick-ml/actions/workflows/ci.yml/badge.svg)](https://github.com/slickml/slick-ml/actions/workflows/ci.yml)
 [![docs](https://github.com/slickml/slick-ml/actions/workflows/cd.yml/badge.svg)](https://github.com/slickml/slick-ml/actions/workflows/cd.yml)
 [![codecov](https://codecov.io/gh/slickml/slick-ml/branch/master/graph/badge.svg?token=Z7XP51MB4K)](https://codecov.io/gh/slickml/slick-ml)
+![dependencies](https://img.shields.io/librariesio/github/slickml/slick-ml)
 [![license](https://img.shields.io/github/license/slickml/slick-ml)](https://github.com/slickml/slick-ml/blob/master/LICENSE/)
 [![downloads](https://pepy.tech/badge/slickml)](https://pepy.tech/project/slickml)
 ![pypi_version](https://img.shields.io/pypi/v/slickml)
 ![python_version](https://img.shields.io/pypi/pyversions/slickml)
 [![slack_invite](https://badgen.net/badge/Join/SlickML%20Slack/purple?icon=slack)](https://www.slickml.com/slack-invite)
+![twitter_url](https://img.shields.io/twitter/url?style=social&url=https%3A%2F%2Ftwitter.com%2FSlickML)
 
-
+</div>
 
 <p align="center">
   <a href="https://www.docs.slickml.com/">
