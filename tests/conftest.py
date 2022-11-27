@@ -15,11 +15,13 @@ from tests import resources
 @pytest.fixture(scope="session")
 def clf_train_test_x_y(
     request: FixtureRequest,
-) -> Tuple[
-    Union[pd.DataFrame, np.ndarray],
-    Union[pd.DataFrame, np.ndarray],
-    Union[np.ndarray, List],
-    Union[np.ndarray, List],
+) -> Optional[
+    Tuple[
+        Union[pd.DataFrame, np.ndarray],
+        Union[pd.DataFrame, np.ndarray],
+        Union[np.ndarray, List[float]],
+        Union[np.ndarray, List[float]],
+    ]
 ]:
     """Returns stratified train/test features/targets sets as a `pytest.fixture` for binary classification problems.
 
@@ -65,7 +67,7 @@ def clf_train_test_x_y(
 @pytest.fixture(scope="session")
 def clf_x_y(
     request: FixtureRequest,
-) -> Tuple[Union[pd.DataFrame, np.ndarray], Union[np.ndarray, List]]:
+) -> Optional[Tuple[Union[pd.DataFrame, np.ndarray], Union[np.ndarray, List[float]]]]:
     """Returns features/targets sets a `pytest.fixture` for binary classification problems.
 
     Parameters
@@ -98,11 +100,13 @@ def clf_x_y(
 @pytest.fixture(scope="session")
 def reg_train_test_x_y(
     request: FixtureRequest,
-) -> Tuple[
-    Union[pd.DataFrame, np.ndarray],
-    Union[pd.DataFrame, np.ndarray],
-    Union[np.ndarray, List],
-    Union[np.ndarray, List],
+) -> Optional[
+    Tuple[
+        Union[pd.DataFrame, np.ndarray],
+        Union[pd.DataFrame, np.ndarray],
+        Union[np.ndarray, List[float]],
+        Union[np.ndarray, List[float]],
+    ]
 ]:
     """Returns train/test features/targets sets as a `pytest.fixture` for regression problems.
 
@@ -148,7 +152,7 @@ def reg_train_test_x_y(
 @pytest.fixture(scope="session")
 def reg_x_y(
     request: FixtureRequest,
-) -> Tuple[Union[pd.DataFrame, np.ndarray], Union[np.ndarray, List]]:
+) -> Optional[Tuple[Union[pd.DataFrame, np.ndarray], Union[np.ndarray, List[float]]]]:
     """Returns features/targets sets a `pytest.fixture` for regression problems.
 
     Parameters

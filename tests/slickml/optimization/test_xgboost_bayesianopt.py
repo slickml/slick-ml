@@ -39,7 +39,7 @@ class TestXGBoostBayesianOptimizer:
     )
     def test_xgboostbayesianoptimizer_instantiation__fails__with_invalid_inputs(
         self,
-        kwargs: List[Dict[str, Any]],
+        kwargs: Dict[str, Any],
     ) -> None:
         """Validates `XGBoostBayesianOptimizer` cannot be instantiated with invalid inputs."""
         with pytest.raises((ValueError, TypeError)):
@@ -59,7 +59,7 @@ class TestXGBoostBayesianOptimizer:
         self,
         clf_x_y: Tuple[
             Union[pd.DataFrame, np.ndarray],
-            Union[np.ndarray, List],
+            Union[np.ndarray, List[float]],
         ],
     ) -> None:
         """Validates `XGBoosBayesianOptimizer` instanation passes with default inputs for classification."""
@@ -138,7 +138,7 @@ class TestXGBoostBayesianOptimizer:
         self,
         reg_x_y: Tuple[
             Union[pd.DataFrame, np.ndarray],
-            Union[np.ndarray, List],
+            Union[np.ndarray, List[float]],
         ],
     ) -> None:
         """Validates `XGBoosBayesianOptimizer` instanation passes with default inputs for regression."""
@@ -218,7 +218,7 @@ class TestXGBoostBayesianOptimizer:
         self,
         clf_x_y: Tuple[
             Union[pd.DataFrame, np.ndarray],
-            Union[np.ndarray, List],
+            Union[np.ndarray, List[float]],
         ],
     ) -> None:
         """Validates `XGBoosBayesianOptimizer` instanation passes with custom inputs for classification."""

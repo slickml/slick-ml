@@ -365,7 +365,7 @@ class XGBoostHyperOptimizer(BaseXGBoostEstimator):
         """
         return self.trials_
 
-    def get_params_bounds(self) -> Dict[str, Any]:
+    def get_params_bounds(self) -> Optional[Dict[str, Any]]:
         """Returns the hyper-parameters boundaries for the tuning process.
 
         Returns
@@ -422,7 +422,7 @@ class XGBoostHyperOptimizer(BaseXGBoostEstimator):
         if self.metrics in self._clf_metrics():
             _params["scale_pos_weight"] = 1
 
-        return _params
+        return _params  # type: ignore
 
     def _metrics_should_be_minimized(self) -> Set[str]:
         """Returns the default metrics that should be minimized.

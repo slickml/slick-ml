@@ -85,8 +85,8 @@ def plot_binary_classification_metrics(
     )
     f1_list = [
         2
-        * (kwargs["precision_list"][i] * kwargs["recall_list"][i])
-        / (kwargs["precision_list"][i] + kwargs["recall_list"][i])
+        * (kwargs["precision_list"][i] * kwargs["recall_list"][i])  # type: ignore
+        / (kwargs["precision_list"][i] + kwargs["recall_list"][i])  # type: ignore
         for i in range(len(kwargs["precision_list"]))
     ]
     queue_rate_list = [(kwargs["y_pred_proba"] >= thr).mean() for thr in thr_set2]
@@ -110,8 +110,8 @@ def plot_binary_classification_metrics(
         label=f"AUC = {kwargs['auc_roc']:.3f}",
     )
     ax1.plot(
-        kwargs["fpr_list"][kwargs["youden_index"]],
-        kwargs["tpr_list"][kwargs["youden_index"]],
+        kwargs["fpr_list"][kwargs["youden_index"]],  # type: ignore
+        kwargs["tpr_list"][kwargs["youden_index"]],  # type: ignore
         marker="o",
         color="navy",
         ms=10,
@@ -136,13 +136,13 @@ def plot_binary_classification_metrics(
     ax1.annotate(
         f"Threshold = {kwargs['youden_threshold']:.3f}",
         xy=(
-            kwargs["fpr_list"][kwargs["youden_index"]],
-            kwargs["tpr_list"][kwargs["youden_index"]],
+            kwargs["fpr_list"][kwargs["youden_index"]],  # type: ignore
+            kwargs["tpr_list"][kwargs["youden_index"]],  # type: ignore
         ),
         xycoords="data",
         xytext=(
-            kwargs["fpr_list"][kwargs["youden_index"]] + 0.4,
-            kwargs["tpr_list"][kwargs["youden_index"]] - 0.4,
+            kwargs["fpr_list"][kwargs["youden_index"]] + 0.4,  # type: ignore
+            kwargs["tpr_list"][kwargs["youden_index"]] - 0.4,  # type: ignore
         ),
         arrowprops=dict(
             facecolor="black",
@@ -156,7 +156,7 @@ def plot_binary_classification_metrics(
     # subplot 2: preferred scores vs thresholds
     ax2.plot(
         kwargs["roc_thresholds"],
-        1 - kwargs["fpr_list"],
+        1 - kwargs["fpr_list"],  # type: ignore
         label="Specificity",
     )
     ax2.plot(
@@ -192,12 +192,12 @@ def plot_binary_classification_metrics(
         color="k",
         ls="--",
     )
-    if kwargs["sens_spec_threshold"] <= 0.5:
+    if isinstance(kwargs["sens_spec_threshold"], float) and kwargs["sens_spec_threshold"] <= 0.5:
         ax2.annotate(
             f"Threshold = {kwargs['sens_spec_threshold']:.3f}",
             xy=(kwargs["sens_spec_threshold"], 0.05),
             xycoords="data",
-            xytext=(kwargs["sens_spec_threshold"] + 0.1, 0.05),
+            xytext=(kwargs["sens_spec_threshold"] + 0.1, 0.05),  # type: ignore
             arrowprops=dict(facecolor="black", shrink=0.05),
             horizontalalignment="left",
             verticalalignment="bottom",
@@ -207,7 +207,7 @@ def plot_binary_classification_metrics(
             f"Threshold = {kwargs['sens_spec_threshold']:.3f}",
             xy=(kwargs["sens_spec_threshold"], 0.05),
             xycoords="data",
-            xytext=(kwargs["sens_spec_threshold"] - 0.4, 0.05),
+            xytext=(kwargs["sens_spec_threshold"] - 0.4, 0.05),  # type: ignore
             arrowprops=dict(facecolor="black", shrink=0.05),
             horizontalalignment="left",
             verticalalignment="bottom",
@@ -222,16 +222,16 @@ def plot_binary_classification_metrics(
         label=f"PR AUC ={kwargs['auc_pr']:.3f}",
     )
     ax3.plot(
-        kwargs["recall_list"][kwargs["prec_rec_index"]],
-        kwargs["precision_list"][kwargs["prec_rec_index"]],
+        kwargs["recall_list"][kwargs["prec_rec_index"]],  # type: ignore
+        kwargs["precision_list"][kwargs["prec_rec_index"]],  # type: ignore
         marker="o",
         color="navy",
         ms=10,
     )
     ax3.axvline(
-        x=kwargs["recall_list"][kwargs["prec_rec_index"]],
-        ymin=kwargs["recall_list"][kwargs["prec_rec_index"]],
-        ymax=kwargs["precision_list"][kwargs["prec_rec_index"]],
+        x=kwargs["recall_list"][kwargs["prec_rec_index"]],  # type: ignore
+        ymin=kwargs["recall_list"][kwargs["prec_rec_index"]],  # type: ignore
+        ymax=kwargs["precision_list"][kwargs["prec_rec_index"]],  # type: ignore
         color="navy",
         ls="--",
     )
@@ -255,13 +255,13 @@ def plot_binary_classification_metrics(
     ax3.annotate(
         f"Threshold = {kwargs['prec_rec_threshold']:.3f}",
         xy=(
-            kwargs["recall_list"][kwargs["prec_rec_index"]],
-            kwargs["precision_list"][kwargs["prec_rec_index"]],
+            kwargs["recall_list"][kwargs["prec_rec_index"]],  # type: ignore
+            kwargs["precision_list"][kwargs["prec_rec_index"]],  # type: ignore
         ),
         xycoords="data",
         xytext=(
-            kwargs["recall_list"][kwargs["prec_rec_index"]] - 0.4,
-            kwargs["precision_list"][kwargs["prec_rec_index"]] - 0.4,
+            kwargs["recall_list"][kwargs["prec_rec_index"]] - 0.4,  # type: ignore
+            kwargs["precision_list"][kwargs["prec_rec_index"]] - 0.4,  # type: ignore
         ),
         arrowprops=dict(facecolor="black", shrink=0.05),
         horizontalalignment="left",
@@ -272,12 +272,12 @@ def plot_binary_classification_metrics(
     # subplot 4: preferred Scores vs Thresholds
     ax4.plot(
         kwargs["pr_thresholds"],
-        kwargs["precision_list"][1:],
+        kwargs["precision_list"][1:],  # type: ignore
         label="Precision",
     )
     ax4.plot(
         kwargs["pr_thresholds"],
-        kwargs["recall_list"][1:],
+        kwargs["recall_list"][1:],  # type: ignore
         label="Recall",
     )
     ax4.plot(
@@ -314,12 +314,12 @@ def plot_binary_classification_metrics(
         ls="--",
     )
 
-    if kwargs["prec_rec_threshold"] <= 0.5:
+    if isinstance(kwargs["prec_rec_threshold"], float) and kwargs["prec_rec_threshold"] <= 0.5:
         ax4.annotate(
             f"Threshold = {kwargs['prec_rec_threshold']:.3f}",
             xy=(kwargs["prec_rec_threshold"], 0.03),
             xycoords="data",
-            xytext=(kwargs["prec_rec_threshold"] + 0.1, 0.03),
+            xytext=(kwargs["prec_rec_threshold"] + 0.1, 0.03),  # type: ignore
             arrowprops=dict(facecolor="black", shrink=0.05),
             horizontalalignment="left",
             verticalalignment="bottom",
@@ -329,7 +329,7 @@ def plot_binary_classification_metrics(
             f"Threshold = {kwargs['prec_rec_threshold']:.3f}",
             xy=(kwargs["prec_rec_threshold"], 0.03),
             xycoords="data",
-            xytext=(kwargs["prec_rec_threshold"] - 0.4, 0.03),
+            xytext=(kwargs["prec_rec_threshold"] - 0.4, 0.03),  # type: ignore
             arrowprops=dict(facecolor="black", shrink=0.05),
             horizontalalignment="left",
             verticalalignment="bottom",
@@ -431,12 +431,12 @@ def plot_regression_metrics(
     )
     ax1.plot(
         [
-            kwargs["y_true"].min(),
-            kwargs["y_true"].max(),
+            kwargs["y_true"].min(),  # type: ignore
+            kwargs["y_true"].max(),  # type: ignore
         ],
         [
-            kwargs["y_true"].min(),
-            kwargs["y_true"].max(),
+            kwargs["y_true"].min(),  # type: ignore
+            kwargs["y_true"].max(),  # type: ignore
         ],
         "r--",
         lw=3,

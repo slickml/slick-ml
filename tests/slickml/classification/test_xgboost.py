@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, List, Tuple, Union
 
 import numpy as np
 import numpy.testing as npt
@@ -54,8 +54,8 @@ class TestXGBoostClassifier:
         clf_train_test_x_y: Tuple[
             Union[pd.DataFrame, np.ndarray],
             Union[pd.DataFrame, np.ndarray],
-            Union[np.ndarray, List],
-            Union[np.ndarray, List],
+            Union[np.ndarray, List[float]],
+            Union[np.ndarray, List[float]],
         ],
     ) -> None:
         """Validates `XGBoostClassifier` instanation passes with default inputs."""
@@ -139,7 +139,7 @@ class TestXGBoostClassifier:
         assert_that(clf.dtest_).is_instance_of(xgb.DMatrix)
         assert_that(clf.shap_explainer_).is_instance_of(shap.TreeExplainer)
         assert_that(y_pred_proba).is_instance_of(np.ndarray)
-        npt.assert_almost_equal(np.mean(y_pred_proba), 0.800523, decimal=5)
+        npt.assert_almost_equal(np.mean(y_pred_proba), 0.80043, decimal=5)
         assert_that(y_pred).is_instance_of(np.ndarray)
         npt.assert_almost_equal(np.mean(y_pred), 0.88461, decimal=5)
         assert_that(shap_explainer).is_instance_of(shap.TreeExplainer)
@@ -149,8 +149,8 @@ class TestXGBoostClassifier:
         assert_that(feature_importance_fig).is_instance_of(Figure)
         assert_that(shap_waterfall_test_fig).is_instance_of(Figure)
         assert_that(shap_waterfall_train_fig).is_instance_of(Figure)
-        npt.assert_almost_equal(np.mean(clf.shap_values_test_), 0.09268, decimal=5)
-        npt.assert_almost_equal(np.mean(clf.shap_values_train_), 0.11710, decimal=5)
+        npt.assert_almost_equal(np.mean(clf.shap_values_test_), 0.09357, decimal=5)
+        npt.assert_almost_equal(np.mean(clf.shap_values_train_), 0.11808, decimal=5)
 
     @pytest.mark.parametrize(
         ("clf_train_test_x_y"),
@@ -167,8 +167,8 @@ class TestXGBoostClassifier:
         clf_train_test_x_y: Tuple[
             Union[pd.DataFrame, np.ndarray],
             Union[pd.DataFrame, np.ndarray],
-            Union[np.ndarray, List],
-            Union[np.ndarray, List],
+            Union[np.ndarray, List[float]],
+            Union[np.ndarray, List[float]],
         ],
     ) -> None:
         """Validates `XGBoostClassifier` instanation passes with default inputs."""
@@ -254,7 +254,7 @@ class TestXGBoostClassifier:
         assert_that(clf.dtrain_).is_instance_of(xgb.DMatrix)
         assert_that(clf.dtest_).is_instance_of(xgb.DMatrix)
         assert_that(y_pred_proba).is_instance_of(np.ndarray)
-        npt.assert_almost_equal(np.mean(y_pred_proba), 0.800523, decimal=5)
+        npt.assert_almost_equal(np.mean(y_pred_proba), 0.80043, decimal=5)
         assert_that(y_pred).is_instance_of(np.ndarray)
         npt.assert_almost_equal(np.mean(y_pred), 0.88461, decimal=5)
         assert_that(params).is_instance_of(dict)
@@ -263,8 +263,8 @@ class TestXGBoostClassifier:
         assert_that(feature_importance_fig).is_instance_of(Figure)
         assert_that(shap_waterfall_test_fig).is_instance_of(Figure)
         assert_that(shap_waterfall_train_fig).is_instance_of(Figure)
-        npt.assert_almost_equal(np.mean(clf.shap_values_test_), 0.09268, decimal=5)
-        npt.assert_almost_equal(np.mean(clf.shap_values_train_), 0.11710, decimal=5)
+        npt.assert_almost_equal(np.mean(clf.shap_values_test_), 0.09357, decimal=5)
+        npt.assert_almost_equal(np.mean(clf.shap_values_train_), 0.11808, decimal=5)
 
     @pytest.mark.parametrize(
         ("clf_train_test_x_y", "kwargs"),
@@ -286,10 +286,10 @@ class TestXGBoostClassifier:
         clf_train_test_x_y: Tuple[
             Union[pd.DataFrame, np.ndarray],
             Union[pd.DataFrame, np.ndarray],
-            Union[np.ndarray, List],
-            Union[np.ndarray, List],
+            Union[np.ndarray, List[float]],
+            Union[np.ndarray, List[float]],
         ],
-        kwargs: Optional[Dict[str, Any]],
+        kwargs: Dict[str, Any],
     ) -> None:
         """Validates `XGBoostClassifier` instanation passes with valid inputs."""
         X_train, X_test, y_train, y_test = clf_train_test_x_y

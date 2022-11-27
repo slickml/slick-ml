@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Union
+from typing import Any, Dict
 
 import numpy as np
 import numpy.testing as npt
@@ -65,7 +65,7 @@ class TestRegressionMetrics:
     )
     def test_regression_metrics__passes__with_default_inputs(
         self,
-        kwargs: Dict[str, Union[List[float], np.ndarray, pd.Series]],
+        kwargs: Dict[str, Any],
     ) -> None:
         """Validates regression metrics calculation with default inputs.
 

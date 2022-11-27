@@ -108,7 +108,11 @@ flake8-type-checking = "^2.3"
 flake8-typing-imports = "^1.12"
 flake8-use-fstring = "^1.4"
 pep8-naming = "^0.13"
+
+# --- type-checking ---
 mypy = "^0.991"
+pandas-stubs = "^1.5"
+data-science-types = "^0.2"
 
 # --- unit-testing ---
 pytest = "^7.2"

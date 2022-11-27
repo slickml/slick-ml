@@ -24,14 +24,18 @@ class TestExtendedEnum:
         assert_that(FooBarBazQux.BAR).is_instance_of(Enum)
         assert_that(FooBarBazQux.BAZ).is_instance_of(Enum)
         assert_that(FooBarBazQux.QUX).is_instance_of(Enum)
-        assert_that(FooBarBazQux.FOO.value).is_instance_of(str)
-        assert_that(FooBarBazQux.BAR.value).is_instance_of(str)
-        assert_that(FooBarBazQux.BAZ.value).is_instance_of(str)
-        assert_that(FooBarBazQux.QUX.value).is_instance_of(str)
-        assert_that(FooBarBazQux.FOO.name).is_instance_of(str)
-        assert_that(FooBarBazQux.BAR.name).is_instance_of(str)
-        assert_that(FooBarBazQux.BAZ.name).is_instance_of(str)
-        assert_that(FooBarBazQux.QUX.name).is_instance_of(str)
+
+        # TODO(amir): mypy still does not support types of enum subclasses
+        # https://github.com/python/mypy/issues/6037
+        # https://github.com/microsoft/pyright/issues/1751
+        assert_that(FooBarBazQux.FOO.value).is_instance_of(str)  # type: ignore
+        assert_that(FooBarBazQux.BAR.value).is_instance_of(str)  # type: ignore
+        assert_that(FooBarBazQux.BAZ.value).is_instance_of(str)  # type: ignore
+        assert_that(FooBarBazQux.QUX.value).is_instance_of(str)  # type: ignore
+        assert_that(FooBarBazQux.FOO.name).is_instance_of(str)  # type: ignore
+        assert_that(FooBarBazQux.BAR.name).is_instance_of(str)  # type: ignore
+        assert_that(FooBarBazQux.BAZ.name).is_instance_of(str)  # type: ignore
+        assert_that(FooBarBazQux.QUX.name).is_instance_of(str)  # type: ignore
         assert_that(str(FooBarBazQux.FOO)).is_instance_of(str)
         assert_that(str(FooBarBazQux.BAR)).is_instance_of(str)
         assert_that(str(FooBarBazQux.BAZ)).is_instance_of(str)

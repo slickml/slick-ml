@@ -9,7 +9,7 @@ def check_var(
     var: Any,
     *,
     var_name: str,
-    dtypes: Union[type, Tuple[type]],
+    dtypes: Union[Any, Tuple[Any]],
     values: Optional[Union[Any, Tuple[Any]]] = None,
 ) -> None:
     """Validates the variable's dtype and possible value.

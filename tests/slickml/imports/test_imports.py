@@ -12,7 +12,8 @@ def _get_valid_dependencies(dist_name: str = "slickml") -> List[str]:
         "bayesian-optimization": "bayes_opt",
         "scikit-learn": "sklearn",
     }
-    deps = [dep.split(" ")[0] for dep in distribution(dist_name).requires]
+    # TODO(amir): mypy: https://stackoverflow.com/questions/61712618/why-does-mypy-not-consider-a-class-as-iterable-if-it-has-len-and-getitem
+    deps = [dep.split(" ")[0] for dep in distribution(dist_name).requires]  # type: ignore
     return list(set([mapping[lib] if lib in mapping else lib for lib in deps]))
 
 
