@@ -221,7 +221,7 @@ class TestXGBoostBayesianOptimizer:
             Union[np.ndarray, List],
         ],
     ) -> None:
-        """Validates `XGBoosBayesianOptimizer` instanation passes with default inputs for classification."""
+        """Validates `XGBoosBayesianOptimizer` instanation passes with custom inputs for classification."""
         X, y = clf_x_y
         xbo = XGBoostBayesianOptimizer(
             params_bounds={

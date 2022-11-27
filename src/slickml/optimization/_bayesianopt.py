@@ -17,11 +17,10 @@ from slickml.utils import check_var
 class XGBoostBayesianOptimizer(BaseXGBoostEstimator):
     """XGBoost Hyper-Parameters Tuner using Bayesian Optimization.
 
-    This is wrapper using Bayesian Optimization algorithm [bayesian-optimization]_to tune the
+    This is wrapper using Bayesian Optimization algorithm [bayesian-optimization]_ to tune the
     hyper-parameter of XGBoost [xgboost-api]_ using ``xgboost.cv()`` functionality with n-folds
     cross-validation iteratively. This feature can be used to find the set of optimized set of
     hyper-parameters for both classification and regression tasks.
-    the optimized set of parameters before training.
 
     Notes
     -----
@@ -285,10 +284,10 @@ class XGBoostBayesianOptimizer(BaseXGBoostEstimator):
 
         Parameters
         ----------
-        X_train : Union[pd.DataFrame, np.ndarray]
+        X : Union[pd.DataFrame, np.ndarray]
             Input data for training (features)
 
-        y_train : Union[List[float], np.ndarray, pd.Series]
+        y : Union[List[float], np.ndarray, pd.Series]
             Input ground truth for training (targets)
 
         Returns
@@ -332,7 +331,7 @@ class XGBoostBayesianOptimizer(BaseXGBoostEstimator):
                     metrics=self.metrics,
                     early_stopping_rounds=self.early_stopping_rounds,
                     seed=self.random_state,
-                    shuffle=True,
+                    shuffle=self.shuffle,
                 )
             else:
                 _cvr = xgb.cv(
@@ -343,7 +342,7 @@ class XGBoostBayesianOptimizer(BaseXGBoostEstimator):
                     metrics=self.metrics,
                     early_stopping_rounds=self.early_stopping_rounds,
                     seed=self.random_state,
-                    shuffle=True,
+                    shuffle=self.shuffle,
                 )
 
             if self.metrics in self._metrics_should_be_minimized():
@@ -448,7 +447,7 @@ class XGBoostBayesianOptimizer(BaseXGBoostEstimator):
         return self.results_.loc[cond, :].reset_index(drop=True)
 
     def _default_params_bounds(self) -> Dict[str, Tuple[Union[int, float], Union[int, float]]]:
-        """Default set of parameters when the class is being instantiated with ``params=None``.
+        """Default set of parameters when the class is being instantiated with ``params_bounds=None``.
 
         Notes
         -----
