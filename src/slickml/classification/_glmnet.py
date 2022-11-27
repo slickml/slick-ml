@@ -467,7 +467,7 @@ class GLMNetCVClassifier(BaseEstimator, ClassifierMixin):
         save_path: Optional[str] = None,
         display_plot: Optional[bool] = True,
         return_fig: Optional[bool] = False,
-    ):
+    ) -> Optional[Figure]:
         """Visualizes the GLMNet cross-validation results.
 
         Notes
@@ -584,7 +584,7 @@ class GLMNetCVClassifier(BaseEstimator, ClassifierMixin):
         save_path: Optional[str] = None,
         display_plot: Optional[bool] = True,
         return_fig: Optional[bool] = False,
-    ):
+    ) -> Optional[Figure]:
         """Visualizes the GLMNet coefficients' paths.
 
         Parameters

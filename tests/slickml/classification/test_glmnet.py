@@ -32,7 +32,10 @@ class TestGLMNetCVClassifier:
         ],
         ids=_ids,
     )
-    def test_glmnetcvclassifier_instantiation__fails__with_invalid_inputs(self, kwargs) -> None:
+    def test_glmnetcvclassifier_instantiation__fails__with_invalid_inputs(
+        self,
+        kwargs: Dict[str, Any],
+    ) -> None:
         """Validates `GLMNetCVClassifier` cannot be instantiated with invalid inputs."""
         with pytest.raises((ValueError, TypeError)):
             GLMNetCVClassifier(**kwargs)

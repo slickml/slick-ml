@@ -36,7 +36,7 @@ class ExtendedEnum(Enum):
         -------
         List[str]
         """
-        return list(map(lambda c: c.name, cls))
+        return [c.name for c in cls]
 
     @classmethod
     def values(cls) -> List[str]:
@@ -46,7 +46,7 @@ class ExtendedEnum(Enum):
         -------
         List[str]
         """
-        return list(map(lambda c: c.value, cls))
+        return [c.value for c in cls]
 
     @classmethod
     def to_dict(cls) -> Dict[str, str]:

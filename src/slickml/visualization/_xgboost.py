@@ -159,7 +159,7 @@ def plot_xgb_feature_importance(
     cols = feature_importance.columns.tolist()
     coly, colx = cols[0], cols[1]
     feature_importance = feature_importance.reindex(
-        index=[idx for idx in range(len(feature_importance) - 1, -1, -1)],
+        index=range(len(feature_importance) - 1, -1, -1),
     )
 
     fig, ax = plt.subplots(
@@ -243,7 +243,7 @@ def plot_xgb_cv_results(
     save_path: Optional[str] = None,
     display_plot: Optional[bool] = False,
     return_fig: Optional[bool] = False,
-):
+) -> Optional[Figure]:
     """Visualizes the cv_results of ``XGBoostCVClassifier``.
 
     Parameters

@@ -33,7 +33,10 @@ class TestGLMNetCVRegressor:
         ],
         ids=_ids,
     )
-    def test_glmnetcvregressor_instantiation__fails__with_invalid_inputs(self, kwargs) -> None:
+    def test_glmnetcvregressor_instantiation__fails__with_invalid_inputs(
+        self,
+        kwargs: Dict[str, Any],
+    ) -> None:
         """Validates `GLMNetCVRegressor` cannot be instantiated with invalid inputs."""
         with pytest.raises((ValueError, TypeError)):
             GLMNetCVRegressor(**kwargs)

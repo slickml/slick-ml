@@ -20,6 +20,43 @@ ignore =
     E402,
     # W503: Line break occurred before a binary operator
     W503
+    # ANN002: Missing type annotation for *args
+    ANN002,
+    # ANN003: Missing type annotation for **kwargs
+    ANN003,
+    # ANN101: Missing type annotation for self in method
+    ANN101,
+    # ANN102: Missing type annotation for cls in classmethod
+    ANN102,
+    # ANN202: Missing return type annotation for protected function
+    ANN202,
+    # ANN203: Missing return type annotation for secret function
+    ANN203,
+    # ANN204: Missing return type annotation for special method
+    ANN204,
+    # ANN401: Dynamically typed expressions (typing.Any) are disallowed.
+    ANN401,
+    # E800: Commented out code
+    E800,
+    # N806: Lowercase variable in a function
+    N806,
+    # N803: Lowercase argument name
+    N803,
+    # N802: Lowercase functionam name
+    N802,
+    # TC002: Third-party imports into type-checking block
+    TC002,
+    # TYP001: Guard import for type-checking
+    TYP001,
+    # C408: Dict calls
+    C408,
+    # C403: List calls
+    C403,
+    # SIM904: Dict initialization
+    SIM904,
+    # SIM113: Enumerate usage
+    SIM113
+
 
 exclude =
     .vscode
