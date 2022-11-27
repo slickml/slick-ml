@@ -157,7 +157,7 @@ def plot_xfs_feature_frequency(
 
     # reindex freq
     freq = freq.reindex(
-        index=[idx for idx in range(len(freq) - 1, -1, -1)],
+        index=range(len(freq) - 1, -1, -1),
     )
 
     fig, ax = plt.subplots(figsize=figsize)

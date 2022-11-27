@@ -32,7 +32,10 @@ class TestXGBoostRegressor:
         ],
         ids=_ids,
     )
-    def test_xgboostregressor_instantiation__fails__with_invalid_inputs(self, kwargs) -> None:
+    def test_xgboostregressor_instantiation__fails__with_invalid_inputs(
+        self,
+        kwargs: Dict[str, Any],
+    ) -> None:
         """Validates `XGBoostRegressor` cannot be instantiated with invalid inputs."""
         with pytest.raises((ValueError, TypeError)):
             XGBoostRegressor(**kwargs)

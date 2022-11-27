@@ -99,20 +99,16 @@ jupyter-black = "^0.3"
 # --- linting ---
 flake8 = "^5.0"
 flake8-commas = "^2.1"
-# TODO(amir): add flake8-annotations once the API refactor is completed
-# - flake8-annotations==2.9.0
-# - flake8-broken-line==0.4.0
-# - flake8-bugbear==22.7.1
-# - flake8-comprehensions==3.10.0
-# - flake8-eradicate==1.2.1
-# - flake8-quotes==3.3.1
-# - flake8-simplify==0.19.3
-# - flake8-tidy-imports==4.8.0
-# - flake8-type-checking==2.1.0
-# - flake8-typing-imports==1.12.0
-# - flake8-use-fstring==1.4
-# - pep8-naming==0.13.1
-mypy = "^0.990"
+flake8-annotations = "^2.9"
+flake8-comprehensions = "^3.10"
+flake8-eradicate = "^1.4"
+flake8-simplify = "^0.19"
+flake8-tidy-imports = "^4.8"
+flake8-type-checking = "^2.3"
+flake8-typing-imports = "^1.12"
+flake8-use-fstring = "^1.4"
+pep8-naming = "^0.13"
+mypy = "^0.991"
 
 # --- unit-testing ---
 pytest = "^7.2"
@@ -156,8 +152,8 @@ clean = { cmd = "rm -rf .coverage dist/ .mypy_cache/ .pytest_cache/ .tox/ htmlco
 add-trailing-comma = { cmd = "poetry run add-trailing-comma --exit-zero-even-if-changed src/**/*.py tests/**/*.py", help = "Format code style via add-trailing-comma" }
 black = { cmd = "poetry run black --line-length 100 .", help = "Format code style via black" }
 isort = { cmd = "poetry run isort --profile black .", help = "Sort imported libraries via isort" }
-flake8 = { cmd = "poetry run flake8 --verbose --benchmark --color always --config .flake8 .", help = "Lint code via flake8" }
-mypy = { cmd = "poetry run mypy --verbose --config-file mypy.ini .", help = "Lint types via mypy" }
+flake8 = { cmd = "poetry run flake8 --verbose --benchmark --color always --config .flake8", help = "Lint code via flake8" }
+mypy = { cmd = "poetry run mypy --config-file mypy.ini", help = "Lint types via mypy" }
 test = { cmd = "poetry run python -m pytest --cov=src --cov-report=term --cov-report=html --cov-report=xml --cov-config=.coveragerc --tb=short -ra -v", help = "Run unit-tests via pytest" }
 sphinx = { cmd = "poetry run sphinx-build -b html docs/ docs/_build", help = "Build API docs via sphinx" }
 tox = { cmd = "poetry run tox -c tox.ini .", help = "Test environments via tox" }
@@ -171,6 +167,6 @@ check = [
     { ref = "greet" },
     { cmd = "poe black --check" },
     { cmd = "poe isort --check-only" },
-    { ref = "flake8" },
-    { ref = "mypy" },
+    { cmd = "poe flake8 ." },
+    { cmd = "poe mypy ." },
 ]

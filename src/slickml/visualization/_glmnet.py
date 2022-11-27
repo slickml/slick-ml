@@ -312,7 +312,7 @@ def plot_glmnet_coeff_path(
     display_plot: Optional[bool] = True,
     return_fig: Optional[bool] = False,
     **kwargs,
-):
+) -> Optional[Figure]:
     """Visualizes the GLMNet coefficients' paths.
 
     Parameters

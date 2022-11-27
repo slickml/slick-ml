@@ -553,7 +553,7 @@ class TestBinaryClassificationMetrics:
     # TODO(amir): currently this test is wrong; figure out what is wrong
     # my hunch is it gets called in other average methods; so it will be tested implicitly
     # which is not good here
-    def test_average_method__is_none__when_binary(self):
+    def test_average_method__is_none__when_binary(self) -> None:
         """Validates `average_method` set to be None if "binary" passed."""
         m = BinaryClassificationMetrics(
             y_true=[1, 0, 1, 0],
