@@ -181,7 +181,7 @@ class XGBoostFeatureSelector(BaseXGBoostEstimator):
     stratified: Optional[bool] = True
     shuffle: Optional[bool] = True
     verbose_eval: Optional[bool] = False
-    params: Optional[Dict] = None
+    params: Optional[Dict[str, Union[str, float, int]]] = None
     callbacks: Optional[bool] = False
 
     def __post_init__(self) -> None:
@@ -284,12 +284,12 @@ class XGBoostFeatureSelector(BaseXGBoostEstimator):
             X=X,
             y=y,
         )
-        self.cv_results_ = defaultdict(list)
+        self.cv_results_ = defaultdict(list)  # type: ignore
         self.feature_importance_ = {}
         self.selected_features = []
 
         # main algorithm loop
-        for iteration in range(self.n_iter):
+        for iteration in range(self.n_iter):  # type: ignore
             print(
                 str(Colors.BOLD)
                 + "*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-* "
@@ -307,7 +307,7 @@ class XGBoostFeatureSelector(BaseXGBoostEstimator):
             ext_cv_test2 = []
 
             # update random state
-            self._random_state = self.random_state + iteration
+            self._random_state = self.random_state + iteration  # type: ignore
 
             # add noisy featuers by permutation based on targets
             _X_permuted = add_noisy_features(
@@ -359,7 +359,7 @@ class XGBoostFeatureSelector(BaseXGBoostEstimator):
                 ]
 
                 # store training results
-                self._evals_result = {}
+                self._evals_result: Dict[str, Any] = {}
 
                 # call xgb cv
                 self._cvr = self._cv()
@@ -384,7 +384,9 @@ class XGBoostFeatureSelector(BaseXGBoostEstimator):
                     _gain_threshold = _feature_gain.loc[
                         _feature_gain["feature"].str.contains("noisy"),
                         self.importance_type,
-                    ].values.tolist()[self.nth_noise_threshold - 1]
+                    ].values.tolist()[
+                        self.nth_noise_threshold - 1  # type: ignore
+                    ]
                 else:
                     _gain_threshold = 0.0
 
@@ -397,41 +399,42 @@ class XGBoostFeatureSelector(BaseXGBoostEstimator):
                 )
 
                 # final eval results for train/test external cross-validation
-                self.cv_results_["ext_cv_train"] += [
-                    self._evals_result["train"][self.params["eval_metric"]][-1],
-                ]
-                self.cv_results_["ext_cv_test"] += [
-                    self._evals_result["eval"][self.params["eval_metric"]][-1],
-                ]
-                ext_cv_train2.append(
-                    self._evals_result["train"][self.params["eval_metric"]][-1],
-                )
-                ext_cv_test2.append(
-                    self._evals_result["eval"][self.params["eval_metric"]][-1],
-                )
+                if self.params is not None and isinstance(self.params["eval_metric"], str):
+                    self.cv_results_["ext_cv_train"] += [
+                        self._evals_result["train"][self.params["eval_metric"]][-1],
+                    ]
+                    self.cv_results_["ext_cv_test"] += [
+                        self._evals_result["eval"][self.params["eval_metric"]][-1],
+                    ]
+                    ext_cv_train2.append(
+                        self._evals_result["train"][self.params["eval_metric"]][-1],
+                    )
+                    ext_cv_test2.append(
+                        self._evals_result["eval"][self.params["eval_metric"]][-1],
+                    )
 
-                # TODO(amir): ditch print with logging
-                print(
-                    str(Colors.BOLD)
-                    + "*-*-*-*-*-*-*-*-*-*-*-* "
-                    + str(Colors.F_Green)
-                    + f"Fold = {ijk}/{self.n_splits}"
-                    + str(Colors.F_Black)
-                    + " -- "
-                    + str(Colors.F_Red)
-                    + f"Train {self.params['eval_metric'].upper()}"
-                    + " = "
-                    + f"{self._evals_result['train'][self.params['eval_metric']][-1]:.3f}"
-                    + str(Colors.F_Black)
-                    + " -- "
-                    + str(Colors.F_Blue)
-                    + f"Test {self.params['eval_metric'].upper()}"
-                    + " = "
-                    + f"{self._evals_result['eval'][self.params['eval_metric']][-1]:.3f}"
-                    + str(Colors.END)
-                    + str(Colors.BOLD)
-                    + " *-*-*-*-*-*-*-*-*-*-*-*",
-                )
+                    # TODO(amir): ditch print with logging
+                    print(
+                        str(Colors.BOLD)
+                        + "*-*-*-*-*-*-*-*-*-*-*-* "
+                        + str(Colors.F_Green)
+                        + f"Fold = {ijk}/{self.n_splits}"
+                        + str(Colors.F_Black)
+                        + " -- "
+                        + str(Colors.F_Red)
+                        + f"Train {self.params['eval_metric'].upper()}"
+                        + " = "
+                        + f"{self._evals_result['train'][self.params['eval_metric']][-1]:.3f}"
+                        + str(Colors.F_Black)
+                        + " -- "
+                        + str(Colors.F_Blue)
+                        + f"Test {self.params['eval_metric'].upper()}"
+                        + " = "
+                        + f"{self._evals_result['eval'][self.params['eval_metric']][-1]:.3f}"
+                        + str(Colors.END)
+                        + str(Colors.BOLD)
+                        + " *-*-*-*-*-*-*-*-*-*-*-*",
+                    )
                 # free memory here at each fold
                 del (
                     self._best_model,
@@ -452,63 +455,65 @@ class XGBoostFeatureSelector(BaseXGBoostEstimator):
 
             # print internal metrics results
             # TODO(amir): replace print with logging
-            print(
-                str(Colors.BOLD)
-                + "*-*-* "
-                + str(Colors.GREEN)
-                + f"Internal {self.n_splits}-Folds CV:"
-                + str(Colors.END)
-                + str(Colors.BOLD)
-                + " -*-*- "
-                + str(Colors.F_Red)
-                + f"Train {self.metrics.upper()}"
-                + " = "
-                + f"{np.mean(int_cv_train2):.3f}"
-                + " +/- "
-                + f"{np.std(int_cv_train2):.3f}"
-                + str(Colors.END)
-                + str(Colors.BOLD)
-                + " -*-*- "
-                + str(Colors.F_Blue)
-                + f"Test {self.metrics.upper()}"
-                + " = "
-                + f"{np.mean(int_cv_test2):.3f}"
-                + " +/- "
-                + f"{np.std(int_cv_test2):.3f}"
-                + str(Colors.END)
-                + str(Colors.BOLD)
-                + " *-*-*",
-            )
+            if self.metrics is not None and self.n_splits is not None:
+                print(
+                    str(Colors.BOLD)
+                    + "*-*-* "
+                    + str(Colors.GREEN)
+                    + f"Internal {self.n_splits}-Folds CV:"
+                    + str(Colors.END)
+                    + str(Colors.BOLD)
+                    + " -*-*- "
+                    + str(Colors.F_Red)
+                    + f"Train {self.metrics.upper()}"
+                    + " = "
+                    + f"{np.mean(int_cv_train2):.3f}"
+                    + " +/- "
+                    + f"{np.std(int_cv_train2):.3f}"
+                    + str(Colors.END)
+                    + str(Colors.BOLD)
+                    + " -*-*- "
+                    + str(Colors.F_Blue)
+                    + f"Test {self.metrics.upper()}"
+                    + " = "
+                    + f"{np.mean(int_cv_test2):.3f}"
+                    + " +/- "
+                    + f"{np.std(int_cv_test2):.3f}"
+                    + str(Colors.END)
+                    + str(Colors.BOLD)
+                    + " *-*-*",
+                )
 
             #  print external eval_metric results
             # TODO(amir): replace print with logging
-            print(
-                str(Colors.BOLD)
-                + "*-*-* "
-                + str(Colors.GREEN)
-                + f"External {self.n_splits}-Folds CV:"
-                + str(Colors.END)
-                + str(Colors.BOLD)
-                + " -*-*- "
-                + str(Colors.F_Red)
-                + f"Train {self.params['eval_metric'].upper()}"
-                + " = "
-                + f"{np.mean(ext_cv_train2):.3f}"
-                + " +/- "
-                + f"{np.std(ext_cv_train2):.3f}"
-                + str(Colors.END)
-                + str(Colors.BOLD)
-                + " -*-*- "
-                + str(Colors.F_Blue)
-                + f"Test {self.params['eval_metric'].upper()}"
-                + " = "
-                + f"{np.mean(ext_cv_test2):.3f}"
-                + " +/- "
-                + f"{np.std(ext_cv_test2):.3f}"
-                + str(Colors.END)
-                + str(Colors.BOLD)
-                + " *-*-*\n",
-            )
+            if self.params is not None and isinstance(self.params["eval_metric"], str):
+                print(
+                    str(Colors.BOLD)
+                    + "*-*-* "
+                    + str(Colors.GREEN)
+                    + f"External {self.n_splits}-Folds CV:"
+                    + str(Colors.END)
+                    + str(Colors.BOLD)
+                    + " -*-*- "
+                    + str(Colors.F_Red)
+                    + f"Train {self.params['eval_metric'].upper()}"
+                    + " = "
+                    + f"{np.mean(ext_cv_train2):.3f}"
+                    + " +/- "
+                    + f"{np.std(ext_cv_train2):.3f}"
+                    + str(Colors.END)
+                    + str(Colors.BOLD)
+                    + " -*-*- "
+                    + str(Colors.F_Blue)
+                    + f"Test {self.params['eval_metric'].upper()}"
+                    + " = "
+                    + f"{np.mean(ext_cv_test2):.3f}"
+                    + " +/- "
+                    + f"{np.std(ext_cv_test2):.3f}"
+                    + str(Colors.END)
+                    + str(Colors.BOLD)
+                    + " *-*-*\n",
+                )
 
             # free memory here at iteration
             del (
@@ -680,7 +685,7 @@ class XGBoostFeatureSelector(BaseXGBoostEstimator):
             **self.plotting_cv_,
         )
 
-    def get_params(self) -> Dict[str, Union[str, float, int]]:
+    def get_params(self) -> Optional[Dict[str, Union[str, float, int]]]:
         """Returns the final set of train parameters.
 
         The default set of parameters will be updated with the new ones that passed to ``params``.
@@ -855,7 +860,7 @@ class XGBoostFeatureSelector(BaseXGBoostEstimator):
         -------
         pd.DataFrame
         """
-        data = {
+        data: Dict[str, List[float]] = {
             "feature": [],
             f"{self.importance_type}": [],
         }
@@ -943,10 +948,11 @@ class XGBoostFeatureSelector(BaseXGBoostEstimator):
                 "Frequency": [float(i) for i in list(counts_elements)],
             },
         )
-        feature_frequency["Frequency (%)"] = round(
-            (feature_frequency["Frequency"] / float(self.n_splits * self.n_iter) * 100),
-            ndigits=2,
-        )
+        if self.n_splits is not None and self.n_iter is not None:
+            feature_frequency["Frequency (%)"] = round(
+                (feature_frequency["Frequency"] / float(self.n_splits * self.n_iter) * 100),
+                ndigits=2,
+            )
         return feature_frequency.sort_values(
             by=["Frequency", "Frequency (%)"],
             ascending=[False, False],
@@ -968,7 +974,8 @@ class XGBoostFeatureSelector(BaseXGBoostEstimator):
             print(
                 "Warning: The `cv` will break if the `early_stopping_rounds` criterion was not satisfied.",
             )
-            self.callbacks = [
+            # TODO(amir): use type overload
+            self.callbacks = [  # type: ignore
                 xgb.callback.EvaluationMonitor(
                     rank=0,
                     period=1,
@@ -1036,14 +1043,19 @@ class XGBoostFeatureSelector(BaseXGBoostEstimator):
         -------
         Dict[str, Any]
         """
-        p = {}
-        p["metric"] = self.metrics.upper()
-        p["eval_metric"] = self.params["eval_metric"].upper()
-        p["n_splits"] = self.n_splits
-        p["int_cv_train"] = self.cv_results_["int_cv_train"]
-        p["int_cv_test"] = self.cv_results_["int_cv_test"]
-        p["ext_cv_train"] = self.cv_results_["ext_cv_train"]
-        p["ext_cv_test"] = self.cv_results_["ext_cv_test"]
+        p: Dict[str, Any] = {}
+        if (
+            self.metrics is not None
+            and self.params is not None
+            and isinstance(self.params["eval_metric"], str)
+        ):
+            p["metric"] = self.metrics.upper()
+            p["eval_metric"] = self.params["eval_metric"].upper()
+            p["n_splits"] = self.n_splits
+            p["int_cv_train"] = self.cv_results_["int_cv_train"]
+            p["int_cv_test"] = self.cv_results_["int_cv_test"]
+            p["ext_cv_train"] = self.cv_results_["ext_cv_train"]
+            p["ext_cv_test"] = self.cv_results_["ext_cv_test"]
 
         return p
 

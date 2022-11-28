@@ -149,7 +149,7 @@ class RegressionMetrics:
     precision_digits: Optional[int] = 3
     display_df: Optional[bool] = True
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         """Post instantiation validations and assignments."""
         check_var(
             self.y_true,
@@ -390,10 +390,10 @@ class RegressionMetrics:
         interval = 0.01
         accuracy = []
         deviation = np.arange(begin, end, interval)
-        # this would prolly break mypy since it cannot understand that the list is alrady cast to
+        # TODO(amir): this would prolly break mypy since it cannot understand that the list is alrady cast to
         # np.ndarray; so np.array() or np.linalg.norm() should be used
-        norms = np.abs(self.y_true - self.y_pred) / np.sqrt(
-            self.y_true**2 + self.y_pred**2,
+        norms = np.abs(self.y_true - self.y_pred) / np.sqrt(  # type: ignore
+            self.y_true**2 + self.y_pred**2,  # type: ignore
         )
 
         # main loop to count the number of times that the calculated norm is less than deviation
@@ -417,7 +417,8 @@ class RegressionMetrics:
         -------
         Tuple[np.ndarray, float, float, float]
         """
-        y_ratio = self.y_pred / self.y_true
+        # TODO(amir): self.y_pred is already np.ndarray and mypy does not infer it
+        y_ratio = self.y_pred / self.y_true  # type: ignore
         mean_y_ratio = np.mean(y_ratio)
         std_y_ratio = np.std(y_ratio)
         cv_y_ratio = std_y_ratio / mean_y_ratio

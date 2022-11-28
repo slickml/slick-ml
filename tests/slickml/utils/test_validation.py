@@ -179,4 +179,4 @@ def test_check_var__fails__with_invalid_values_inputs(kwargs: Dict[str, Any]) ->
 )
 def test_check_var__passes__with_valid_inputs(kwargs: Dict[str, Any]) -> None:
     """Validates that check variables are successful."""
-    assert_that(check_var(**kwargs)).is_none()
+    assert_that(check_var(**kwargs)).is_none()  # type: ignore

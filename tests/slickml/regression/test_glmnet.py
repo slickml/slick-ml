@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, List, Tuple, Union
 
 import numpy as np
 import numpy.testing as npt
@@ -56,8 +56,8 @@ class TestGLMNetCVRegressor:
         reg_train_test_x_y: Tuple[
             Union[pd.DataFrame, np.ndarray],
             Union[pd.DataFrame, np.ndarray],
-            Union[np.ndarray, List],
-            Union[np.ndarray, List],
+            Union[np.ndarray, List[float]],
+            Union[np.ndarray, List[float]],
         ],
     ) -> None:
         """Validates `GLMNetCVRegressor` instanation passes with default inputs."""
@@ -161,8 +161,8 @@ class TestGLMNetCVRegressor:
         reg_train_test_x_y: Tuple[
             Union[pd.DataFrame, np.ndarray],
             Union[pd.DataFrame, np.ndarray],
-            Union[np.ndarray, List],
-            Union[np.ndarray, List],
+            Union[np.ndarray, List[float]],
+            Union[np.ndarray, List[float]],
         ],
     ) -> None:
         """Validates `GLMNetCVRegressor` instanation passes with default inputs."""
@@ -276,10 +276,10 @@ class TestGLMNetCVRegressor:
         reg_train_test_x_y: Tuple[
             Union[pd.DataFrame, np.ndarray],
             Union[pd.DataFrame, np.ndarray],
-            Union[np.ndarray, List],
-            Union[np.ndarray, List],
+            Union[np.ndarray, List[float]],
+            Union[np.ndarray, List[float]],
         ],
-        kwargs: Optional[Dict[str, Any]],
+        kwargs: Dict[str, Any],
     ) -> None:
         """Validates `GLMNetCVRegressor` instanation passes with valid inputs."""
         X_train, X_test, y_train, y_test = reg_train_test_x_y

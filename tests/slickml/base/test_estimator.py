@@ -87,8 +87,8 @@ class TestBaseXGBoostEstimator:
         clf_train_test_x_y: Tuple[
             Union[pd.DataFrame, np.ndarray],
             Union[pd.DataFrame, np.ndarray],
-            Union[np.ndarray, List],
-            Union[np.ndarray, List],
+            Union[np.ndarray, List[float]],
+            Union[np.ndarray, List[float]],
         ],
     ) -> None:
         X_train, X_test, y_train, y_test = clf_train_test_x_y
@@ -143,10 +143,10 @@ class TestBaseXGBoostEstimator:
         clf_train_test_x_y: Tuple[
             Union[pd.DataFrame, np.ndarray],
             Union[pd.DataFrame, np.ndarray],
-            Union[np.ndarray, List],
-            Union[np.ndarray, List],
+            Union[np.ndarray, List[float]],
+            Union[np.ndarray, List[float]],
         ],
-        kwargs: Optional[Dict[str, Any]],
+        kwargs: Dict[str, Any],
     ) -> None:
         X_train, X_test, y_train, y_test = clf_train_test_x_y
         clf = XGBoostClassifier(**kwargs)

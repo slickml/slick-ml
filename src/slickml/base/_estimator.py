@@ -66,11 +66,11 @@ class BaseXGBoostEstimator(ABC, BaseEstimator):
     .. [xgboost-api] https://xgboost.readthedocs.io/en/latest/python/python_api.html
     """
 
-    num_boost_round: int
-    sparse_matrix: bool
-    scale_mean: bool
-    scale_std: bool
-    importance_type: str
+    num_boost_round: Optional[int]
+    sparse_matrix: Optional[bool]
+    scale_mean: Optional[bool]
+    scale_std: Optional[bool]
+    importance_type: Optional[str]
     params: Optional[Dict[str, Union[str, float, int]]] = None
 
     def __post_init__(self) -> None:

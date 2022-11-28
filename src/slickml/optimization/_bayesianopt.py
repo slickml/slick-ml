@@ -225,7 +225,8 @@ class XGBoostBayesianOptimizer(BaseXGBoostEstimator):
             var_name="verbose",
             dtypes=bool,
         )
-        self.verbose = self._verbose()
+        # TODO(amir): use type overload
+        self.verbose = self._verbose()  # type: ignore
         check_var(
             self.objective,
             var_name="objective",
@@ -377,7 +378,7 @@ class XGBoostBayesianOptimizer(BaseXGBoostEstimator):
 
         return None
 
-    def get_params_bounds(self) -> Dict[str, Tuple[Union[int, float], Union[int, float]]]:
+    def get_params_bounds(self) -> Optional[Dict[str, Tuple[Union[int, float], Union[int, float]]]]:
         """Returns the hyper-parameters boundaries for the tuning process.
 
         Returns
@@ -488,7 +489,7 @@ class XGBoostBayesianOptimizer(BaseXGBoostEstimator):
         gamma: float,
         reg_alpha: float,
         reg_lambda: float,
-    ) -> Dict[str, Union[str, float, int]]:
+    ) -> Dict[str, Union[str, float, int, None]]:
         """Default set of parameters passed in inner evaluation.
 
         Notes

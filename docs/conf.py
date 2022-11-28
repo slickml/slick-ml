@@ -187,7 +187,7 @@ autoapi_member_order = "alphabetical"
 autoapi_python_use_implicit_namespaces = False
 autoapi_prepare_jinja_env = None
 autoapi_keep_files = False
-suppress_warnings = []
+suppress_warnings = []  # type: ignore
 
 # -- Options for View-Code -------------------------------------------------
 viewcode_follow_imported_members = True

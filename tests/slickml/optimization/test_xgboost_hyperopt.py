@@ -38,7 +38,7 @@ class TestXGBoostHyperOptimizer:
     )
     def test_xgboosthyperoptimizer_instantiation__fails__with_invalid_inputs(
         self,
-        kwargs: List[Dict[str, Any]],
+        kwargs: Dict[str, Any],
     ) -> None:
         """Validates `XGBoostHyperOptimizer` cannot be instantiated with invalid inputs."""
         with pytest.raises((ValueError, TypeError)):
@@ -58,7 +58,7 @@ class TestXGBoostHyperOptimizer:
         self,
         clf_x_y: Tuple[
             Union[pd.DataFrame, np.ndarray],
-            Union[np.ndarray, List],
+            Union[np.ndarray, List[float]],
         ],
     ) -> None:
         """Validates `XGBoostHyperOptimizer` instanation passes with default inputs for classification."""
@@ -120,7 +120,7 @@ class TestXGBoostHyperOptimizer:
         self,
         reg_x_y: Tuple[
             Union[pd.DataFrame, np.ndarray],
-            Union[np.ndarray, List],
+            Union[np.ndarray, List[float]],
         ],
     ) -> None:
         """Validates `XGBoostHyperOptimizer` instanation passes with default inputs for regression."""
@@ -184,7 +184,7 @@ class TestXGBoostHyperOptimizer:
         self,
         clf_x_y: Tuple[
             Union[pd.DataFrame, np.ndarray],
-            Union[np.ndarray, List],
+            Union[np.ndarray, List[float]],
         ],
     ) -> None:
         """Validates `XGBoostHyperOptimizer` instanation passes with custom inputs for classification."""

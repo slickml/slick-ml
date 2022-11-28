@@ -232,33 +232,33 @@ def plot_glmnet_cv_results(
     )
     ax.vlines(
         -np.log(kwargs["lambda_max"]),
-        ymin=min(kwargs["cv_mean_score"]) - 0.05,
-        ymax=max(kwargs["cv_mean_score"]) + 0.05,
+        ymin=min(kwargs["cv_mean_score"]) - 0.05,  # type: ignore
+        ymax=max(kwargs["cv_mean_score"]) + 0.05,  # type: ignore
         linestyles=linestyle,
         color=maxlambdacolor,
         label=r"max $\lambda$",
     )
     ax.vlines(
         -np.log(kwargs["lambda_best"]),
-        ymin=min(kwargs["cv_mean_score"]) - 0.05,
-        ymax=max(kwargs["cv_mean_score"]) + 0.05,
+        ymin=min(kwargs["cv_mean_score"]) - 0.05,  # type: ignore
+        ymax=max(kwargs["cv_mean_score"]) + 0.05,  # type: ignore
         linestyles=linestyle,
         color=bestlambdacolor,
         label=r"best $\lambda$",
     )
     ax.set_ylim(
         [
-            min(kwargs["cv_mean_score"]) - 0.05,
-            max(kwargs["cv_mean_score"]) + 0.05,
+            min(kwargs["cv_mean_score"]) - 0.05,  # type: ignore
+            max(kwargs["cv_mean_score"]) + 0.05,  # type: ignore
         ],
     )
     ax.set_xlabel(
         xlabel,
-        fontsize=fontsize * 0.85,
+        fontsize=fontsize * 0.85,  # type: ignore
     )
     ax.set_ylabel(
         ylabel,
-        fontsize=fontsize * 0.85,
+        fontsize=fontsize * 0.85,  # type: ignore
     )
     ax.set_title(
         title,
@@ -267,7 +267,7 @@ def plot_glmnet_cv_results(
     ax.tick_params(
         axis="both",
         which="major",
-        labelsize=fontsize * 0.75,
+        labelsize=fontsize * 0.75,  # type: ignore
     )
     ax.grid(grid)
 
@@ -275,7 +275,7 @@ def plot_glmnet_cv_results(
         ax.legend(
             loc=legendloc,
             prop={
-                "size": fontsize * 0.85,
+                "size": fontsize * 0.85,  # type: ignore
             },
             framealpha=0.0,
         )
@@ -311,7 +311,7 @@ def plot_glmnet_coeff_path(
     save_path: Optional[str] = None,
     display_plot: Optional[bool] = True,
     return_fig: Optional[bool] = False,
-    **kwargs,
+    **kwargs: Dict[str, Any],
 ) -> Optional[Figure]:
     """Visualizes the GLMNet coefficients' paths.
 
@@ -468,15 +468,15 @@ def plot_glmnet_coeff_path(
     ax.tick_params(
         axis="both",
         which="major",
-        labelsize=fontsize * 0.75,
+        labelsize=fontsize * 0.75,  # type: ignore
     )
     ax.set_ylabel(
         ylabel,
-        fontsize=fontsize * 0.85,
+        fontsize=fontsize * 0.85,  # type: ignore
     )
     ax.set_xlabel(
         xlabel,
-        fontsize=fontsize * 0.85,
+        fontsize=fontsize * 0.85,  # type: ignore
     )
     ax.set_title(
         title,
@@ -491,7 +491,7 @@ def plot_glmnet_coeff_path(
             bbox_to_anchor=bbox_to_anchor,
             ncol=1,
             prop={
-                "size": fontsize * 0.75,
+                "size": fontsize * 0.75,  # type: ignore
             },
             framealpha=0.0,
             fancybox=True,
@@ -523,7 +523,7 @@ def _xlabel() -> str:
     return r"-$Log(\lambda)$"
 
 
-def _ylabel(**kwargs) -> str:
+def _ylabel(**kwargs: Dict[str, Any]) -> str:
     """Returns ylabel.
 
     Parameters
@@ -546,7 +546,7 @@ def _ylabel(**kwargs) -> str:
     return ylabel
 
 
-def _title(**kwargs) -> str:
+def _title(**kwargs: Dict[str, Any]) -> str:
     """Returns title.
 
     Parameters

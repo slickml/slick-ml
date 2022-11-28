@@ -196,7 +196,7 @@ class BinaryClassificationMetrics:
     precision_digits: Optional[int] = 3
     display_df: Optional[bool] = True
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         """Post instantiation validations and assignments."""
         check_var(
             self.y_true,
@@ -243,7 +243,8 @@ class BinaryClassificationMetrics:
             dtypes=bool,
         )
         # TODO(amir): add `values_between` option to `check_var()`
-        if self.threshold < 0.0 or self.threshold > 1.0:
+
+        if self.threshold is not None and (self.threshold < 0.0 or self.threshold > 1.0):
             raise ValueError("The input threshold must have a value between 0.0 and 1.0.")
 
         # TODO(amir): how we can pull off special cases like this ?

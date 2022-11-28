@@ -38,7 +38,7 @@ class TestXGBoostFeatureSelector:
     )
     def test_clf_xgboostfeatureselector_instantiation__fails__with_invalid_inputs(
         self,
-        kwargs: List[Dict[str, Any]],
+        kwargs: Dict[str, Any],
     ) -> None:
         """Validates `XGBoostFeatureSelector` cannot be instantiated with invalid inputs."""
         with pytest.raises((ValueError, TypeError)):
@@ -58,7 +58,7 @@ class TestXGBoostFeatureSelector:
         self,
         clf_x_y: Tuple[
             Union[pd.DataFrame, np.ndarray],
-            Union[np.ndarray, List],
+            Union[np.ndarray, List[float]],
         ],
     ) -> None:
         """Validates `XGBoostFeatureSelector` instanation passes with default inputs for classification."""
@@ -157,7 +157,7 @@ class TestXGBoostFeatureSelector:
         self,
         reg_x_y: Tuple[
             Union[pd.DataFrame, np.ndarray],
-            Union[np.ndarray, List],
+            Union[np.ndarray, List[float]],
         ],
     ) -> None:
         """Validates `XGBoostFeatureSelector` instanation passes with default inputs for regression."""
@@ -251,7 +251,7 @@ class TestXGBoostFeatureSelector:
         self,
         clf_x_y: Tuple[
             Union[pd.DataFrame, np.ndarray],
-            Union[np.ndarray, List],
+            Union[np.ndarray, List[float]],
         ],
     ) -> None:
         """Validates `XGBoostFeatureSelector` instanation passes with valid inputs for classification."""
@@ -357,7 +357,7 @@ class TestXGBoostFeatureSelector:
         self,
         reg_x_y: Tuple[
             Union[pd.DataFrame, np.ndarray],
-            Union[np.ndarray, List],
+            Union[np.ndarray, List[float]],
         ],
     ) -> None:
         """Validates `XGBoostFeatureSelector` instanation passes with valid inputs for regression."""

@@ -534,7 +534,7 @@ class XGBoostRegressor(BaseXGBoostEstimator, RegressorMixin):
             return_fig=return_fig,
         )
 
-    def get_params(self) -> Dict[str, Union[str, float, int]]:
+    def get_params(self) -> Optional[Dict[str, Union[str, float, int]]]:
         """Returns the final set of train parameters.
 
         The default set of parameters will be updated with the new ones that passed to ``params``.
@@ -593,7 +593,7 @@ class XGBoostRegressor(BaseXGBoostEstimator, RegressorMixin):
         return xgb.train(
             params=self.params,
             dtrain=self.dtrain_,
-            num_boost_round=self.num_boost_round - 1,
+            num_boost_round=self.num_boost_round,  # type: ignore
         )
 
     def _imp_to_df(self) -> pd.DataFrame:
@@ -603,7 +603,7 @@ class XGBoostRegressor(BaseXGBoostEstimator, RegressorMixin):
         -------
         pd.DataFrame
         """
-        data = {
+        data: Dict[str, List[float]] = {
             "feature": [],
             f"{self.importance_type}": [],
         }

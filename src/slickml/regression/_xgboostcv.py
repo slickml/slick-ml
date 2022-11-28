@@ -177,7 +177,7 @@ class XGBoostCVRegressor(XGBoostRegressor):
     scale_mean: Optional[bool] = False
     scale_std: Optional[bool] = False
     importance_type: Optional[str] = "total_gain"
-    params: Optional[Dict] = None
+    params: Optional[Dict[str, Union[str, float, int]]] = None
     verbose: Optional[bool] = True
     callbacks: Optional[bool] = False
 
@@ -390,7 +390,8 @@ class XGBoostCVRegressor(XGBoostRegressor):
         None
         """
         if self.callbacks:
-            self.callbacks = [
+            # TODO(amir): same as classification; use type overload here
+            self.callbacks = [  # type: ignore
                 xgb.callback.EvaluationMonitor(
                     rank=0,
                     period=1,
@@ -413,30 +414,31 @@ class XGBoostCVRegressor(XGBoostRegressor):
         -------
         None
         """
-        print(
-            str(Colors.BOLD)
-            + "*-* "
-            + str(Colors.GREEN)
-            + f"Best Boosting Round = {len(self.cv_results_) - 1}"
-            + str(Colors.END)
-            + str(Colors.BOLD)
-            + " -*- "
-            + str(Colors.F_Red)
-            + f"{self.n_splits}-Folds CV {self.metrics.upper()}: "
-            + str(Colors.END)
-            + str(Colors.BOLD)
-            + str(Colors.B_Blue)
-            + f"Train = {self.cv_results_.iloc[-1][0]:.3f}"
-            + " +/- "
-            + f"{self.cv_results_.iloc[-1][1]:.3f}"
-            + str(Colors.END)
-            + str(Colors.BOLD)
-            + " -*- "
-            + str(Colors.B_Magenta)
-            + f"Test = {self.cv_results_.iloc[-1][2]:.3f}"
-            + " +/- "
-            + f"{self.cv_results_.iloc[-1][3]:.3f}"
-            + str(Colors.END)
-            + str(Colors.BOLD)
-            + " *-*",
-        )
+        if self.metrics is not None:
+            print(
+                str(Colors.BOLD)
+                + "*-* "
+                + str(Colors.GREEN)
+                + f"Best Boosting Round = {len(self.cv_results_) - 1}"
+                + str(Colors.END)
+                + str(Colors.BOLD)
+                + " -*- "
+                + str(Colors.F_Red)
+                + f"{self.n_splits}-Folds CV {self.metrics.upper()}: "
+                + str(Colors.END)
+                + str(Colors.BOLD)
+                + str(Colors.B_Blue)
+                + f"Train = {self.cv_results_.iloc[-1][0]:.3f}"
+                + " +/- "
+                + f"{self.cv_results_.iloc[-1][1]:.3f}"
+                + str(Colors.END)
+                + str(Colors.BOLD)
+                + " -*- "
+                + str(Colors.B_Magenta)
+                + f"Test = {self.cv_results_.iloc[-1][2]:.3f}"
+                + " +/- "
+                + f"{self.cv_results_.iloc[-1][3]:.3f}"
+                + str(Colors.END)
+                + str(Colors.BOLD)
+                + " *-*",
+            )

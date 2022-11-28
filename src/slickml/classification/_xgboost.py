@@ -594,7 +594,7 @@ class XGBoostClassifier(BaseXGBoostEstimator, ClassifierMixin):
             return_fig=return_fig,
         )
 
-    def get_params(self) -> Dict[str, Union[str, float, int]]:
+    def get_params(self) -> Optional[Dict[str, Union[str, float, int]]]:
         """Returns the final set of train parameters.
 
         The default set of parameters will be updated with the new ones that passed to ``params``.
@@ -653,7 +653,7 @@ class XGBoostClassifier(BaseXGBoostEstimator, ClassifierMixin):
         return xgb.train(
             params=self.params,
             dtrain=self.dtrain_,
-            num_boost_round=self.num_boost_round - 1,
+            num_boost_round=self.num_boost_round,  # type: ignore
         )
 
     def _explainer(self) -> None:
@@ -682,7 +682,7 @@ class XGBoostClassifier(BaseXGBoostEstimator, ClassifierMixin):
         -------
         pd.DataFrame
         """
-        data = {
+        data: Dict[str, List[float]] = {
             "feature": [],
             f"{self.importance_type}": [],
         }

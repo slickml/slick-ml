@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Union
+from typing import Any, Dict
 
 import numpy as np
 import numpy.testing as npt
@@ -84,9 +84,10 @@ class TestBinaryClassificationMetrics:
     )
     def test_binary_classification__passes__with_binary_average_method(
         self,
-        kwargs: Dict[str, Union[List[float], np.ndarray, pd.Series]],
+        kwargs: Dict[str, Any],
     ) -> None:
         """Validates binary classification metrics calculation with "binary" average method."""
+
         m = BinaryClassificationMetrics(**kwargs)
         f = m.plot(
             display_plot=False,
@@ -197,7 +198,7 @@ class TestBinaryClassificationMetrics:
     )
     def test_binary_classification__passes__with_weighted_average_method(
         self,
-        kwargs: Dict[str, Union[List[float], np.ndarray, pd.Series]],
+        kwargs: Dict[str, Any],
     ) -> None:
         """Validates binary classification metrics calculation with "weighted" average method."""
         m = BinaryClassificationMetrics(**kwargs)
@@ -310,7 +311,7 @@ class TestBinaryClassificationMetrics:
     )
     def test_binary_classification__passes__with_macro_average_method(
         self,
-        kwargs: Dict[str, Union[List[float], np.ndarray, pd.Series]],
+        kwargs: Dict[str, Any],
     ) -> None:
         """Validates binary classification metrics calculation with "macro" average method."""
         m = BinaryClassificationMetrics(**kwargs)
@@ -423,7 +424,7 @@ class TestBinaryClassificationMetrics:
     )
     def test_binary_classification__passes__with_micro_average_method(
         self,
-        kwargs: Dict[str, Union[List[float], np.ndarray, pd.Series]],
+        kwargs: Dict[str, Any],
     ) -> None:
         """Validates binary classification metrics calculation with "micro" average method."""
         m = BinaryClassificationMetrics(**kwargs)
