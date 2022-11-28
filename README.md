@@ -5,9 +5,9 @@
 [![codecov](https://codecov.io/gh/slickml/slick-ml/branch/master/graph/badge.svg?token=Z7XP51MB4K)](https://codecov.io/gh/slickml/slick-ml)
 ![dependencies](https://img.shields.io/librariesio/github/slickml/slick-ml)
 [![license](https://img.shields.io/github/license/slickml/slick-ml)](https://github.com/slickml/slick-ml/blob/master/LICENSE/)
-[![downloads](https://pepy.tech/badge/slickml)](https://pepy.tech/project/slickml)
 ![pypi_version](https://img.shields.io/pypi/v/slickml)
 ![python_version](https://img.shields.io/pypi/pyversions/slickml)
+[![downloads](https://pepy.tech/badge/slickml)](https://pepy.tech/project/slickml)
 [![slack_invite](https://badgen.net/badge/Join/SlickML%20Slack/purple?icon=slack)](https://www.slickml.com/slack-invite)
 ![twitter_url](https://img.shields.io/twitter/url?style=social&url=https%3A%2F%2Ftwitter.com%2FSlickML)
 
@@ -43,7 +43,9 @@ good portion of the tasks based on tabular data can be addressed via gradient bo
 linear models<sup>[1](https://arxiv.org/pdf/2207.08815.pdf)</sup>. SlickML provides Data Scientists
 with a toolbox to quickly prototype solutions for a given problem with minimal code while maximizing
 the amount of information that can be inferred. Additionally, the prototype solutions can be easily
-promoted and served in production with our recommended recipes. 
+promoted and served in production with our recommended recipes via various model serving frameworks
+including [ZenML](https://github.com/zenml-io/zenml), [BentoML](https://github.com/bentoml/BentoML),
+and [Prefect](https://github.com/PrefectHQ/prefect). More details coming soon 🤞 ...
 
 
 ## 📖 Documentation
