@@ -5,12 +5,20 @@
 - Please checkout [SlickML Official Releases](https://github.com/slickml/slick-ml/releases) for more details.
 
 
----
 ## 📍 Unreleased Version X.X.X - XXXX-XX-XX
-
 ### 🛠 Fixed
 
 ### 🔥 Added
+---
+## 📍 Version 0.2.0 - 2022-11-27
+
+### 🛠 Fixed
+- [#170](https://github.com/slickml/slick-ml/pull/170) enabled more `flake8` plugins and fixed `poe check` command and `mypy` dependencies.
+- [#169](https://github.com/slickml/slick-ml/pull/169) refactored `XGBoostHyperOptimizer` class.
+
+### 🔥 Added
+- [#171](https://github.com/slickml/slick-ml/pull/171) added `type-stubs` and rolled out type checking with `mypy` across library.
+
 ---
 
 ## 📍 Version 0.2.0-beta.2 - 2022-11-13
