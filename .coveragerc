@@ -1,3 +1,5 @@
+# Reference: https://coverage.readthedocs.io/en/latest/
+
 [run]
 branch = True
 parallel = True
@@ -7,6 +9,7 @@ omit =
 
 [report]
 show_missing = True
+fail_under = 90
 
 [html]
 directory = htmlcov
