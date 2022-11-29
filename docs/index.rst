@@ -19,7 +19,7 @@
 SlickML🧞 Documentation
 *******************************
 
-|build_status| |docs_status| |codecov| |downloads| |github_stars| |slack_invite| 
+|build_status| |docs_status| |codecov| |downloads| |github_stars| |slack_invite| |twitter_url|
 
 ----
 
@@ -31,7 +31,9 @@ with tabular data while maximizing the amount of information can be inferred. Da
 selection, model tuning, or evaluating metrics for classification and regression problems. We strongly believe that a good portion of the tasks
 based on tabular data can be addressed via gradient boosting and generalized linear models `[1] <https://arxiv.org/pdf/2207.08815.pdf>`_.
 SlickML provides Data Scientists with a toolbox to quickly prototype solutions for a given problem with minimal code while maximizing the amound
-of information that can be inferred. Additionally, the prototype solutions can be easily promoted and served in production with our recommended recipes. 
+of information that can be inferred. Additionally, the prototype solutions can be easily promoted and served in production with our recommended
+recipes via various model serving frameworks including `ZenML <https://github.com/zenml-io/zenml>`_, `BentoML <https://github.com/bentoml/BentoML>`_,
+and `Prefect <https://github.com/PrefectHQ/prefect>`_. More details coming soon 🤞 ...
 
 
 .. grid:: 1 2 2 2
@@ -129,10 +131,8 @@ community. This is a good place to discuss your questions and ideas or in genera
    :target: https://github.com/slickml/slick-ml/blob/master/LICENSE
 .. |downloads| image:: https://pepy.tech/badge/slickml
    :target: https://pepy.tech/project/slickml
-.. |pypi_version| image:: https://img.shields.io/pypi/v/slickml
-   :target: https://pypi.org/project/slickml
-.. |python_versions| image:: https://img.shields.io/pypi/pyversions/slickml
-   :target: https://pypi.org/project/slickml
+.. |twitter_url| image:: https://img.shields.io/twitter/url?style=social&url=https%3A%2F%2Ftwitter.com%2FSlickML
+   :target: https://twitter.com/SlickML
 .. |slack_invite| image:: https://badgen.net/badge/Join/SlickML%20Slack/purple?icon=slack
    :target: https://www.slickml.com/slack-invite
 .. |github_stars| image:: https://img.shields.io/github/stars/slickml/slick-ml?color=cyan&label=github&logo=github
