@@ -9,6 +9,8 @@
 API Reference
 ---------------
 
+|pypi_version| |python_versions|
+
 .. grid:: 1 2 2 2
     :gutter: 3
     :margin: 0
@@ -67,3 +69,9 @@ API Reference
         :link-type: url
 
         Learn more about the experimental functionalities across the API ...  
+
+
+.. |pypi_version| image:: https://img.shields.io/pypi/v/slickml
+   :target: https://pypi.org/project/slickml
+.. |python_versions| image:: https://img.shields.io/pypi/pyversions/slickml
+   :target: https://pypi.org/project/slickml
