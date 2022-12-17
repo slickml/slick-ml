@@ -774,3 +774,38 @@ class BinaryClassificationMetrics:
             "macro",
             "micro",
         ]
+
+    def _calibration_buckets(self, buckets: int = 10) -> List[List[float]:
+        """Buckets the y_hat probabilites and returns the expected
+        accuracy for the bucket. Also returns a corresponding list
+        of the same length with the median value of the buckets range.
+        Buckets are created with an equal number of observations.
+
+        Parameters
+        ----------
+
+        buckets : int
+            The number of buckets to creates.
+
+        Returns
+        -------
+        List[List[float]]
+            An N x 2 matrix where the first column is the median value
+            of the range in the coresponding bucket and the second
+            column is the expected probability within the bounds of
+            the bucket.
+        """
+        cut = pd.qcut(x=self.y_pred_proba, q=buckets, retbins=True)
+        median_map = {i: interval.mid for i, interval in interval(cut.categories)}
+
+        labels_df = pd.DataFrame(zip(self.y_true, cut.codes), columns=['y_true', 'bin'])
+        bin_df = labels_df.groupby(['bin']).agg(
+            bin_mean=('y_true', 'mean')
+        )
+        bin_df['bin_mid'] = bin_df.bin.map(median_map)
+
+        return [
+            list(bin_df.bin_mid),
+            list(bin_df.bin_mean),
+        ]
+
