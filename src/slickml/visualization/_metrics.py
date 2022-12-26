@@ -63,7 +63,6 @@ def plot_binary_classification_metrics(
         var_name="return_fig",
         dtypes=bool,
     )
-    # TODO(amir): double check this
     if save_path:
         check_var(
             save_path,
@@ -403,7 +402,6 @@ def plot_regression_metrics(
         var_name="return_fig",
         dtypes=bool,
     )
-    # TODO(amir): double check this
     if save_path:
         check_var(
             save_path,

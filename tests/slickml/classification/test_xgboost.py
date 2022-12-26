@@ -1,3 +1,4 @@
+from pathlib import Path  # noqa
 from typing import Any, Dict, List, Tuple, Union
 
 import numpy as np
@@ -8,10 +9,11 @@ import pytest
 import shap
 import xgboost as xgb
 from assertpy import assert_that
+from matplotlib import cm
 from matplotlib.figure import Figure
 
 from slickml.classification import XGBoostClassifier
-from tests.conftest import _ids
+from tests.conftest import _ids, _validate_figure_type_and_size
 
 
 # TODO(amir): Currently `SHAP` raises a lot of warnings. Please figure out a way to dump these warnings
@@ -388,6 +390,7 @@ class TestXGBoostClassifier:
                     "title": "foo",
                     "feature_names": ["a", "b", "c", "d", "e", "f"],
                     "class_names": ["yes", "no"],
+                    "cmap": cm.RdYlGn,
                 },
             ),
             (
@@ -400,6 +403,7 @@ class TestXGBoostClassifier:
                     "display_plot": False,
                     "color": None,
                     "plot_type": "bar",
+                    "cmap": cm.Blues_r,
                 },
             ),
         ],
@@ -417,8 +421,62 @@ class TestXGBoostClassifier:
         clf = XGBoostClassifier()
         clf.fit(X_train, y_train)
         _ = clf.predict_proba(X_test, y_test)
+
         shap_waterfall_fig = clf.plot_shap_waterfall(**waterfall_kwargs)
         # TODO(amir): how can we test the figure object ?
         clf.plot_shap_summary(**summary_kwargs)
 
         assert_that(shap_waterfall_fig).is_instance_of(Figure)
+
+    @pytest.mark.parametrize(
+        ("clf_train_test_x_y"),
+        [
+            ("dataframe"),
+        ],
+        indirect=["clf_train_test_x_y"],
+        ids=_ids,
+    )
+    def test_xgboostclassifier_plots__passes__with_valid_save_paths(
+        self,
+        clf_train_test_x_y: Tuple[pd.DataFrame, pd.DataFrame, np.ndarray, np.ndarray],
+        figure_path: Path,
+    ) -> None:
+        """Validates `XGBoostClassifier` saving plots passes with valid paths."""
+        X_train, X_test, y_train, y_test = clf_train_test_x_y
+        clf = XGBoostClassifier()
+        clf.fit(X_train, y_train)
+        _ = clf.predict_proba(X_test, y_test)
+        feature_importance_fig_path = figure_path / "feature_importance_fig.png"  # type: ignore
+        shap_waterfall_fig_path = figure_path / "shap_waterfall_fig.png"  # type: ignore
+        shap_summary_fig_path = figure_path / "shap_summary_fig.png"  # type: ignore
+
+        clf.plot_feature_importance(
+            save_path=str(feature_importance_fig_path),
+            display_plot=False,
+            return_fig=False,
+        )
+        clf.plot_shap_waterfall(
+            save_path=str(shap_waterfall_fig_path),
+            display_plot=False,
+            return_fig=False,
+        )
+        clf.plot_shap_summary(
+            save_path=str(shap_summary_fig_path),
+            display_plot=False,
+        )
+
+        assert_that(feature_importance_fig_path.parts[-1]).is_equal_to("feature_importance_fig.png")
+        _validate_figure_type_and_size(
+            path=feature_importance_fig_path,
+            expected_size=(1395, 943),
+        )
+        assert_that(shap_waterfall_fig_path.parts[-1]).is_equal_to("shap_waterfall_fig.png")
+        _validate_figure_type_and_size(
+            path=shap_waterfall_fig_path,
+            expected_size=(1391, 974),
+        )
+        assert_that(shap_summary_fig_path.parts[-1]).is_equal_to("shap_summary_fig.png")
+        _validate_figure_type_and_size(
+            path=shap_summary_fig_path,
+            expected_size=(1474, 760),
+        )

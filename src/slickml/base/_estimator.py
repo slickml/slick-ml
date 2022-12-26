@@ -133,7 +133,7 @@ class BaseXGBoostEstimator(ABC, BaseEstimator):
         -------
         None
         """
-        ...
+        ...  # pragma: no cover
 
     # TODO(amir): check the `y_train` type; maybe we need to have `list_to_array()` in utils?
     def _dtrain(

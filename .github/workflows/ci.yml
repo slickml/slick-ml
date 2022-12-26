@@ -21,6 +21,8 @@ jobs:
     #----------------------------------------------
     runs-on: ${{ matrix.os }}
     strategy:
+      # TODO(amir): currently this is `false` so we can use the `poetry-cache` of `python v3.8`
+      # once the stupid `glmnet` dependency is resolved, change `fail-fast = True`
       fail-fast: false
       matrix:
         # TODO(amir): enable `windows-latest`, `macos-latest` and fix possible `poetry` issues and glmnet
@@ -58,6 +60,9 @@ jobs:
           # therefore, all the CI jobs for those python versions failed at first, then we re-run the
           # jobs, the cached venv using `python v3.8` will be retrieved and the jobs will run successfully
           # ideally, we should be able to add `python-versions` here to distinguish between caches
+          # key: venv-${{ runner.os }}-${{ matrix.python-version }}-${{ hashFiles('**/poetry.lock') }}
+          # NOTE: `glmnet` has not been updated since 2020; trying to build it on-the-fly
+          # https://github.com/civisanalytics/python-glmnet/issues/79
           key: venv-${{ runner.os }}-${{ hashFiles('**/poetry.lock') }}
       #----------------------------------------------
       #  -----  install dependencies  -----

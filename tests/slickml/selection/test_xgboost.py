@@ -1,3 +1,4 @@
+from pathlib import Path  # noqa
 from typing import Any, Dict, List, Tuple, Union
 
 import numpy as np
@@ -8,7 +9,7 @@ from matplotlib.figure import Figure
 from sklearn.preprocessing import StandardScaler
 
 from slickml.selection import XGBoostFeatureSelector
-from tests.conftest import _ids
+from tests.conftest import _ids, _validate_figure_type_and_size
 
 
 class TestXGBoostFeatureSelector:
@@ -446,3 +447,96 @@ class TestXGBoostFeatureSelector:
         assert_that(feature_frequency).is_instance_of(pd.DataFrame)
         assert_that(cv_results_fig).is_instance_of(Figure)
         assert_that(feature_frequency_fig).is_instance_of(Figure)
+
+    @pytest.mark.parametrize(
+        ("clf_x_y"),
+        [
+            ("dataframe"),
+        ],
+        indirect=["clf_x_y"],
+        ids=_ids,
+    )
+    def test_clf_xgboostfeatureselector_plots__passes__with_valid_save_paths(
+        self,
+        clf_x_y: Tuple[pd.DataFrame, np.ndarray],
+        figure_path: Path,
+    ) -> None:
+        """Validates classification `XGBoostFeatureSelector` saving plots passes with valid paths."""
+        X, y = clf_x_y
+        xfs = XGBoostFeatureSelector(
+            n_iter=1,
+            metrics="auc",
+            early_stopping_rounds=1000,
+        )
+        xfs.fit(X, y)
+        feature_frequency_fig_path = figure_path / "feature_frequency_fig.png"  # type: ignore
+        cv_results_fig_path = figure_path / "cv_results_fig.png"  # type: ignore
+
+        xfs.plot_frequency(
+            save_path=str(feature_frequency_fig_path),
+            display_plot=False,
+            return_fig=False,
+        )
+        xfs.plot_cv_results(
+            save_path=str(cv_results_fig_path),
+            display_plot=False,
+            return_fig=False,
+        )
+
+        assert_that(feature_frequency_fig_path.parts[-1]).is_equal_to("feature_frequency_fig.png")
+        _validate_figure_type_and_size(
+            path=feature_frequency_fig_path,
+            expected_size=(1380, 789),
+        )
+        assert_that(cv_results_fig_path.parts[-1]).is_equal_to("cv_results_fig.png")
+        _validate_figure_type_and_size(
+            path=cv_results_fig_path,
+            expected_size=(1709, 1358),
+        )
+
+    @pytest.mark.parametrize(
+        ("reg_x_y"),
+        [
+            ("dataframe"),
+        ],
+        indirect=["reg_x_y"],
+        ids=_ids,
+    )
+    def test_reg_xgboostfeatureselector_plots__passes__with_valid_save_paths(
+        self,
+        reg_x_y: Tuple[pd.DataFrame, np.ndarray],
+        figure_path: Path,
+    ) -> None:
+        """Validates regression `XGBoostFeatureSelector` saving plots passes with valid paths."""
+        X, y = reg_x_y
+        xfs = XGBoostFeatureSelector(
+            n_iter=1,
+            metrics="rmse",
+            early_stopping_rounds=1000,
+        )
+        xfs.fit(X, y)
+        feature_frequency_fig_path = figure_path / "feature_frequency_fig.png"  # type: ignore
+        cv_results_fig_path = figure_path / "cv_results_fig.png"  # type: ignore
+
+        xfs.plot_frequency(
+            show_freq_pct=False,
+            save_path=str(feature_frequency_fig_path),
+            display_plot=False,
+            return_fig=False,
+        )
+        xfs.plot_cv_results(
+            save_path=str(cv_results_fig_path),
+            display_plot=False,
+            return_fig=False,
+        )
+
+        assert_that(feature_frequency_fig_path.parts[-1]).is_equal_to("feature_frequency_fig.png")
+        _validate_figure_type_and_size(
+            path=feature_frequency_fig_path,
+            expected_size=(1399, 789),
+        )
+        assert_that(cv_results_fig_path.parts[-1]).is_equal_to("cv_results_fig.png")
+        _validate_figure_type_and_size(
+            path=cv_results_fig_path,
+            expected_size=(1724, 1358),
+        )

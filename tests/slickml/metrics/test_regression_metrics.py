@@ -1,3 +1,4 @@
+from pathlib import Path  # noqa
 from typing import Any, Dict
 
 import numpy as np
@@ -8,7 +9,7 @@ from assertpy import assert_that
 from matplotlib.figure import Figure
 
 from slickml.metrics import RegressionMetrics
-from tests.conftest import _ids
+from tests.conftest import _ids, _validate_figure_type_and_size
 
 
 # TODO(amir): tests for multi-outputs + "variance_weighted" and "raw_values" methods are still missing
@@ -174,3 +175,25 @@ class TestRegressionMetrics:
 
         with pytest.raises((ValueError, TypeError)):
             _ = m.get_metrics(**kwargs)
+
+    def test_regression_metrics_plots__passes__with_valid_save_paths(
+        self,
+        figure_path: Path,
+    ) -> None:
+        """Validates `RegressionMetrics` saving plots passes with valid paths."""
+        m = RegressionMetrics(
+            y_true=[3, 0.5, 2, 7],
+            y_pred=[2.5, 0.0, 2, 8],
+        )
+        reg_metrics_fig_path = figure_path / "reg_metrics.png"  # type: ignore
+        m.plot(
+            save_path=str(reg_metrics_fig_path),
+            return_fig=False,
+            display_plot=False,
+        )
+
+        assert_that(reg_metrics_fig_path.parts[-1]).is_equal_to("reg_metrics.png")
+        _validate_figure_type_and_size(
+            path=reg_metrics_fig_path,
+            expected_size=(2037, 2632),
+        )
