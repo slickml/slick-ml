@@ -146,7 +146,6 @@ def plot_xgb_feature_importance(
         var_name="return_fig",
         dtypes=bool,
     )
-    # TODO(amir): double check this
     if save_path:
         check_var(
             save_path,
@@ -337,7 +336,6 @@ def plot_xgb_cv_results(
         var_name="test_std_color",
         dtypes=str,
     )
-    # TODO(amir): double check this
     if save_path:
         check_var(
             save_path,

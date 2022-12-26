@@ -4,7 +4,7 @@ from typing import Any, Dict, List, Optional, Tuple, Union
 import numpy as np
 import pandas as pd
 import seaborn as sns
-from IPython.core.display import display
+from IPython.display import display
 from matplotlib.figure import Figure
 from sklearn.metrics import (
     accuracy_score,

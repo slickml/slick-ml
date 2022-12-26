@@ -210,7 +210,6 @@ def plot_glmnet_cv_results(
         var_name="return_fig",
         dtypes=bool,
     )
-    # TODO(amir): double check this
     if save_path:
         check_var(
             save_path,
@@ -447,7 +446,6 @@ def plot_glmnet_coeff_path(
         var_name="return_fig",
         dtypes=bool,
     )
-    # TODO(amir): double check this
     if save_path:
         check_var(
             save_path,

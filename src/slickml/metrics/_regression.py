@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 import scipy as scp
 import seaborn as sns
-from IPython.core.display import display
+from IPython.display import display
 from matplotlib.figure import Figure
 from sklearn.metrics import (
     explained_variance_score,

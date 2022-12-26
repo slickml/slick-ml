@@ -1,15 +1,39 @@
 import importlib.resources as pkg_resources
 import json
+from pathlib import Path  # noqa
 from typing import Any, Dict, List, Optional, Tuple, Union
 
 import numpy as np
+import numpy.testing as npt
 import pandas as pd
 import pytest
-from pytest import CaptureFixture, FixtureRequest
+from assertpy import assert_that
+from PIL import Image
+from PIL.ImageFile import ImageFile
+from PIL.PngImagePlugin import PngImageFile
+from pytest import CaptureFixture, FixtureRequest, TempPathFactory
 from scipy.sparse import csr_matrix
 from sklearn.model_selection import train_test_split
 
 from tests import resources
+
+
+@pytest.fixture(scope="session")
+def figure_path(tmp_path_factory: TempPathFactory) -> Path:
+    """Returns a temporary path to save figures.
+
+    Parameters
+    ----------
+    tmp_path_factory : TempPathFactory
+        Pytest's temporary path factory
+
+    Returns
+    -------
+    Path
+    """
+    path = tmp_path_factory.mktemp("results")
+
+    return path.absolute()
 
 
 @pytest.fixture(scope="session")
@@ -356,3 +380,39 @@ def _dummy_sparse_matrix() -> csr_matrix:
         shape=(3, 3),
         dtype=np.float64,
     )
+
+
+def _validate_figure_type_and_size(
+    path: Path,
+    expected_size: Tuple[int, int],
+    expected_type: ImageFile = PngImageFile,
+) -> None:
+    """Validates exported figure path's type and size.
+
+    Parameters
+    ----------
+    path : Path
+        Temporary file path to save the figure
+
+    expected_size : Tuple[int, int]
+        Figure's size
+
+    expected_type : ImageFile
+        Figure's type, by default `PngImageFile` which cover `.png` files
+
+    Returns
+    -------
+    None
+    """
+    # TODO(amir): currently, the `PIL.Image()` is used to load the saved figures and this would end up
+    # different results per operating systems. Therefore, for now defining a `tolerance` range ~ 5%
+    # to get away with the errors. Ideally, we should be able to match the `exact` size
+    _IMAGE_SIZE_ERROR_TOLERANCE_ERROR = 0.05
+    with Image.open(path) as img:
+        assert_that(img).is_instance_of(expected_type)
+        assert_that(img.size).is_instance_of(tuple)
+        npt.assert_allclose(
+            actual=img.size,
+            desired=expected_size,
+            rtol=_IMAGE_SIZE_ERROR_TOLERANCE_ERROR,
+        )

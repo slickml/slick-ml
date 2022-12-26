@@ -24,7 +24,7 @@ class Metrics(Protocol):
         -------
         Figure
         """
-        ...
+        ...  # pragma: no cover
 
     def get_metrics(
         self,
@@ -41,4 +41,4 @@ class Metrics(Protocol):
         -------
         Union[pd.DataFrame, Dict[str, Optional[float]]]
         """
-        ...
+        ...  # pragma: no cover

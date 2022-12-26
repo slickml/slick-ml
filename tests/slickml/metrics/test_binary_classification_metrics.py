@@ -1,3 +1,4 @@
+from pathlib import Path  # noqa
 from typing import Any, Dict
 
 import numpy as np
@@ -8,7 +9,7 @@ from assertpy import assert_that
 from matplotlib.figure import Figure
 
 from slickml.metrics import BinaryClassificationMetrics
-from tests.conftest import _ids
+from tests.conftest import _ids, _validate_figure_type_and_size
 
 
 # TODO(amir): the case for `average_method = None` which is in `__post_init__`
@@ -564,3 +565,25 @@ class TestBinaryClassificationMetrics:
         assert_that(m.average_method).is_equal_to("binary")
         # TODO(amir): the average method should be None?
         # assert_that(m.average_method).is_none()
+
+    def test_binary_classification_metrics_plots__passes__with_valid_save_paths(
+        self,
+        figure_path: Path,
+    ) -> None:
+        """Validates `BinaryClassificationMetrics` saving plots passes with valid paths."""
+        m = BinaryClassificationMetrics(
+            y_true=[1, 0, 1, 0],
+            y_pred_proba=[0.5, 0.0, 0.2, 0.8],
+        )
+        clf_metrics_fig_path = figure_path / "clf_metrics.png"  # type: ignore
+        m.plot(
+            save_path=str(clf_metrics_fig_path),
+            return_fig=False,
+            display_plot=False,
+        )
+
+        assert_that(clf_metrics_fig_path.parts[-1]).is_equal_to("clf_metrics.png")
+        _validate_figure_type_and_size(
+            path=clf_metrics_fig_path,
+            expected_size=(2297, 2016),
+        )

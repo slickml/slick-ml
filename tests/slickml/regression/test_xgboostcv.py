@@ -1,3 +1,4 @@
+from pathlib import Path  # noqa
 from typing import Any, Dict, List, Tuple, Union
 
 import numpy as np
@@ -11,7 +12,7 @@ from assertpy import assert_that
 from matplotlib.figure import Figure
 
 from slickml.regression import XGBoostCVRegressor
-from tests.conftest import _ids
+from tests.conftest import _ids, _validate_figure_type_and_size
 
 
 # TODO(amir): Currently `SHAP` raises a lot of warnings. Please figure out a way to dump these warnings
@@ -475,6 +476,70 @@ class TestXGBoostCVRegressor:
         reg.plot_shap_summary(**summary_kwargs)
 
         assert_that(shap_waterfall_fig).is_instance_of(Figure)
+
+    @pytest.mark.parametrize(
+        ("reg_train_test_x_y"),
+        [
+            ("dataframe"),
+        ],
+        indirect=["reg_train_test_x_y"],
+        ids=_ids,
+    )
+    def test_xgboostcvregressor_plots__passes__with_valid_save_paths(
+        self,
+        reg_train_test_x_y: Tuple[pd.DataFrame, pd.DataFrame, np.ndarray, np.ndarray],
+        figure_path: Path,
+    ) -> None:
+        """Validates `XGBoostCVRegressor` saving plots passes with valid paths."""
+        X_train, X_test, y_train, y_test = reg_train_test_x_y
+        reg = XGBoostCVRegressor()
+        reg.fit(X_train, y_train)
+        _ = reg.predict(X_test, y_test)
+        feature_importance_fig_path = figure_path / "feature_importance_fig.png"  # type: ignore
+        cv_results_fig_path = figure_path / "cv_results_fig.png"  # type: ignore
+        shap_waterfall_fig_path = figure_path / "shap_waterfall_fig.png"  # type: ignore
+        shap_summary_fig_path = figure_path / "shap_summary_fig.png"  # type: ignore
+
+        reg.plot_feature_importance(
+            save_path=str(feature_importance_fig_path),
+            display_plot=False,
+            return_fig=False,
+        )
+        reg.plot_cv_results(
+            save_path=str(cv_results_fig_path),
+            display_plot=False,
+            return_fig=False,
+        )
+        reg.plot_shap_waterfall(
+            save_path=str(shap_waterfall_fig_path),
+            display_plot=False,
+            return_fig=False,
+        )
+        reg.plot_shap_summary(
+            save_path=str(shap_summary_fig_path),
+            display_plot=False,
+        )
+
+        assert_that(feature_importance_fig_path.parts[-1]).is_equal_to("feature_importance_fig.png")
+        _validate_figure_type_and_size(
+            path=feature_importance_fig_path,
+            expected_size=(1399, 943),
+        )
+        assert_that(cv_results_fig_path.parts[-1]).is_equal_to("cv_results_fig.png")
+        _validate_figure_type_and_size(
+            path=cv_results_fig_path,
+            expected_size=(1388, 943),
+        )
+        assert_that(shap_waterfall_fig_path.parts[-1]).is_equal_to("shap_waterfall_fig.png")
+        _validate_figure_type_and_size(
+            path=shap_waterfall_fig_path,
+            expected_size=(1409, 974),
+        )
+        assert_that(shap_summary_fig_path.parts[-1]).is_equal_to("shap_summary_fig.png")
+        _validate_figure_type_and_size(
+            path=shap_summary_fig_path,
+            expected_size=(1487, 1560),
+        )
 
 
 # TODO(amir): we have to test the callbacks + verbose logs

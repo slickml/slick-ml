@@ -1,3 +1,4 @@
+from pathlib import Path  # noqa
 from typing import Any, Dict, List, Tuple, Union
 
 import numpy as np
@@ -9,7 +10,7 @@ from assertpy import assert_that
 from matplotlib.figure import Figure
 
 from slickml.classification import GLMNetCVClassifier
-from tests.conftest import _ids
+from tests.conftest import _ids, _validate_figure_type_and_size
 
 
 # TODO(amir): add lolipop plot for coeff + unit-test
@@ -434,3 +435,77 @@ class TestGLMNetCVClassifier:
         clf.plot_shap_summary(**summary_kwargs)
 
         assert_that(shap_waterfall_fig).is_instance_of(Figure)
+
+    @pytest.mark.parametrize(
+        ("clf_train_test_x_y"),
+        [
+            ("dataframe"),
+        ],
+        indirect=["clf_train_test_x_y"],
+        ids=_ids,
+    )
+    def test_glmnetcvclassifier_plots__passes__with_valid_save_paths(
+        self,
+        clf_train_test_x_y: Tuple[pd.DataFrame, pd.DataFrame, np.ndarray, np.ndarray],
+        figure_path: Path,
+    ) -> None:
+        """Validates `GLMNetCVClassifier` saving plots passes with valid paths."""
+        X_train, X_test, y_train, y_test = clf_train_test_x_y
+        clf = GLMNetCVClassifier()
+        clf.fit(X_train, y_train)
+        _ = clf.predict_proba(X_test, y_test)
+        cv_results_fig_path = figure_path / "cv_results_fig.png"  # type: ignore
+        coeff_path_fig_path = figure_path / "coeff_path_fig.png"  # type: ignore
+        shap_waterfall_fig_path = figure_path / "shap_waterfall_fig.png"  # type: ignore
+        shap_summary_fig_path = figure_path / "shap_summary_fig.png"  # type: ignore
+
+        clf.plot_cv_results(
+            xlabel="foo",
+            ylabel="bar",
+            title="baz",
+            legend=True,
+            legendloc=2,
+            save_path=str(cv_results_fig_path),
+            display_plot=False,
+            return_fig=False,
+        )
+        clf.plot_coeff_path(
+            xlabel="foo",
+            ylabel="bar",
+            title="baz",
+            legend=True,
+            legendloc=2,
+            save_path=str(coeff_path_fig_path),
+            display_plot=False,
+            return_fig=False,
+        )
+        clf.plot_shap_waterfall(
+            save_path=str(shap_waterfall_fig_path),
+            display_plot=False,
+            return_fig=False,
+        )
+        clf.plot_shap_summary(
+            save_path=str(shap_summary_fig_path),
+            display_plot=False,
+        )
+
+        assert_that(cv_results_fig_path.parts[-1]).is_equal_to("cv_results_fig.png")
+        _validate_figure_type_and_size(
+            path=cv_results_fig_path,
+            expected_size=(1385, 930),
+        )
+        assert_that(coeff_path_fig_path.parts[-1]).is_equal_to("coeff_path_fig.png")
+        _validate_figure_type_and_size(
+            path=coeff_path_fig_path,
+            expected_size=(1627, 930),
+        )
+        assert_that(shap_waterfall_fig_path.parts[-1]).is_equal_to("shap_waterfall_fig.png")
+        _validate_figure_type_and_size(
+            path=shap_waterfall_fig_path,
+            expected_size=(1375, 974),
+        )
+        assert_that(shap_summary_fig_path.parts[-1]).is_equal_to("shap_summary_fig.png")
+        _validate_figure_type_and_size(
+            path=shap_summary_fig_path,
+            expected_size=(1474, 760),
+        )
