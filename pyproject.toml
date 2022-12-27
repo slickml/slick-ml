@@ -77,6 +77,9 @@ hyperopt = "^0.2"
 matplotlib = "^3.5,<3.6"
 seaborn = "^0.12"
 
+# --- command-lines ---
+click = "^8.1"
+
 
 [tool.poetry.group.dev.dependencies]
 
@@ -142,6 +145,9 @@ pillow = "^9.3.0"
 requires = ["poetry-core>=1.4.0"]
 build-backend = "poetry.core.masonry.api"
 
+
+[tool.poetry.scripts]
+slickml = "slickml.cli:cli"
 
 # -- try `poe --help` for options
 [tool.poe.tasks]
