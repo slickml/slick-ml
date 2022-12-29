@@ -10,6 +10,16 @@
 
 ### 🔥 Added
 ---
+
+## 📍 Version 0.2.1 - 2022-12-29
+### 🛠 Fixed
+- [#174](https://github.com/slickml/slick-ml/pull/174) fixed `badges` in API docs.
+### 🔥 Added
+- [#177](https://github.com/slickml/slick-ml/pull/177), [#176](https://github.com/slickml/slick-ml/pull/176) added `CLI` basic functionalities for `version` and `help`.
+- [#175](https://github.com/slickml/slick-ml/pull/175) added unit-tests to cover `save-path` flag in all visualization modules.
+- [#173](https://github.com/slickml/slick-ml/pull/173) added threshold in `.coveragerc` and `codecov.yml` to protect test coverages.
+
+---
 ## 📍 Version 0.2.0 - 2022-11-27
 
 ### 🛠 Fixed
