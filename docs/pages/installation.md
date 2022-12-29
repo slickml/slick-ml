@@ -23,27 +23,15 @@ take couple minutes ⏳ 🤦‍♂️. You can also check the standalone `gfortr
   ```
   poetry add slickml
   ```
-- The SlickML does come with CLI tool SlickML which behaves similarly to many other CLIs for basic
+- The SlickML does come with CLI tool which behaves similarly to many other CLIs for basic
   features. In order to find out which version of SlickML you are running, simply run 🏃‍♀️ :
   ```
-  slickml -v
-  ```
-  or
-  ```
-  slickml --version
-  ```
-  or
-  ```
-  slickml version
+  slickml --version | -v | version
   ```
 - If you ever need more information on exactly what a certain command will do, use the ``--help``
 or ``-h`` command. For example, to see all available commands, simply run 🏃‍♀️ :
   ```
-  slickml -h
-  ```
-  or
-  ```
-  slickml --help
+  slickml --help | -h
   ```
 - In order to avoid any potential conflicts with other installed Python packages, it is
 recommended to use a virtual environment, e.g. [python poetry](https://python-poetry.org/), [python virtualenv](https://docs.python.org/3/library/venv.html), [pyenv virtualenv](https://github.com/pyenv/pyenv-virtualenv), or [conda environment](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html).

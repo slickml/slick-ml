@@ -71,6 +71,12 @@ brew install gcc
 sudo apt install build-essential gfortran
 ```
 
+The SlickML CLI tool behaves similarly to many other CLIs for basic features. In order to find out
+which version of SlickML you are running, simply run 🏃‍♀️ :
+```
+slickml --version
+```
+
 ### 🐍 Python Virtual Environments
 In order to avoid any potential conflicts with other installed Python packages, it is
 recommended to use a virtual environment, e.g. [python poetry](https://python-poetry.org/), [python virtualenv](https://docs.python.org/3/library/venv.html), [pyenv virtualenv](https://github.com/pyenv/pyenv-virtualenv), or [conda environment](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html). Our recommendation is to use `python-poetry` 🥰 for everything 😁.
