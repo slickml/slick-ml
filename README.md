@@ -3,11 +3,10 @@
 [![build](https://github.com/slickml/slick-ml/actions/workflows/ci.yml/badge.svg)](https://github.com/slickml/slick-ml/actions/workflows/ci.yml)
 [![docs](https://github.com/slickml/slick-ml/actions/workflows/cd.yml/badge.svg)](https://github.com/slickml/slick-ml/actions/workflows/cd.yml)
 [![codecov](https://codecov.io/gh/slickml/slick-ml/branch/master/graph/badge.svg?token=Z7XP51MB4K)](https://codecov.io/gh/slickml/slick-ml)
-![dependencies](https://img.shields.io/librariesio/github/slickml/slick-ml)
+[![downloads](https://pepy.tech/badge/slickml)](https://pepy.tech/project/slickml)
 [![license](https://img.shields.io/github/license/slickml/slick-ml)](https://github.com/slickml/slick-ml/blob/master/LICENSE/)
 ![pypi_version](https://img.shields.io/pypi/v/slickml)
 ![python_version](https://img.shields.io/pypi/pyversions/slickml)
-[![downloads](https://pepy.tech/badge/slickml)](https://pepy.tech/project/slickml)
 [![slack_invite](https://badgen.net/badge/Join/SlickML%20Slack/purple?icon=slack)](https://www.slickml.com/slack-invite)
 ![twitter_url](https://img.shields.io/twitter/url?style=social&url=https%3A%2F%2Ftwitter.com%2FSlickML)
 
@@ -52,7 +51,7 @@ and [Prefect](https://github.com/PrefectHQ/prefect). More details coming soon �
 ✨ The API documentation is available at [docs.slickml.com](https://www.docs.slickml.com).
 
 ## 🛠 Installation
-To begin with, install [Python version >=3.8,<3.11](https://www.python.org) and to install the library
+To begin with, install [Python version >=3.8,<3.12](https://www.python.org) and to install the library
 from [PyPI](https://pypi.org/project/slickml/) simply run 🏃‍♀️ :
 ```
 pip install slickml
