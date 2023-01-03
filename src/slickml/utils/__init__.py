@@ -1,3 +1,4 @@
+from slickml.utils._annotations import deprecated
 from slickml.utils._format import Colors
 from slickml.utils._transform import (
     add_noisy_features,
@@ -8,10 +9,11 @@ from slickml.utils._transform import (
 from slickml.utils._validation import check_var
 
 __all__ = [
-    "memory_use_csr",
-    "df_to_csr",
-    "array_to_df",
     "add_noisy_features",
+    "array_to_df",
     "check_var",
     "Colors",
+    "deprecated",
+    "df_to_csr",
+    "memory_use_csr",
 ]

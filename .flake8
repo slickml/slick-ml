@@ -75,6 +75,6 @@ exclude =
     .mypy_cache,
     htmlcov/*,
     xmlcov/*,
-    .coverage
-    
+    .coverage,
+    examples/
     
