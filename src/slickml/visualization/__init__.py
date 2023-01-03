@@ -14,14 +14,14 @@ from slickml.visualization._xgboost import (
 )
 
 __all__ = [
-    "plot_regression_metrics",
     "plot_binary_classification_metrics",
-    "plot_xgb_cv_results",
-    "plot_xgb_feature_importance",
-    "plot_shap_summary",
-    "plot_shap_waterfall",
     "plot_glmnet_coeff_path",
     "plot_glmnet_cv_results",
+    "plot_regression_metrics",
+    "plot_shap_summary",
+    "plot_shap_waterfall",
     "plot_xfs_cv_results",
     "plot_xfs_feature_frequency",
+    "plot_xgb_cv_results",
+    "plot_xgb_feature_importance",
 ]
