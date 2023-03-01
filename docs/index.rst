@@ -125,7 +125,7 @@ community. This is a good place to discuss your questions and ideas or in genera
    :target: https://github.com/slickml/slick-ml/actions/workflows/ci.yml
 .. |docs_status| image:: https://github.com/slickml/slick-ml/actions/workflows/cd.yml/badge.svg
    :target: https://github.com/slickml/slick-ml/actions/workflows/cd.yml
-.. |codecov| image:: https://codecov.io/gh/slickml/slick-ml/branch/master/graph/badge.svg?token=Z7XP51MB4K
+.. |codecov| image:: https://codecov.io/gh/slickml/slick-ml/graph/badge.svg?token=Z7XP51MB4K
    :target: https://codecov.io/gh/slickml/slick-ml
 .. |license| image:: https://img.shields.io/github/license/slickml/slick-ml
    :target: https://github.com/slickml/slick-ml/blob/master/LICENSE
