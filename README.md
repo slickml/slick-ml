@@ -2,7 +2,7 @@
 
 [![build](https://github.com/slickml/slick-ml/actions/workflows/ci.yml/badge.svg)](https://github.com/slickml/slick-ml/actions/workflows/ci.yml)
 [![docs](https://github.com/slickml/slick-ml/actions/workflows/cd.yml/badge.svg)](https://github.com/slickml/slick-ml/actions/workflows/cd.yml)
-[![codecov](https://codecov.io/gh/slickml/slick-ml/branch/master/graph/badge.svg?token=Z7XP51MB4K)](https://codecov.io/gh/slickml/slick-ml)
+[![codecov](https://codecov.io/gh/slickml/slick-ml/graph/badge.svg?token=Z7XP51MB4K)](https://codecov.io/gh/slickml/slick-ml)
 [![downloads](https://pepy.tech/badge/slickml)](https://pepy.tech/project/slickml)
 [![license](https://img.shields.io/github/license/slickml/slick-ml)](https://github.com/slickml/slick-ml/blob/master/LICENSE/)
 ![pypi_version](https://img.shields.io/pypi/v/slickml)
