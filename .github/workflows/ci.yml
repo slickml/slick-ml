@@ -94,7 +94,7 @@ jobs:
       - name: Codecov
         # NOTE: only run code coverage with one Python Version and OS; the rest is not needed
         if: ${{ matrix.python-version == '3.9' && matrix.os == 'ubuntu-latest' }}
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v3.1.1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           directory: ./xmlcov/
