@@ -5,6 +5,7 @@ import numpy as np
 import pandas as pd
 import xgboost as xgb
 from bayes_opt import BayesianOptimization
+from bayes_opt.util import UtilityFunction
 
 from slickml.base import BaseXGBoostEstimator
 from slickml.utils import check_var
@@ -366,11 +367,13 @@ class XGBoostBayesianOptimizer(BaseXGBoostEstimator):
         self.optimizer_.maximize(
             init_points=self.n_init_iter,
             n_iter=self.n_iter,
-            acq=self.acquisition_criterion,
-            kappa=2.576,
-            kappa_decay=1,
-            kappa_decay_delay=0,
-            xi=0.0,
+            acquisition_function=UtilityFunction(
+                kind=self.acquisition_criterion,
+                kappa=2.576,
+                xi=0.0,
+                kappa_decay=1,
+                kappa_decay_delay=0,
+            ),
         )
         self.results_ = self.get_results()
         self.best_params_ = self.get_best_params()
@@ -378,7 +381,9 @@ class XGBoostBayesianOptimizer(BaseXGBoostEstimator):
 
         return None
 
-    def get_params_bounds(self) -> Optional[Dict[str, Tuple[Union[int, float], Union[int, float]]]]:
+    def get_params_bounds(
+        self,
+    ) -> Optional[Dict[str, Tuple[Union[int, float], Union[int, float]]]]:
         """Returns the hyper-parameters boundaries for the tuning process.
 
         Returns
@@ -447,7 +452,9 @@ class XGBoostBayesianOptimizer(BaseXGBoostEstimator):
         cond = self.results_[self.metrics] == self.results_[self.metrics].max()
         return self.results_.loc[cond, :].reset_index(drop=True)
 
-    def _default_params_bounds(self) -> Dict[str, Tuple[Union[int, float], Union[int, float]]]:
+    def _default_params_bounds(
+        self,
+    ) -> Dict[str, Tuple[Union[int, float], Union[int, float]]]:
         """Default set of parameters when the class is being instantiated with ``params_bounds=None``.
 
         Notes
@@ -575,9 +582,13 @@ class XGBoostBayesianOptimizer(BaseXGBoostEstimator):
         None
         """
         if self.metrics in self._clf_metrics() and self.objective not in self._clf_objectives():
-            raise ValueError("Classification metrics cannot be used with regression objectives.")
+            raise ValueError(
+                "Classification metrics cannot be used with regression objectives.",
+            )
 
         if self.metrics not in self._clf_metrics() and self.objective in self._clf_objectives():
-            raise ValueError("Regression metrics cannot be used with classification objectives.")
+            raise ValueError(
+                "Regression metrics cannot be used with classification objectives.",
+            )
 
         return None

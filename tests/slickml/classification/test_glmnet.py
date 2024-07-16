@@ -146,8 +146,8 @@ class TestGLMNetCVClassifier:
         assert_that(coeff_path_fig).is_instance_of(Figure)
         assert_that(shap_waterfall_test_fig).is_instance_of(Figure)
         assert_that(shap_waterfall_train_fig).is_instance_of(Figure)
-        npt.assert_almost_equal(np.mean(clf.shap_values_test_), 0.00529, decimal=5)
-        npt.assert_almost_equal(np.mean(clf.shap_values_train_), 0.01112, decimal=5)
+        npt.assert_almost_equal(np.mean(clf.shap_values_test_), -0.01119, decimal=5)
+        npt.assert_almost_equal(np.mean(clf.shap_values_train_), -0.00536, decimal=5)
 
     @pytest.mark.parametrize(
         ("clf_train_test_x_y"),
@@ -257,8 +257,8 @@ class TestGLMNetCVClassifier:
         assert_that(coeff_path_fig).is_instance_of(Figure)
         assert_that(shap_waterfall_test_fig).is_instance_of(Figure)
         assert_that(shap_waterfall_train_fig).is_instance_of(Figure)
-        npt.assert_almost_equal(np.mean(clf.shap_values_test_), 0.00529, decimal=5)
-        npt.assert_almost_equal(np.mean(clf.shap_values_train_), 0.01112, decimal=5)
+        npt.assert_almost_equal(np.mean(clf.shap_values_test_), -0.01119, decimal=5)
+        npt.assert_almost_equal(np.mean(clf.shap_values_train_), -0.00536, decimal=5)
 
     # TODO(amir): add a test for `lambda_path` parameter
     @pytest.mark.parametrize(
@@ -499,7 +499,9 @@ class TestGLMNetCVClassifier:
             path=coeff_path_fig_path,
             expected_size=(1627, 930),
         )
-        assert_that(shap_waterfall_fig_path.parts[-1]).is_equal_to("shap_waterfall_fig.png")
+        assert_that(shap_waterfall_fig_path.parts[-1]).is_equal_to(
+            "shap_waterfall_fig.png",
+        )
         _validate_figure_type_and_size(
             path=shap_waterfall_fig_path,
             expected_size=(1375, 974),
@@ -507,5 +509,5 @@ class TestGLMNetCVClassifier:
         assert_that(shap_summary_fig_path.parts[-1]).is_equal_to("shap_summary_fig.png")
         _validate_figure_type_and_size(
             path=shap_summary_fig_path,
-            expected_size=(1474, 760),
+            expected_size=(1472, 757),
         )

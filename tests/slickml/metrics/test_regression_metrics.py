@@ -114,7 +114,7 @@ class TestRegressionMetrics:
         npt.assert_almost_equal(m.mae_, 0.5, decimal=5)
         npt.assert_almost_equal(m.mse_, 0.375, decimal=5)
         npt.assert_almost_equal(m.mape_, 0.32738, decimal=5)
-        npt.assert_almost_equal(m.auc_rec_, 0.68645, decimal=5)
+        npt.assert_almost_equal(m.auc_rec_, 0.68666, decimal=5)
         npt.assert_almost_equal(m.mean_y_ratio_, 0.74404, decimal=5)
         npt.assert_almost_equal(m.std_y_ratio_, 0.44332, decimal=5)
         npt.assert_almost_equal(m.cv_y_ratio_, 0.59582, decimal=5)

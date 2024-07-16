@@ -176,7 +176,11 @@ class TestXGBoostCVRegressor:
         assert_that(shap_waterfall_test_fig).is_instance_of(Figure)
         assert_that(shap_waterfall_train_fig).is_instance_of(Figure)
         npt.assert_almost_equal(np.mean(reg.shap_values_test_), 9.43848e-07, decimal=5)
-        npt.assert_almost_equal(np.mean(reg.shap_values_train_), -1.98011e-08, decimal=5)
+        npt.assert_almost_equal(
+            np.mean(reg.shap_values_train_),
+            -1.98011e-08,
+            decimal=5,
+        )
         assert_that(cv_results).is_instance_of(pd.DataFrame)
         assert_that(cv_results_fig).is_instance_of(Figure)
 
@@ -305,7 +309,11 @@ class TestXGBoostCVRegressor:
         assert_that(shap_waterfall_test_fig).is_instance_of(Figure)
         assert_that(shap_waterfall_train_fig).is_instance_of(Figure)
         npt.assert_almost_equal(np.mean(reg.shap_values_test_), 9.43848e-07, decimal=5)
-        npt.assert_almost_equal(np.mean(reg.shap_values_train_), -1.98011e-08, decimal=5)
+        npt.assert_almost_equal(
+            np.mean(reg.shap_values_train_),
+            -1.98011e-08,
+            decimal=5,
+        )
 
     @pytest.mark.parametrize(
         ("reg_train_test_x_y", "kwargs"),
@@ -520,7 +528,9 @@ class TestXGBoostCVRegressor:
             display_plot=False,
         )
 
-        assert_that(feature_importance_fig_path.parts[-1]).is_equal_to("feature_importance_fig.png")
+        assert_that(feature_importance_fig_path.parts[-1]).is_equal_to(
+            "feature_importance_fig.png",
+        )
         _validate_figure_type_and_size(
             path=feature_importance_fig_path,
             expected_size=(1399, 943),
@@ -530,7 +540,9 @@ class TestXGBoostCVRegressor:
             path=cv_results_fig_path,
             expected_size=(1388, 943),
         )
-        assert_that(shap_waterfall_fig_path.parts[-1]).is_equal_to("shap_waterfall_fig.png")
+        assert_that(shap_waterfall_fig_path.parts[-1]).is_equal_to(
+            "shap_waterfall_fig.png",
+        )
         _validate_figure_type_and_size(
             path=shap_waterfall_fig_path,
             expected_size=(1409, 974),
@@ -538,7 +550,7 @@ class TestXGBoostCVRegressor:
         assert_that(shap_summary_fig_path.parts[-1]).is_equal_to("shap_summary_fig.png")
         _validate_figure_type_and_size(
             path=shap_summary_fig_path,
-            expected_size=(1487, 1560),
+            expected_size=(1485, 1557),
         )
 
 

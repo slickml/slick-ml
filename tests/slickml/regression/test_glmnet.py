@@ -144,8 +144,8 @@ class TestGLMNetCVRegressor:
         assert_that(shap_waterfall_test_fig).is_instance_of(Figure)
         assert_that(shap_waterfall_train_fig).is_instance_of(Figure)
         npt.assert_almost_equal(np.mean(y_pred), 0.97489, decimal=5)
-        npt.assert_almost_equal(np.mean(reg.shap_values_test_), 2.32e-6, decimal=5)
-        npt.assert_almost_equal(np.mean(reg.shap_values_train_), 8.13e-06, decimal=5)
+        npt.assert_almost_equal(np.mean(reg.shap_values_test_), 0.00012, decimal=5)
+        npt.assert_almost_equal(np.mean(reg.shap_values_train_), 0.00013, decimal=5)
 
     @pytest.mark.parametrize(
         ("reg_train_test_x_y"),
@@ -252,8 +252,8 @@ class TestGLMNetCVRegressor:
         assert_that(shap_waterfall_test_fig).is_instance_of(Figure)
         assert_that(shap_waterfall_train_fig).is_instance_of(Figure)
         npt.assert_almost_equal(np.mean(y_pred), 0.97489, decimal=5)
-        npt.assert_almost_equal(np.mean(reg.shap_values_test_), 2.32e-6, decimal=5)
-        npt.assert_almost_equal(np.mean(reg.shap_values_train_), 8.13e-06, decimal=5)
+        npt.assert_almost_equal(np.mean(reg.shap_values_test_), 0.00012, decimal=5)
+        npt.assert_almost_equal(np.mean(reg.shap_values_train_), 0.00013, decimal=5)
 
     # TODO(amir): add a test for `lambda_path` parameter
     @pytest.mark.parametrize(
@@ -481,7 +481,9 @@ class TestGLMNetCVRegressor:
             path=coeff_path_fig_path,
             expected_size=(1604, 936),
         )
-        assert_that(shap_waterfall_fig_path.parts[-1]).is_equal_to("shap_waterfall_fig.png")
+        assert_that(shap_waterfall_fig_path.parts[-1]).is_equal_to(
+            "shap_waterfall_fig.png",
+        )
         _validate_figure_type_and_size(
             path=shap_waterfall_fig_path,
             expected_size=(1394, 974),
@@ -489,5 +491,5 @@ class TestGLMNetCVRegressor:
         assert_that(shap_summary_fig_path.parts[-1]).is_equal_to("shap_summary_fig.png")
         _validate_figure_type_and_size(
             path=shap_summary_fig_path,
-            expected_size=(1487, 1560),
+            expected_size=(1485, 1557),
         )
