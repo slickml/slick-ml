@@ -11,6 +11,19 @@
 ### 🔥 Added
 ---
 
+## 📍 Version 0.3.0-beta - 2024-07-17
+### 🛠 Fixed
+- [#190](https://github.com/slickml/slick-ml/pull/190) re-ran all example notebooks and fixed all warnings.
+- [#189](https://github.com/slickml/slick-ml/pull/189) enabled poetry cache for each python versions in CI/CD.
+- [#188](https://github.com/slickml/slick-ml/pull/188) dropped python `v3.8`, upgraded dependencies, and adapted all unit-tests based on API changes.
+- [#186](https://github.com/slickml/slick-ml/pull/186), [#187](https://github.com/slickml/slick-ml/pull/187) upgraded `codecov-action` version to `v3.1.1` and fixed `codecov` badge in docs.
+
+### 🔥 Added
+- [#182](https://github.com/slickml/slick-ml/pull/182) added `deprecated` annotation to `slickml.utils`.
+- [#179](https://github.com/slickml/slick-ml/pull/179) added `python v3.11`.
+
+---
+
 ## 📍 Version 0.2.1 - 2022-12-29
 ### 🛠 Fixed
 - [#174](https://github.com/slickml/slick-ml/pull/174) fixed `badges` in API docs.
