@@ -450,12 +450,14 @@ class RegressionMetrics:
                 number=self.mse_,
                 ndigits=self.precision_digits,
             ),
-            "Mean Squared Log Error": round(
-                number=self.msle_,
-                ndigits=self.precision_digits,
-            )
-            if self.msle_
-            else None,
+            "Mean Squared Log Error": (
+                round(
+                    number=self.msle_,
+                    ndigits=self.precision_digits,
+                )
+                if self.msle_
+                else None
+            ),
             "Mean Absolute Percentage Error": round(
                 number=self.mape_,
                 ndigits=self.precision_digits,

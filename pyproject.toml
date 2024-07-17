@@ -29,10 +29,10 @@ classifiers = [
     "Intended Audience :: Developers",
     "Intended Audience :: Science/Research",
     "Programming Language :: Python :: 3 :: Only",
-    "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
     "Natural Language :: English",
@@ -52,98 +52,97 @@ exclude = [
 
 
 [tool.poetry.dependencies]
-python = ">=3.8,<3.12"
+python = ">=3.9,<3.13"
 
 # --- scientific-computing ---
-# TODO(amir): since numpy "^1.23" distutils is deprecated which glmnet needs it
-# wait for `glmnet` for a new release; then upgrade this 
-numpy = "^1.22,<1.23"
-pandas = "^1.5"
-scipy = "^1.9"
-statsmodels = "^0.13"
+numpy = ">=1.22,<2.0"
+pandas = ">=1.4,<2.0"
+scipy = ">=1.9"
+statsmodels = ">=0.13"
 
 # --- machine-learning ---
-scikit-learn = "^1.1"
-xgboost = "^1.7"
-glmnet = "^2.2"
-shap = "^0.41"
+scikit-learn = ">=1.1"
+xgboost = ">=1.7,<2.0"
+python-glmnet = ">=2.2"
+shap = ">=0.46"
 
 # --- optimization ----
-bayesian-optimization = "^1.2"
-hyperopt = "^0.2"
+bayesian-optimization = ">=1.2"
+hyperopt = ">=0.2"
 
 # --- visualization ---
 # TODO(amir): matplotlib v>=3.6 comes with breaking changes
 # make sure to apply the upgrade and fix the issues once the API refactor is done
-matplotlib = "^3.5,<3.6"
-seaborn = "^0.12"
+matplotlib = ">=3.5"
+seaborn = ">=0.12"
 
 # --- command-lines ---
-click = "^8.1"
+click = ">=8.1"
 
 
 [tool.poetry.group.dev.dependencies]
 
 # --- package-management ---
-pip = "^22.3"
+pip = ">=22.3"
+setuptools = ">=70.3"
 
 # --- task-management ---
-poethepoet = "^0.16"
+poethepoet = ">=0.16"
 
 # --- testenv-management ---
-tox = "^3.28"
+tox = ">=3.28"
 
 # --- formatting ---
-add-trailing-comma = "^2.4"
-isort = "^5.11"
-black = "^22.12"
-jupyter-black = "^0.3"
+add-trailing-comma = ">=2.4"
+isort = ">=5.11"
+black = ">=22.12"
+jupyter-black = ">=0.3"
 
 # --- linting ---
-flake8 = "^5.0"
-flake8-commas = "^2.1"
-flake8-annotations = "^2.9"
-flake8-comprehensions = "^3.10"
-flake8-eradicate = "^1.4"
-flake8-simplify = "^0.19"
-flake8-tidy-imports = "^4.8"
-flake8-type-checking = "^2.3"
-flake8-typing-imports = "^1.12"
-flake8-use-fstring = "^1.4"
-pep8-naming = "^0.13"
+flake8 = ">=5.0"
+flake8-commas = ">=4.0"
+flake8-annotations = ">=2.9"
+flake8-comprehensions = ">=3.10"
+flake8-eradicate = ">=1.4"
+flake8-simplify = ">=0.19"
+flake8-tidy-imports = ">=4.8"
+flake8-type-checking = ">=2.3"
+flake8-typing-imports = ">=1.12"
+flake8-use-fstring = ">=1.4"
+pep8-naming = ">=0.13"
 
 # --- type-checking ---
-mypy = "^0.991"
-pandas-stubs = "^1.5"
-data-science-types = "^0.2"
+mypy = ">=0.991"
+pandas-stubs = ">=1.5"
+data-science-types = ">=0.2"
 
 # --- unit-testing ---
-pytest = "^7.2"
-pytest-cov = "^4.0"
-pytest-mock = "^3.10"
-mock = "^4.0"
-coverage = "^6.5"
-assertpy = "^1.1"
+pytest = ">=7.2"
+pytest-cov = ">=4.0"
+pytest-mock = ">=3.10"
+mock = ">=4.0"
+coverage = ">=6.5"
+assertpy = ">=1.1"
 
 # --- docs ----
-sphinx = "^5.3"
-sphinx-autoapi = "^1.9"
-sphinx_design = "^0.3"
-myst-parser = "^0.18"
-furo = "^2022.9"
+sphinx = ">=5.3"
+sphinx-autoapi = ">=1.9"
+sphinx_design = ">=0.3"
+myst-parser = ">=0.18"
+furo = ">=2022.9"
 
 # --- jupyter ---
-ipykernel = "^6.20"
-jupytext = "^1.14"
+ipykernel = ">=6.29"
+jupytext = ">=1.14"
 
 # --- monitoring ---
-watchdog = "^2.1"
+watchdog = ">=2.1"
 
 # --- image manipulation ---
-pillow = "^9.3.0"
+pillow = ">=9.3"
 
 [build-system]
-requires = ["poetry-core>=1.4.0"]
+requires = ["poetry-core>=1.9.0"]
 build-backend = "poetry.core.masonry.api"
 
 

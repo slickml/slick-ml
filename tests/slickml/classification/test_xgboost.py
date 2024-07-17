@@ -465,12 +465,16 @@ class TestXGBoostClassifier:
             display_plot=False,
         )
 
-        assert_that(feature_importance_fig_path.parts[-1]).is_equal_to("feature_importance_fig.png")
+        assert_that(feature_importance_fig_path.parts[-1]).is_equal_to(
+            "feature_importance_fig.png",
+        )
         _validate_figure_type_and_size(
             path=feature_importance_fig_path,
             expected_size=(1395, 943),
         )
-        assert_that(shap_waterfall_fig_path.parts[-1]).is_equal_to("shap_waterfall_fig.png")
+        assert_that(shap_waterfall_fig_path.parts[-1]).is_equal_to(
+            "shap_waterfall_fig.png",
+        )
         _validate_figure_type_and_size(
             path=shap_waterfall_fig_path,
             expected_size=(1391, 974),
@@ -478,5 +482,5 @@ class TestXGBoostClassifier:
         assert_that(shap_summary_fig_path.parts[-1]).is_equal_to("shap_summary_fig.png")
         _validate_figure_type_and_size(
             path=shap_summary_fig_path,
-            expected_size=(1474, 760),
+            expected_size=(1472, 757),
         )

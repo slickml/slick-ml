@@ -72,15 +72,15 @@ def plot_binary_classification_metrics(
 
     # TODO(amir): move this to a function ?
     # prepare thresholds for plotting
-    thr_set1 = np.arange(
-        min(kwargs["roc_thresholds"]),
-        max(kwargs["roc_thresholds"]),
-        0.01,
+    thr_set1 = np.linspace(
+        start=min(kwargs["roc_thresholds"]),
+        stop=max(kwargs["roc_thresholds"]),
+        num=1000,
     )
-    thr_set2 = np.arange(
-        min(kwargs["pr_thresholds"]),
-        max(kwargs["pr_thresholds"]),
-        0.01,
+    thr_set2 = np.linspace(
+        start=min(kwargs["pr_thresholds"]),
+        stop=max(kwargs["pr_thresholds"]),
+        num=1000,
     )
     f1_list = [
         2
@@ -552,7 +552,7 @@ def plot_regression_metrics(
     freqs, _, _ = ax5.hist(
         kwargs["y_ratio"],
         histtype="bar",
-        bins=np.arange(0.75, 1.25, 0.01),
+        bins=np.arange(0.75, 1.25, 0.05),
         alpha=1.0,
         color="#B3C3F3",
         edgecolor="navy",
