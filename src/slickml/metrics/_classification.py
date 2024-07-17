@@ -245,7 +245,9 @@ class BinaryClassificationMetrics:
         # TODO(amir): add `values_between` option to `check_var()`
 
         if self.threshold is not None and (self.threshold < 0.0 or self.threshold > 1.0):
-            raise ValueError("The input threshold must have a value between 0.0 and 1.0.")
+            raise ValueError(
+                "The input threshold must have a value between 0.0 and 1.0.",
+            )
 
         # TODO(amir): how we can pull off special cases like this ?
         if self.average_method == "binary" or not self.average_method:
@@ -438,7 +440,7 @@ class BinaryClassificationMetrics:
         """
         precision_list, recall_list, pr_thresholds = precision_recall_curve(
             y_true=self.y_true,
-            probas_pred=self.y_pred_proba,
+            y_score=self.y_pred_proba,
         )
 
         return precision_list, recall_list, pr_thresholds

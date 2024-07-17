@@ -552,7 +552,7 @@ def plot_regression_metrics(
     freqs, _, _ = ax5.hist(
         kwargs["y_ratio"],
         histtype="bar",
-        bins=np.arange(0.75, 1.25, 0.05),
+        bins=np.arange(0.75, 1.25, 0.01),
         alpha=1.0,
         color="#B3C3F3",
         edgecolor="navy",

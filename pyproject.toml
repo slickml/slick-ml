@@ -71,8 +71,6 @@ bayesian-optimization = ">=1.2"
 hyperopt = ">=0.2"
 
 # --- visualization ---
-# TODO(amir): matplotlib v>=3.6 comes with breaking changes
-# make sure to apply the upgrade and fix the issues once the API refactor is done
 matplotlib = ">=3.5"
 seaborn = ">=0.12"
 
