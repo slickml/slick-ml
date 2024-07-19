@@ -139,43 +139,91 @@ watchdog = ">=2.1"
 # --- image manipulation ---
 pillow = ">=9.3"
 
-[build-system]
-requires = ["poetry-core>=1.9.0"]
-build-backend = "poetry.core.masonry.api"
-
 
 [tool.poetry.scripts]
 slickml = "slickml.cli:cli"
 
 # -- try `poe --help` for options
 [tool.poe.tasks]
-greet = { cmd = """echo "Welcome to SlickML ♡♡♡ $USER ♡♡♡ ...\n\n \
+
+[tool.poe.tasks.greet]
+help = "Runtime user greetings"
+cmd = """
+echo "Welcome to SlickML ♡♡♡ $USER ♡♡♡ ...\n\n \
 ███████╗██╗     ██╗ ██████╗██╗  ██╗███╗   ███╗██╗     
 ██╔════╝██║     ██║██╔════╝██║ ██╔╝████╗ ████║██║     
 ███████╗██║     ██║██║     █████╔╝ ██╔████╔██║██║     
 ╚════██║██║     ██║██║     ██╔═██╗ ██║╚██╔╝██║██║     
 ███████║███████╗██║╚██████╗██║  ██╗██║ ╚═╝ ██║███████╗
 ╚══════╝╚══════╝╚═╝ ╚═════╝╚═╝  ╚═╝╚═╝     ╚═╝╚══════╝\
-" """, help = "Runtime user greetings" }
-clean = { cmd = "rm -rf .coverage dist/ .mypy_cache/ .pytest_cache/ .tox/ htmlcov/ xmlcov/ **/__pycache__/ **/.ipynb_checkpoints/", help = "Remove all the ignored directories/files" }
-add-trailing-comma = { cmd = "poetry run add-trailing-comma --exit-zero-even-if-changed src/**/*.py tests/**/*.py", help = "Format code style via add-trailing-comma" }
-black = { cmd = "poetry run black --line-length 100 .", help = "Format code style via black" }
-isort = { cmd = "poetry run isort --profile black .", help = "Sort imported libraries via isort" }
-flake8 = { cmd = "poetry run flake8 --verbose --benchmark --color always --config .flake8", help = "Lint code via flake8" }
-mypy = { cmd = "poetry run mypy --config-file mypy.ini", help = "Lint types via mypy" }
-test = { cmd = "poetry run python -m pytest --cov=src --cov-report=term --cov-report=html --cov-report=xml --cov-config=.coveragerc --tb=short -ra -v", help = "Run unit-tests via pytest" }
-sphinx = { cmd = "poetry run sphinx-build -b html docs/ docs/_build", help = "Build API docs via sphinx" }
-tox = { cmd = "poetry run tox -c tox.ini .", help = "Test environments via tox" }
-format = [
-    { ref = "greet" },
-    { ref = "add-trailing-comma" },
-    { ref = "isort" },
-    { ref = "black" },
+" """
+
+[tool.poe.tasks.clean]
+help = "Remove all the ignored directories/files"
+cmd = """
+    rm -rf .coverage
+           dist/ 
+           .mypy_cache/ 
+           .pytest_cache/
+           .tox/
+           htmlcov/
+           xmlcov/
+           **/__pycache__/
+           **/.ipynb_checkpoints/
+    """
+
+[tool.poe.tasks.add-trailing-comma]
+help = "Format code style via add-trailing-comma"
+cmd = "poetry run add-trailing-comma --exit-zero-even-if-changed src/**/*.py tests/**/*.py"
+
+[tool.poe.tasks.black]
+help = "Format code style via black"
+cmd = "poetry run black --line-length 100 ."
+
+[tool.poe.tasks.isort]
+help = "Sort imported libraries via isort"
+cmd = "poetry run isort --profile black ."
+
+[tool.poe.tasks.flake8]
+help = "Lint code via flake8"
+cmd = "poetry run flake8 --verbose --benchmark --color always --config .flake8"
+
+[tool.poe.tasks.mypy]
+help = "Lint types via mypy"
+cmd = "poetry run mypy --config-file mypy.ini"
+
+[tool.poe.tasks.test]
+help = "Run unit-tests via pytest"
+cmd = "poetry run python -m pytest --cov=src --cov-report=term --cov-report=html --cov-report=xml --cov-config=.coveragerc --tb=short -ra -v"
+
+[tool.poe.tasks.sphinx]
+help = "Build API docs via sphinx"
+cmd = "poetry run sphinx-build -b html docs/ docs/_build"
+
+[tool.poe.tasks.tox]
+help = "Test environments via tox"
+cmd = "poetry run tox -c tox.ini ."
+
+[tool.poe.tasks.format]
+help = "Apply all formatting steps."
+sequence = [
+    "greet",
+    "add-trailing-comma",
+    "isort",
+    "black",
 ]
-check = [
-    { ref = "greet" },
+
+[tool.poe.tasks.check]
+help = "Check all linting steps. "
+sequence = [
+    "greet",
     { cmd = "poe black --check" },
     { cmd = "poe isort --check-only" },
     { cmd = "poe flake8 ." },
     { cmd = "poe mypy ." },
 ]
+
+
+[build-system]
+requires = ["poetry-core>=1.9.0"]
+build-backend = "poetry.core.masonry.api"
