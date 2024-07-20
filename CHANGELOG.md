@@ -11,6 +11,16 @@
 ### 🔥 Added
 ---
 
+## 📍 Version 0.3.0 - 2024-07-19
+### 🛠 Fixed
+- [#195](https://github.com/slickml/slick-ml/pull/195) fixed `CONTRIBUTING` docs with latest changes including python versions and `tox`.
+
+### 🔥 Added
+- [#194](https://github.com/slickml/slick-ml/pull/194) enabled local testing with `python v3.10 and v3.11` via `tox`.
+- [#192](https://github.com/slickml/slick-ml/pull/192) re-arranged `poe` tasks in `pyproject.toml` for better readability.
+
+---
+
 ## 📍 Version 0.3.0-beta - 2024-07-17
 ### 🛠 Fixed
 - [#190](https://github.com/slickml/slick-ml/pull/190) re-ran all example notebooks and fixed all warnings.
