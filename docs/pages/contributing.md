@@ -42,7 +42,7 @@ Please note that before starting any major work, open an issue describing what y
 
 ## 🐍 🥷 Environment Management
 
-- To begin with, install a [Python version >=3.8,<3.12](https://www.python.org).
+- To begin with, install a [Python version >=3.9,<3.13](https://www.python.org).
 - A working [Fortran Compiler](https://gcc.gnu.org/install/) (`gfortran`) is also required. If you do not have `gcc` installed, the following commands depending on your operating system will take care of this requirement. Please note that installing `gcc` sometimes might take couple minutes ⏳ 🤦‍♂️.
   ```
   # Mac Users
@@ -51,7 +51,7 @@ Please note that before starting any major work, open an issue describing what y
   # Linux Users
   sudo apt install build-essential gfortran
   ```
-- All developments are done via [*python-poetry*](https://python-poetry.org/). To begin with, first install `poetry` (version >=1.2.0) following the [*installation documentation*](https://python-poetry.org/docs/#installation) depending on your operating system.
+- All developments are done via [*python-poetry*](https://python-poetry.org/). To begin with, first install `poetry` following the [*installation documentation*](https://python-poetry.org/docs/#installation) depending on your operating system.
 - You can also easily [*manage your Python environments*](https://python-poetry.org/docs/managing-environments#managing-environments) and easily switch between environments via `poetry`. To set the `poetry` environment using your preferred `python` version (i.e. `3.9.18`) which is already installed on your system preferably via `pyenv`, simply run 🏃‍♀️ :
   ```
   poetry env use 3.9.18
@@ -157,7 +157,7 @@ Please note that before starting any major work, open an issue describing what y
      ```
      poe tox
      ```
-     🔔 Sometimes, `tox` is unhappy; so, don't hesitate to run `poe tox` twice 😁 .
+     🔔 Please note that, we are currently running `tox` against `python versions 3.9, 3.10, and 3.11`. Therefore, you can leverage `pyenv` and install these versions and use `pyenv local` command (i.e. `pyenv local 3.9.X 3.10.Y 3.11.Z`) to activate them before running `poe tox`.
   8. Now, you are ready to push your changes to your forked repository.
   9.  Lastly, open a PR in our repository to the `master` branch and follow the PR template so that we can efficiently review the changes as soon as possible and get your feature/bug-fix merged.
   10. Nicely done! You are all set! You are now officially part of [SlickML contributors](https://github.com/slickml/slick-ml/graphs/contributors).
