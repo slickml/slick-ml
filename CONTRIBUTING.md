@@ -4,16 +4,18 @@ Hello from SlickML🧞 Team 👋 and welcome to our contributing guidelines 🤗
 
 
 ## 🔗 Quick Links
-  * [Code of Conduct](#️code-of-conduct)
-  * [Getting Started](#getting-started)
-    * [Coding Standards](#coding-standards)
-    * [Environment Management](#environment-management)
-    * [Formatting](#formatting)
-    * [Linting](#linting)
-    * [Testing](#testing)
-    * [Documentation](#documentation)
-    * [Pull Requests](#pull-requests)
-  * [Need Help?](#need-help)
+- [🧑‍💻🤝 Contributing to SlickML🧞](#-contributing-to-slickml)
+  - [🔗 Quick Links](#-quick-links)
+  - [👩‍⚖️  Code of Conduct](#️--code-of-conduct)
+  - [🚀🌙 Getting Started](#-getting-started)
+    - [📐 Coding Standards](#-coding-standards)
+    - [🐍 🥷 Environment Management](#--environment-management)
+    - [🛠 Formatting](#-formatting)
+    - [🪓 Linting](#-linting)
+    - [🧪 Testing](#-testing)
+    - [📖 Documentation](#-documentation)
+  - [🔥 Pull Requests](#-pull-requests)
+  - [❓ 🆘 📲 Need Help?](#---need-help)
 
 
 ## 👩‍⚖️  Code of Conduct
@@ -63,13 +65,13 @@ Please note that before starting any major work, open an issue describing what y
   sudo apt install build-essential gfortran
   ```
 - All developments are done via [*python-poetry*](https://python-poetry.org/). To begin with, first install `poetry` (version >=1.2.0) following the [*installation documentation*](https://python-poetry.org/docs/#installation) depending on your operating system.
-- You can also easily [*manage your Python environments*](https://python-poetry.org/docs/managing-environments#managing-environments) and easily switch between environments via `poetry`. To set the `poetry` environment using your preferred `python` version (i.e. `3.9.13`), which is already installed on your system preferably via `pyenv`, simply run 🏃‍♀️ :
+- You can also easily [*manage your Python environments*](https://python-poetry.org/docs/managing-environments#managing-environments) and easily switch between environments via `poetry`. To set the `poetry` environment using your preferred `python` version (i.e. `3.9.18`), which is already installed on your system preferably via `pyenv`, simply run 🏃‍♀️ :
   ```
-  poetry env use 3.9.13
+  poetry env use 3.9.18
   ```
 - Once you setup your environment, to install the dependencies (`poetry.lock`), simply run 🏃‍♀️ :
   ```
-  poetry install
+  poetry install --all-extras
   ```
 - We mainly use [*Poe the Poet*](https://github.com/nat-n/poethepoet), a pythonic task runner that works well with `poetry`.
 - To make sure your environmnet is setup correctly, simply run 🏃‍♀️ :
@@ -167,7 +169,7 @@ Please note that before starting any major work, open an issue describing what y
      ```
      poe tox
      ```
-     🔔 Sometimes, `tox` is unhappy; so, don't hesitate to run `poe tox` twice 😁 .
+     🔔 Please note that, we are currently running `tox` against `python versions 3.9, 3.10, and 3.11`. Therefore, you can leverage `pyenv` and install these versions and use `pyenv local` command (i.e. `pyenv local 3.9.X 3.10.Y 3.11.Z`) to activate them before running `poe tox`.
   8. Now, you are ready to push your changes to your forked repository.
   9.  Lastly, open a PR in our repository to the `master` branch and follow the PR template so that we can efficiently review the changes as soon as possible and get your feature/bug-fix merged.
   10. Nicely done! You are all set! You are now officially part of [SlickML contributors](https://github.com/slickml/slick-ml/graphs/contributors).

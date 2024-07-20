@@ -165,7 +165,7 @@ cmd = """
            dist/ 
            .mypy_cache/ 
            .pytest_cache/
-           .tox/
+           .tox
            htmlcov/
            xmlcov/
            **/__pycache__/
@@ -202,7 +202,7 @@ cmd = "poetry run sphinx-build -b html docs/ docs/_build"
 
 [tool.poe.tasks.tox]
 help = "Test environments via tox"
-cmd = "poetry run tox -c tox.ini ."
+cmd = "poetry run tox --conf=tox.ini --root=."
 
 [tool.poe.tasks.format]
 help = "Apply all formatting steps."
