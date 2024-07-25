@@ -61,7 +61,7 @@ scipy = ">=1.9"
 statsmodels = ">=0.13"
 
 # --- machine-learning ---
-scikit-learn = ">=1.1"
+scikit-learn = ">=1.5"
 xgboost = ">=1.7,<2.0"
 python-glmnet = ">=2.2"
 shap = ">=0.46"
