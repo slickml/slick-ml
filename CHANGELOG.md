@@ -9,6 +9,13 @@
 ### 🛠 Fixed
 
 ### 🔥 Added
+
+---
+
+## 📍 Version 0.3.1 - 2024-07-25
+### 🛠 Fixed
+- [#198](https://github.com/slickml/slick-ml/pull/198) fixed minimum version of `scikit-learn` in dependencies to fix `metrics` bug.
+
 ---
 
 ## 📍 Version 0.3.0 - 2024-07-19
