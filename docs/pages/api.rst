@@ -17,55 +17,55 @@ API Reference
     :padding: 3 4 0 0
 
     .. grid-item-card:: 💣 Classification
-        :link: https://www.docs.slickml.com/autoapi/slickml/classification/index.html
+        :link: https://www.docs.slickml.com/slick-ml/autoapi/slickml/classification/index.html
         :link-type: url
 
         Learn more about the available classifiers ...
 
     .. grid-item-card:: 🔥 Regression
-        :link: https://www.docs.slickml.com/autoapi/slickml/regression/index.html
+        :link: https://www.docs.slickml.com/slick-ml/autoapi/slickml/regression/index.html
         :link-type: url
 
         Learn more about the available regressors ...  
 
     .. grid-item-card:: 🩺 Selection
-        :link: https://www.docs.slickml.com/autoapi/slickml/selection/index.html
+        :link: https://www.docs.slickml.com/slick-ml/autoapi/slickml/selection/index.html
         :link-type: url
 
         Learn more about the available algorithms for feature selection ...   
 
     .. grid-item-card:: 🏎 Optimization
-        :link: https://www.docs.slickml.com/autoapi/slickml/optimization/index.html
+        :link: https://www.docs.slickml.com/slick-ml/autoapi/slickml/optimization/index.html
         :link-type: url
 
         Learn more about the available hyper-parameters tuning optimizers ...                        
 
     .. grid-item-card:: 📈 Metrics
-        :link: https://www.docs.slickml.com/autoapi/slickml/metrics/index.html
+        :link: https://www.docs.slickml.com/slick-ml/autoapi/slickml/metrics/index.html
         :link-type: url
 
         Learn more about the key functionalities to visualize optimized metrics ...
 
     .. grid-item-card:: 📊 Visualization
-        :link: https://www.docs.slickml.com/autoapi/slickml/visualization/index.html
+        :link: https://www.docs.slickml.com/slick-ml/autoapi/slickml/visualization/index.html
         :link-type: url
 
         Learn more about the key visualization functions that is used across the API ...
 
     .. grid-item-card:: 🔩 Base
-        :link: https://www.docs.slickml.com/autoapi/slickml/base/index.html
+        :link: https://www.docs.slickml.com/slick-ml/autoapi/slickml/base/index.html
         :link-type: url
 
         Learn more about the base classes and protocols that are used across the core API ...  
 
     .. grid-item-card:: 🧰 Utils
-        :link: https://www.docs.slickml.com/autoapi/slickml/utils/index.html
+        :link: https://www.docs.slickml.com/slick-ml/autoapi/slickml/utils/index.html
         :link-type: url
 
         Learn more about the key utility functions that are used across the API ...
 
     .. grid-item-card:: β Beta
-        :link: https://www.docs.slickml.com/autoapi/slickml/beta/index.html
+        :link: https://www.docs.slickml.com/slick-ml/autoapi/slickml/beta/index.html
         :link-type: url
 
         Learn more about the experimental functionalities across the API ...  

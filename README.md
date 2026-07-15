@@ -25,7 +25,7 @@
     🟣 
     <a href="https://github.com/slickml/slick-ml/blob/master/CONTRIBUTING.md"> Become a Contributor</a>
     🟣 
-    <a href="https://www.docs.slickml.com"> Explore API Docs</a>
+    <a href="https://www.docs.slickml.com/slick-ml/"> Explore API Docs</a>
     🟣 
     <a href="https://www.slickml.com/slack-invite"> Join our Slack</a>
     🟣 
@@ -48,7 +48,7 @@ and [Prefect](https://github.com/PrefectHQ/prefect). More details coming soon �
 
 
 ## 📖 Documentation
-✨ The API documentation is available at [docs.slickml.com](https://www.docs.slickml.com).
+✨ The API documentation is available at [docs.slickml.com/slick-ml](https://www.docs.slickml.com/slick-ml/).
 
 ## 🛠 Installation
 To begin with, install [Python version >=3.8,<3.12](https://www.python.org) and to install the library
