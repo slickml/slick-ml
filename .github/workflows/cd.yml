@@ -70,20 +70,26 @@ jobs:
       #  docs.slickml.com/slick-ml/  → docs/_build/
       #----------------------------------------------
       - name: Deploy Landing Page
-        uses: SamKirkland/FTP-Deploy-Action@4.3.0
+        uses: SamKirkland/FTP-Deploy-Action@v4.4.0
         with:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
+          protocol: ftps
+          security: loose
+          timeout: 120000
           local-dir: ./landing/
           server-dir: ./
           state-name: .ftp-deploy-sync-state-landing.json
       - name: Deploy API Docs
-        uses: SamKirkland/FTP-Deploy-Action@4.3.0
+        uses: SamKirkland/FTP-Deploy-Action@v4.4.0
         with:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
+          protocol: ftps
+          security: loose
+          timeout: 120000
           local-dir: ./docs/_build/
           server-dir: ./slick-ml/
           state-name: .ftp-deploy-sync-state-slick-ml.json
