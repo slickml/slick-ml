@@ -125,6 +125,7 @@ html_theme_options = {
 # TODO(amir): figure out versioning of API docs; currently, there is no hint about the version
 # in the populated docs since `html_title = f"SlickML - v{version}"` is removed temporarily
 html_title = "SlickML"
+html_baseurl = "https://www.docs.slickml.com/slick-ml/"
 html_logo = "_static/img/logo_clear.png"
 html_favicon = "_static/img/logo_clear.png"
 html_show_copyright = True

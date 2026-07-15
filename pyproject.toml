@@ -17,7 +17,7 @@ maintainers = [
 readme = "README.md"
 homepage = "https://www.slickml.com"
 repository = "https://github.com/slickml/slick-ml"
-documentation = "https://www.docs.slickml.com"
+documentation = "https://www.docs.slickml.com/slick-ml/"
 keywords = [
     "python",
     "data-science",

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>SlickML Documentation</title>
+    <meta
+      name="description"
+      content="API documentation hub for SlickML open-source libraries."
+    />
+    <link
+      rel="icon"
+      href="https://raw.githubusercontent.com/slickml/slick-ml/master/assets/designs/logo_clear.png"
+    />
+    <style>
+      :root {
+        --bg: #0b1220;
+        --surface: #121a2b;
+        --text: #e8eef8;
+        --muted: #9aa8c0;
+        --accent: #097ebe;
+        --accent-2: #c302d5;
+        --border: rgba(232, 238, 248, 0.12);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+        color: var(--text);
+        background:
+          radial-gradient(ellipse 80% 50% at 20% -10%, rgba(9, 126, 190, 0.35), transparent 55%),
+          radial-gradient(ellipse 70% 45% at 90% 10%, rgba(195, 2, 213, 0.22), transparent 50%),
+          var(--bg);
+      }
+
+      main {
+        width: min(960px, calc(100% - 2.5rem));
+        margin: 0 auto;
+        padding: 4.5rem 0 3rem;
+      }
+
+      .brand {
+        text-align: center;
+        margin-bottom: 3rem;
+      }
+
+      .brand img {
+        width: 140px;
+        height: auto;
+        margin-bottom: 1rem;
+      }
+
+      .brand h1 {
+        margin: 0 0 0.6rem;
+        font-size: clamp(1.75rem, 4vw, 2.4rem);
+        letter-spacing: -0.02em;
+      }
+
+      .brand p {
+        margin: 0 auto;
+        max-width: 36rem;
+        color: var(--muted);
+        line-height: 1.55;
+      }
+
+      .cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 1.25rem;
+      }
+
+      .card {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        padding: 1.35rem 1.4rem;
+        background: color-mix(in srgb, var(--surface) 88%, transparent);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        text-decoration: none;
+        color: inherit;
+        transition: border-color 0.2s ease, transform 0.2s ease;
+      }
+
+      .card:hover {
+        border-color: color-mix(in srgb, var(--accent) 70%, white);
+        transform: translateY(-2px);
+      }
+
+      .card h2 {
+        margin: 0;
+        font-size: 1.15rem;
+      }
+
+      .card p {
+        margin: 0;
+        flex: 1;
+        color: var(--muted);
+        font-size: 0.95rem;
+        line-height: 1.5;
+      }
+
+      .card span {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--accent);
+      }
+
+      footer {
+        margin-top: 3rem;
+        text-align: center;
+        color: var(--muted);
+        font-size: 0.85rem;
+      }
+
+      footer a {
+        color: var(--text);
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header class="brand">
+        <img
+          src="https://raw.githubusercontent.com/slickml/slick-ml/master/assets/designs/logo_clear.png"
+          alt="SlickML"
+        />
+        <h1>SlickML Documentation</h1>
+        <p>
+          API docs for the SlickML open-source libraries. Pick a project to
+          explore its reference documentation.
+        </p>
+      </header>
+
+      <section class="cards" aria-label="Libraries">
+        <a class="card" href="https://www.docs.slickml.com/slick-ml/">
+          <h2>SlickML 🧞</h2>
+          <p>Slick machine learning tools for tabular data in Python.</p>
+          <span>Open docs →</span>
+        </a>
+
+        <a class="card" href="https://www.docs.slickml.com/slick-tune/">
+          <h2>SlickTune 🧩</h2>
+          <p>Composable LLM fine-tuning utilities.</p>
+          <span>Open docs →</span>
+        </a>
+
+        <a class="card" href="https://www.docs.slickml.com/afk-bot/">
+          <h2>AFK-Bot 🤖</h2>
+          <p>A bot for the away-from-keyboard times.</p>
+          <span>Open docs →</span>
+        </a>
+      </section>
+
+      <footer>
+        <a href="https://github.com/slickml">github.com/slickml</a>
+        ·
+        <a href="https://www.slickml.com">slickml.com</a>
+      </footer>
+    </main>
+  </body>
+</html>

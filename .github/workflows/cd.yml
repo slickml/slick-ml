@@ -64,8 +64,19 @@ jobs:
           poe greet
           poe sphinx
       #----------------------------------------------
-      #  ---  Deploy docs to docs.slickml.com  ---
+      #  ---  Deploy landing + API docs via FTP  ---
+      #  docs.slickml.com/           → landing/index.html
+      #  docs.slickml.com/slick-ml/  → docs/_build/
       #----------------------------------------------
+      - name: Deploy Landing Page
+        uses: SamKirkland/FTP-Deploy-Action@4.3.0
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./landing/
+          server-dir: ./
+          state-name: .ftp-deploy-sync-state-landing.json
       - name: Deploy API Docs
         uses: SamKirkland/FTP-Deploy-Action@4.3.0
         with:
@@ -73,3 +84,5 @@ jobs:
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           local-dir: ./docs/_build/
+          server-dir: ./slick-ml/
+          state-name: .ftp-deploy-sync-state-slick-ml.json
