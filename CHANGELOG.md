@@ -18,6 +18,7 @@
 - Updated dependency import tests to parse PEP 621 `Requires-Dist` metadata (including optional extras).
 - Fixed `lambda_path` truthiness checks for `Series`/`ndarray` inputs in GLMNet estimators.
 - Fixed feature-frequency sorting when `Frequency (%)` is unavailable.
+- Replaced deprecated `scipy.integrate.simps` with `simpson` for newer SciPy compatibility.
 
 ### 🔥 Added
 - Migrated packaging and development workflow from Poetry to [`uv`](https://docs.astral.sh/uv/) with hatchling and a committed `uv.lock`.
