@@ -163,8 +163,8 @@ def test_add_noisy_features__fails__with_invalid_inputs(kwargs: Dict[str, Any]) 
         {"X": [42]},
         {"X": pd.DataFrame()},
         {"X": {"X": 42}},
-        {"X": np.array(([42])), "prefix": 123},
-        {"X": np.array(([42])), "prefix": "123", "delimiter": 123},
+        {"X": np.array([42]), "prefix": 123},
+        {"X": np.array([42]), "prefix": "123", "delimiter": 123},
     ],
     ids=_ids,
 )

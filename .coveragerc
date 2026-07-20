@@ -9,7 +9,7 @@ omit =
 
 [report]
 show_missing = True
-fail_under = 95
+fail_under = 100
 
 [html]
 directory = htmlcov

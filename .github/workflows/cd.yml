@@ -3,6 +3,8 @@
 ####################################################################################################
 # References:
 # - https://github.com/SamKirkland/FTP-Deploy-Action
+# - https://docs.astral.sh/uv/guides/integration/github/
+# Adapted from: https://github.com/slickml/slick-tune/blob/master/.github/workflows/cd.yml
 ####################################################################################################
 name: docs
 
@@ -26,44 +28,39 @@ jobs:
       # ----- check-out repo and set-up python -----
       #----------------------------------------------
       - name: Checkout Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+
       - name: Setup Python v${{ matrix.python-version }}
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
+
       #----------------------------------------------
-      # -----  install & configure poetry  -----
+      # -----  install & configure uv  -----
       #----------------------------------------------
-      - name: Install Poetry
-        uses: snok/install-poetry@v1
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
         with:
-          version: 1.8.5
-          virtualenvs-create: true
-          virtualenvs-in-project: true
-          installer-parallel: true
-      #----------------------------------------------
-      #  -----  load cached dependencies  -----
-      #----------------------------------------------
-      - name: Load Cached venv
-        id: cached-poetry-dependencies
-        uses: actions/cache@v3
-        with:
-          path: .venv
-          key: venv-${{ runner.os }}-${{ matrix.python-version }}-${{ hashFiles('**/poetry.lock') }}
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
+
       #----------------------------------------------
       #  -----  install dependencies  -----
       #----------------------------------------------
       - name: Install Dependencies
-        run: poetry install -vv
-        if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
+        run: uv sync --locked --group docs
+
+      - name: Install Poe the Poet
+        run: uv tool install poethepoet
+
       #----------------------------------------------
       #  -----  Create API docs via Sphinx -----
       #----------------------------------------------
       - name: Docs
         run: |
-          source $VENV
           poe greet
           poe sphinx
+
       #----------------------------------------------
       #  ---  Deploy landing + API docs via FTP  ---
       #  docs.slickml.com/           → landing/index.html
@@ -83,6 +80,7 @@ jobs:
           state-name: .ftp-deploy-sync-state-landing.json
           dangerous-clean-slate: false
           dry-run: false
+
       - name: Deploy API Docs
         uses: SamKirkland/FTP-Deploy-Action@v4.3.6
         with:

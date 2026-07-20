@@ -20,8 +20,8 @@ class ExtendedEnum(Enum):
     --------
     >>> from slickml.utils import ExtendedEnum
     >>> class FooBar(ExtendedEnum):
-    ...    FOO = "foo"
-    ...    BAR = "bar"
+    ...     FOO = "foo"
+    ...     BAR = "bar"
     >>> FooBar.FOO
     >>> FooBar.names()
     >>> FooBar.values()

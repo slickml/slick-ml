@@ -1,3 +1,4 @@
+import re
 from importlib.metadata import distribution
 from typing import List
 
@@ -6,7 +7,7 @@ from assertpy import assert_that
 
 
 def _get_valid_dependencies(dist_name: str = "slickml") -> List[str]:
-    """Helper function to retrieve the package dependencies names from `pyproject.toml`."""
+    """Helper function to retrieve the package dependencies names from package metadata."""
     # map the libraries that their installation name differs from imported name (i.e. plugins)
     mapping = {
         "bayesian-optimization": "bayes_opt",
@@ -14,8 +15,14 @@ def _get_valid_dependencies(dist_name: str = "slickml") -> List[str]:
         "python-glmnet": "glmnet",
     }
     # TODO(amir): mypy: https://stackoverflow.com/questions/61712618/why-does-mypy-not-consider-a-class-as-iterable-if-it-has-len-and-getitem
-    deps = [dep.split(" ")[0] for dep in distribution(dist_name).requires]  # type: ignore
-    return list(set([mapping[lib] if lib in mapping else lib for lib in deps]))
+    libs: List[str] = []
+    for dep in distribution(dist_name).requires or []:  # type: ignore[union-attr]
+        # Skip optional extras (dev/docs); only validate runtime Requires-Dist entries
+        if "extra ==" in dep:
+            continue
+        name = re.split(r"[><=!]", dep, maxsplit=1)[0].strip()
+        libs.append(mapping.get(name, name))
+    return list(set(libs))
 
 
 def _get_invalid_dependencies() -> List[str]:

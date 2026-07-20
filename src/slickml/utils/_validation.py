@@ -54,13 +54,14 @@ def check_var(
     >>> from slickml.utils import check_var
     >>> @dataclass
     ... class Foo:
-    ...    var_str: str
-    ...    var_float: float = 42.0
-    ...    var_int: int = 1367
-    ...    def __post_init__(self):
-    ...        check_var(self.var_str, var_name="var_str", dtypes=str)
-    ...        check_var(self.var_float, var_name="var_float", dtypes=float, values=(41, 42))
-    ...        check_var(self.var_int, var_name="var_int", dtypes=str, values=(1367, 1400))
+    ...     var_str: str
+    ...     var_float: float = 42.0
+    ...     var_int: int = 1367
+    ...
+    ...     def __post_init__(self):
+    ...         check_var(self.var_str, var_name="var_str", dtypes=str)
+    ...         check_var(self.var_float, var_name="var_float", dtypes=float, values=(41, 42))
+    ...         check_var(self.var_int, var_name="var_int", dtypes=str, values=(1367, 1400))
     """
 
     def _check_dtypes(

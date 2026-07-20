@@ -2,10 +2,10 @@
 # Continuous Integration [Lint, Test, Build] on All Pull-Requests + Push to Master
 ####################################################################################################
 # References:
-# - https://github.com/snok/install-poetry
-# - https://github.com/actions/setup-python#caching-packages-dependencies
-# - https://stackoverflow.com/questions/62977821/how-to-cache-poetry-install-for-github-actions
+# - https://docs.astral.sh/uv/guides/integration/github/
+# - https://github.com/astral-sh/setup-uv
 # - https://github.com/codecov/codecov-action
+# Adapted from: https://github.com/slickml/slick-tune/blob/master/.github/workflows/ci.yml
 ####################################################################################################
 name: build
 
@@ -23,7 +23,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        # TODO(amir): enable `windows-latest` and fix possible `poetry` issues and glmnet
+        # TODO(amir): enable `windows-latest` and fix possible glmnet issues
         # TODO(amir): add `"3.12"` once the glmnet wheel is released
         os: ["ubuntu-latest", "macos-latest"]
         python-version: ["3.9", "3.10", "3.11"]
@@ -32,61 +32,54 @@ jobs:
       # ----- check-out repo and set-up python -----
       #----------------------------------------------
       - name: Checkout Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+
       - name: Setup Python v${{ matrix.python-version }}
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
+
       #----------------------------------------------
-      # -----  install & configure poetry  -----
+      # -----  install & configure uv  -----
       #----------------------------------------------
-      - name: Install Poetry
-        uses: snok/install-poetry@v1
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
         with:
-          version: 1.8.5
-          virtualenvs-create: true
-          virtualenvs-in-project: true
-          installer-parallel: true
-      #----------------------------------------------
-      #  -----  load cached dependencies  -----
-      #----------------------------------------------
-      - name: Load Cached venv
-        id: cached-poetry-dependencies
-        uses: actions/cache@v3
-        with:
-          path: .venv
-          key: venv-${{ runner.os }}-${{ matrix.python-version }}-${{ hashFiles('**/poetry.lock') }}
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
+
       #----------------------------------------------
       #  -----  install dependencies  -----
       #----------------------------------------------
       - name: Install Dependencies
-        run: poetry install -vv
-        if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
+        run: uv sync --locked --all-extras --all-groups
+
+      - name: Install Poe the Poet
+        run: uv tool install poethepoet
+
       #----------------------------------------------
       #  -----  Integration test suite  -----
       #----------------------------------------------
-      # TODO(amir): de-dup the `source .venv/bin/activate` (`source $VENV`) command
       - name: Lint
-        run: |
-          source $VENV
-          poe check
+        run: poe check
+
       - name: Test
         run: |
-          source $VENV
           poe greet
           poe test
+
       - name: Build
         run: |
-          source $VENV
           poe greet
-          poetry build
+          poe build
+
       #----------------------------------------------
       #  ---  Upload test coverage to Codecov  ---
       #----------------------------------------------
       - name: Codecov
         # NOTE: only run code coverage with one Python Version and OS; the rest is not needed
         if: ${{ matrix.python-version == '3.9' && matrix.os == 'ubuntu-latest' }}
-        uses: codecov/codecov-action@v3.1.1
+        uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           directory: ./xmlcov/

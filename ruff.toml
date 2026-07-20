@@ -1,0 +1,50 @@
+# https://docs.astral.sh/ruff/configuration/
+
+line-length = 100
+target-version = "py39"
+src = ["src", "tests"]
+extend-exclude = [
+    ".venv",
+    "docs/conf.py",
+    "examples",
+    "htmlcov",
+    "xmlcov",
+]
+
+[lint]
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # isort
+    "UP",  # pyupgrade
+    "B",   # flake8-bugbear
+    "SIM", # flake8-simplify
+    "ANN", # type annotations
+]
+ignore = [
+    # Migrated from .flake8 — keep behavior close to the previous flake8 gate
+    "E501",   # line too long (formatter + historical exceptions)
+    "E402",   # module level import not at top of file
+    "ANN002", # missing type annotation for *args
+    "ANN003", # missing type annotation for **kwargs
+    "ANN202", # missing return type for private function
+    "ANN204", # missing return type for special method
+    "ANN401", # Dynamically typed expressions (typing.Any) are disallowed
+    "SIM113", # use enumerate
+    # Defer PEP-585/typing modernization; existing code still uses typing.Dict/List
+    "UP006",
+    "UP035",
+]
+
+[lint.per-file-ignores]
+"tests/**/*.py" = ["ANN"]
+
+[lint.isort]
+known-first-party = ["slickml"]
+
+[format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "auto"
+docstring-code-format = true

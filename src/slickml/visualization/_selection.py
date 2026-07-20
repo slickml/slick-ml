@@ -150,10 +150,7 @@ def plot_xfs_feature_frequency(
     )
 
     # choose whether the feature frequency is being plotted by count or percentage
-    if show_freq_pct:
-        col = "Frequency (%)"
-    else:
-        col = "Frequency"
+    col = "Frequency (%)" if show_freq_pct else "Frequency"
 
     # reindex freq
     freq = freq.reindex(

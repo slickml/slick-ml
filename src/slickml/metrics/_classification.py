@@ -181,10 +181,7 @@ class BinaryClassificationMetrics:
     Examples
     --------
     >>> from slickml.metrics import BinaryClassificationMetrics
-    >>> cm = BinaryClassificationMetrics(
-    ...     y_true=[1, 1, 0, 0],
-    ...     y_pred_proba=[0.95, 0.3, 0.1, 0.9]
-    ... )
+    >>> cm = BinaryClassificationMetrics(y_true=[1, 1, 0, 0], y_pred_proba=[0.95, 0.3, 0.1, 0.9])
     >>> f = cm.plot()
     >>> m = cm.get_metrics()
     """

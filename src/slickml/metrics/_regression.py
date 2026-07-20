@@ -135,10 +135,7 @@ class RegressionMetrics:
     Examples
     --------
     >>> from slickml.metrics import RegressionMetrics
-    >>> rm = RegressionMetrics(
-    ...     y_true=[3, -0.5, 2, 7],
-    ...     y_pred=[2.5, 0.0, 2, 8]
-    ... )
+    >>> rm = RegressionMetrics(y_true=[3, -0.5, 2, 7], y_pred=[2.5, 0.0, 2, 8])
     >>> m = rm.get_metrics()
     >>> rm.plot()
     """
@@ -404,7 +401,7 @@ class RegressionMetrics:
                     count += 1
             accuracy.append(count / len(self.y_true))
 
-        auc_rec = scp.integrate.simps(accuracy, deviation) / end
+        auc_rec = scp.integrate.simpson(accuracy, x=deviation) / end
 
         return (deviation, np.array(accuracy), auc_rec)
 
