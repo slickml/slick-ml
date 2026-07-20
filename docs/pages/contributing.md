@@ -51,16 +51,15 @@ Please note that before starting any major work, open an issue describing what y
   # Linux Users
   sudo apt install build-essential gfortran
   ```
-- All developments are done via [*python-poetry*](https://python-poetry.org/). To begin with, first install `poetry` following the [*installation documentation*](https://python-poetry.org/docs/#installation) depending on your operating system.
-- You can also easily [*manage your Python environments*](https://python-poetry.org/docs/managing-environments#managing-environments) and easily switch between environments via `poetry`. To set the `poetry` environment using your preferred `python` version (i.e. `3.9.18`) which is already installed on your system preferably via `pyenv`, simply run 🏃‍♀️ :
+- All developments are done via [*uv*](https://docs.astral.sh/uv/). To begin with, first install `uv` following the [*installation documentation*](https://docs.astral.sh/uv/getting-started/installation/) depending on your operating system.
+- Once you setup your environment, to install the dependencies (`uv.lock`), simply run 🏃‍♀️ :
   ```
-  poetry env use 3.9.18
+  uv sync
   ```
-- Once you setup your environment, to install the dependencies (`poetry.lock`), simply run 🏃‍♀️ :
+- We mainly use [*Poe the Poet*](https://poethepoet.natn.io/installation.html), a pythonic task runner that works well with `uv`. Install the CLI once 🏃‍♀️ :
   ```
-  poetry install
+  uv tool install poethepoet
   ```
-- We mainly use [*Poe the Poet*](https://github.com/nat-n/poethepoet), a pythonic task runner that works well with `poetry`.
 - To make sure your environmnet is setup correctly, simply run 🏃‍♀️ :
   ```
   poe greet
@@ -71,49 +70,39 @@ Please note that before starting any major work, open an issue describing what y
   ```
 
 
-## 🛠 Formatting
+### 🛠 Formatting
 - To ease the process and reduce headache 💆‍♀️ , we have serialized the required formatting commands to save more time ⏰. To apply all the required `formatting` steps, simply run 🏃‍♀️ :
   ```
   poe format
   ```
-- `poe format` command is essentially runs `poe add-trailing-comma`, `poe black` and `poe isort` commands behind the scene in a serial fashion. You can learn more about each steps below 👇 .
-- Different versions of python require commas in different places. Trailing commas 🏁 is a common issue (C812) in code styles that [*add-trailing-comma*](https://github.com/asottile/add-trailing-comma) has solved it. To apply `add-trailing-comma`, simply run 🏃‍♀️ :
+- We save a lot of time ⏳ and mental energy 🔋 for more important matters by using [*ruff*](https://docs.astral.sh/ruff/) as our main code formatter (line-length = 100; see [`ruff.toml`](https://github.com/slickml/slick-ml/blob/master/ruff.toml)). To apply formatting, simply run 🏃‍♀️ :
   ```
-  poe add-trailing-comma
+  poe format
   ```
-- We save a lot of time ⏳ and mental energy 🔋 for more important matters by using [*black*](https://github.com/psf/black) ⬛  as our main code formatter. The only option we have specified over the default values is `line-length = 100`. To apply `black`, simply run 🏃‍♀️ :
+- To check if the code is formatted correctly (without writing), simply run 🏃‍♀️ :
   ```
-  poe black
-  ```
-- We also use [*isort*](https://github.com/PyCQA/isort) to sort imports libraries alphabetically, and automatically 🔠 separated into sections and by type. To apply `isort`, simply run 🏃‍♀️ :
-  ```
-  poe isort
+  poe format --check
   ```
 
 
-## 🪓 Linting
+### 🪓 Linting
 - Similar to formatting, to ease the process and reduce headache 💆‍♂️ , we have serialized the required linting commands to save more time ⏰. To apply all the required `linting` steps, simply run 🏃‍♀️ :
   ```
   poe check
   ```
-- `poe check` command is essentially runs `poe black --check`, `poe isort --check-only`, `poe flake8`, and `poe mypy` commands behind the scene in a serial fashion. You can learn more about each steps below 👇 .
-- To lint our code base we use [*flake8*](https://flake8.pycqa.org/en/latest/) with [*flake8-commas*](https://github.com/PyCQA/flake8-commas) extension, and more specification laid out in [*.flake8*](https://github.com/slickml/slick-ml/blob/master/.flake8) file. To apply `flake8` to the code base, simply run 🏃‍♀️ :
+- `poe check` essentially runs `poe format --check`, `ruff check .`, and `poe mypy` behind the scenes in a serial fashion. You can learn more about each step below 👇 .
+- To lint our code base we use [*ruff*](https://docs.astral.sh/ruff/). To apply `ruff` to the code base, simply run 🏃‍♀️ :
   ```
-  poe flake8
+  ruff check .
   ```
 - We also use [*mypy*](https://github.com/python/mypy) with more specification laid out in [*mypy.ini*](https://github.com/slickml/slick-ml/blob/master/mypy.ini) to check static typing of our code base. To apply `mypy` to the code base, simply run 🏃‍♀️ :
   ```
   poe mypy
   ```
-- To check if the code is formatted correctly via `black`, you can simply run 🏃‍♀️ :
+- To run lint + tests + build across supported Python versions, use [*tox*](https://tox.wiki/) ([`tox.ini`](https://github.com/slickml/slick-ml/blob/master/tox.ini)):
   ```
-  poe black --check
+  poe tox
   ```
-- To check if the imporetd libraries is sorted correctly via `isort`, you can simply run 🏃‍♀️ :
-  ```
-  poe isort --check-only
-  ```
-
 
 ## 🧪 Testing
 - We believe in [Modern Test Driven Development (TDD)](https://testdriven.io/blog/modern-tdd/) and mainly use [*pytest*](https://docs.pytest.org/en/7.1.x/), [*assertpy*](https://github.com/assertpy/assertpy) along with various plugins including [*pytest-cov*](https://github.com/pytest-dev/pytest-cov) with more specification laid out in [*.coveragerc*](https://github.com/slickml/slick-ml/blob/master/.coveragerc) to develop our unit-tests.

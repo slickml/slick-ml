@@ -536,10 +536,10 @@ def _ylabel(**kwargs: Dict[str, Any]) -> str:
     if kwargs["params"]["scoring"] is None:
         if kwargs["module"] == "glmnet.linear":
             ylabel = rf"""{kwargs["params"]["n_splits"]}-Folds CV Mean $R^2$"""
-        elif kwargs["module"] == "glmnet.logistic":
+        else:
             ylabel = f"""{kwargs["params"]["n_splits"]}-Folds CV Mean ACCURACY"""
     else:
-        ylabel = f"""{kwargs["params"]["n_splits"]}-Folds CV Mean {' '.join((kwargs["params"]["scoring"]).split("_")).upper()}"""
+        ylabel = f"""{kwargs["params"]["n_splits"]}-Folds CV Mean {" ".join((kwargs["params"]["scoring"]).split("_")).upper()}"""
 
     return ylabel
 

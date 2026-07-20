@@ -12,6 +12,22 @@
 
 ---
 
+## 📍 Version 0.4.0 - 2026-07-20
+### 🛠 Fixed
+- Pinned `bayesian-optimization` to `<2.0` and `setuptools` to `<82` for compatibility with existing APIs and `pkg_resources`.
+- Updated dependency import tests to parse PEP 621 `Requires-Dist` metadata (including optional extras).
+- Fixed `lambda_path` truthiness checks for `Series`/`ndarray` inputs in GLMNet estimators.
+- Fixed feature-frequency sorting when `Frequency (%)` is unavailable.
+
+### 🔥 Added
+- Migrated packaging and development workflow from Poetry to [`uv`](https://docs.astral.sh/uv/) with hatchling and a committed `uv.lock`.
+- Replaced `black` / `isort` / `flake8` with [`ruff`](https://docs.astral.sh/ruff/) for formatting and linting (`ruff.toml`, updated `poe format` / `poe check`).
+- Updated CI/CD and `tox` to use `uv` / `tox-uv` (aligned with `slick-tune`).
+- Updated README and contributing docs for the `uv` + `ruff` developer workflow.
+- Raised test coverage gate to 100% and added targeted tests for remaining edge paths.
+
+---
+
 ## 📍 Version 0.3.1 - 2024-07-25
 ### 🛠 Fixed
 - [#198](https://github.com/slickml/slick-ml/pull/198) fixed minimum version of `scikit-learn` in dependencies to fix `metrics` bug.

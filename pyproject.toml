@@ -3,27 +3,24 @@
 ########################################### SLICKML TEAM ###########################################
 ####################################################################################################
 
-[tool.poetry]
+[project]
 name = "slickml"
-version = "0.3.1"
+version = "0.4.0"
 description = "SlickML: Slick Machine Learning in Python"
-license = "MIT"
+readme = "README.md"
+license = { text = "MIT" }
 authors = [
-    "Amirhessam Tahmassebi <admin@slickml.com>",
+    { name = "Amirhessam Tahmassebi", email = "admin@slickml.com" },
 ]
 maintainers = [
-    "Amirhessam Tahmassebi <admin@slickml.com>",
+    { name = "Amirhessam Tahmassebi", email = "admin@slickml.com" },
 ]
-readme = "README.md"
-homepage = "https://www.slickml.com"
-repository = "https://github.com/slickml/slick-ml"
-documentation = "https://www.docs.slickml.com/slick-ml/"
+requires-python = ">=3.9,<3.13"
 keywords = [
     "python",
     "data-science",
     "machine-learning",
 ]
-
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Developers",
@@ -39,109 +36,111 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
     "Typing :: Typed",
 ]
-packages = [
-    { include = "slickml", from = "src" },
+dependencies = [
+    # --- scientific-computing ---
+    "numpy>=1.22,<2.0",
+    "pandas>=1.4,<2.0",
+    "scipy>=1.9",
+    "statsmodels>=0.13",
+    # --- machine-learning ---
+    "scikit-learn>=1.5",
+    "xgboost>=1.7,<2.0",
+    "python-glmnet>=2.2",
+    "shap>=0.46",
+    # --- optimization ---
+    "bayesian-optimization>=1.2,<2.0",
+    "hyperopt>=0.2",
+    # --- visualization ---
+    "matplotlib>=3.5",
+    "seaborn>=0.12",
+    # --- command-lines ---
+    "click>=8.1",
+    # --- packaging (pkg_resources used by some ML deps; removed in setuptools 82+) ---
+    "setuptools>=70.3,<82",
 ]
-include = ["src/slickml", "*.md"]
-exclude = [
-    "docs",
-    "assets",
-    "tests",
-    "examples",
+
+[project.optional-dependencies]
+dev = [
+    "assertpy>=1.1",
+    "coverage>=6.5",
+    "ipykernel>=6.29",
+    "jupytext>=1.14",
+    "mock>=4.0",
+    "mypy>=1.8",
+    "pandas-stubs>=1.5",
+    "pillow>=9.3",
+    "poethepoet>=0.32",
+    "pytest>=7.2",
+    "pytest-cov>=4.0",
+    "pytest-mock>=3.10",
+    "ruff>=0.6",
+    "tox>=4.22",
+    "tox-uv>=1.25",
+    "watchdog>=2.1",
+]
+docs = [
+    "furo>=2022.9",
+    "myst-parser>=0.18",
+    "sphinx>=5.3",
+    "sphinx-autoapi>=1.9",
+    "sphinx-design>=0.3",
 ]
 
-
-[tool.poetry.dependencies]
-python = ">=3.9,<3.13"
-
-# --- scientific-computing ---
-numpy = ">=1.22,<2.0"
-pandas = ">=1.4,<2.0"
-scipy = ">=1.9"
-statsmodels = ">=0.13"
-
-# --- machine-learning ---
-scikit-learn = ">=1.5"
-xgboost = ">=1.7,<2.0"
-python-glmnet = ">=2.2"
-shap = ">=0.46"
-
-# --- optimization ----
-bayesian-optimization = ">=1.2"
-hyperopt = ">=0.2"
-
-# --- visualization ---
-matplotlib = ">=3.5"
-seaborn = ">=0.12"
-
-# --- command-lines ---
-click = ">=8.1"
-
-
-[tool.poetry.group.dev.dependencies]
-
-# --- package-management ---
-pip = ">=22.3"
-setuptools = ">=70.3"
-
-# --- task-management ---
-poethepoet = ">=0.16"
-
-# --- testenv-management ---
-tox = ">=3.28"
-
-# --- formatting ---
-add-trailing-comma = ">=2.4"
-isort = ">=5.11"
-black = ">=22.12"
-jupyter-black = ">=0.3"
-
-# --- linting ---
-flake8 = ">=5.0"
-flake8-commas = ">=4.0"
-flake8-annotations = ">=2.9"
-flake8-comprehensions = ">=3.10"
-flake8-eradicate = ">=1.4"
-flake8-simplify = ">=0.19"
-flake8-tidy-imports = ">=4.8"
-flake8-type-checking = ">=2.3"
-flake8-typing-imports = ">=1.12"
-flake8-use-fstring = ">=1.4"
-pep8-naming = ">=0.13"
-
-# --- type-checking ---
-mypy = ">=0.991"
-pandas-stubs = ">=1.5"
-data-science-types = ">=0.2"
-
-# --- unit-testing ---
-pytest = ">=7.2"
-pytest-cov = ">=4.0"
-pytest-mock = ">=3.10"
-mock = ">=4.0"
-coverage = ">=6.5"
-assertpy = ">=1.1"
-
-# --- docs ----
-sphinx = ">=5.3"
-sphinx-autoapi = ">=1.9"
-sphinx_design = ">=0.3"
-myst-parser = ">=0.18"
-furo = ">=2022.9"
-
-# --- jupyter ---
-ipykernel = ">=6.29"
-jupytext = ">=1.14"
-
-# --- monitoring ---
-watchdog = ">=2.1"
-
-# --- image manipulation ---
-pillow = ">=9.3"
-
-
-[tool.poetry.scripts]
+[project.scripts]
 slickml = "slickml.cli:cli"
+
+[project.urls]
+Homepage = "https://www.slickml.com"
+Repository = "https://github.com/slickml/slick-ml"
+Documentation = "https://www.docs.slickml.com/slick-ml/"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/slickml"]
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "/src",
+    "/assets",
+    "/README.md",
+    "/LICENSE",
+    "/pyproject.toml",
+]
+exclude = ["/.gitignore"]
+
+[tool.uv]
+default-groups = ["dev"]
+
+[dependency-groups]
+dev = [
+    "assertpy>=1.1",
+    "coverage>=6.5",
+    "ipykernel>=6.29",
+    "jupytext>=1.14",
+    "mock>=4.0",
+    "mypy>=1.8",
+    "pandas-stubs>=1.5",
+    "pillow>=9.3",
+    "poethepoet>=0.32",
+    "pytest>=7.2",
+    "pytest-cov>=4.0",
+    "pytest-mock>=3.10",
+    "ruff>=0.6",
+    "tox>=4.22",
+    "tox-uv>=1.25",
+    "watchdog>=2.1",
+]
+docs = [
+    "furo>=2022.9",
+    "myst-parser>=0.18",
+    "sphinx>=5.3",
+    "sphinx-autoapi>=1.9",
+    "sphinx-design>=0.3",
+]
+
 
 # -- try `poe --help` for options
 [tool.poe.tasks]
@@ -159,71 +158,61 @@ echo "Welcome to SlickML ♡♡♡ $USER ♡♡♡ ...\n\n \
 " """
 
 [tool.poe.tasks.clean]
-help = "Remove all the ignored directories/files"
+help = "Remove ignored caches, coverage, and build artifacts"
 cmd = """
     rm -rf .coverage
-           dist/ 
-           .mypy_cache/ 
+           .coverage.*
+           dist/
+           build/
+           .mypy_cache/
            .pytest_cache/
-           .tox
+           .ruff_cache/
+           .tox/
            htmlcov/
            xmlcov/
            **/__pycache__/
            **/.ipynb_checkpoints/
     """
 
-[tool.poe.tasks.add-trailing-comma]
-help = "Format code style via add-trailing-comma"
-cmd = "poetry run add-trailing-comma --exit-zero-even-if-changed src/**/*.py tests/**/*.py"
-
-[tool.poe.tasks.black]
-help = "Format code style via black"
-cmd = "poetry run black --line-length 100 ."
-
-[tool.poe.tasks.isort]
-help = "Sort imported libraries via isort"
-cmd = "poetry run isort --profile black ."
-
-[tool.poe.tasks.flake8]
-help = "Lint code via flake8"
-cmd = "poetry run flake8 --verbose --benchmark --color always --config .flake8"
-
 [tool.poe.tasks.mypy]
 help = "Lint types via mypy"
-cmd = "poetry run mypy --config-file mypy.ini"
-
-[tool.poe.tasks.test]
-help = "Run unit-tests via pytest"
-cmd = "poetry run python -m pytest --cov=src --cov-report=term --cov-report=html --cov-report=xml --cov-config=.coveragerc --tb=short -ra -v"
+cmd = "mypy"
 
 [tool.poe.tasks.sphinx]
 help = "Build API docs via sphinx"
-cmd = "poetry run sphinx-build -b html docs/ docs/_build"
-
-[tool.poe.tasks.tox]
-help = "Test environments via tox"
-cmd = "poetry run tox --conf=tox.ini --root=."
+cmd = "sphinx-build -b html docs/ docs/_build"
 
 [tool.poe.tasks.format]
-help = "Apply all formatting steps."
-sequence = [
-    "greet",
-    "add-trailing-comma",
-    "isort",
-    "black",
-]
+help = "Format code via ruff"
+cmd = "ruff format ."
 
 [tool.poe.tasks.check]
-help = "Check all linting steps. "
+help = "Check all linting steps."
 sequence = [
     "greet",
-    { cmd = "poe black --check" },
-    { cmd = "poe isort --check-only" },
-    { cmd = "poe flake8 ." },
-    { cmd = "poe mypy ." },
+    { cmd = "poe format --check" },
+    { cmd = "ruff check ." },
+    { cmd = "poe mypy" },
 ]
 
+[tool.poe.tasks.test]
+help = "Run unit-tests via pytest"
+cmd = """
+    python -m pytest
+        --cov=src
+        --cov-report=term
+        --cov-report=html
+        --cov-report=xml
+        --cov-config=.coveragerc
+        --tb=short
+        -ra
+        -v
+    """
 
-[build-system]
-requires = ["poetry-core>=1.9.0"]
-build-backend = "poetry.core.masonry.api"
+[tool.poe.tasks.tox]
+help = "Run check + test + build across Python versions via tox"
+cmd = "tox"
+
+[tool.poe.tasks.build]
+help = "Build sdist and wheel via uv"
+cmd = "uv build"

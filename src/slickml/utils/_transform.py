@@ -119,7 +119,7 @@ def df_to_csr(
             memory_usage="deep",
         )
         print(f"CSR memory usage: {memory_use_csr(csr):.1f} bytes")
-        print(f"CSR memory usage: {memory_use_csr(csr)/2**20:.5f} MB")
+        print(f"CSR memory usage: {memory_use_csr(csr) / 2**20:.5f} MB")
 
     return csr
 

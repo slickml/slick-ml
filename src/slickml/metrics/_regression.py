@@ -135,10 +135,7 @@ class RegressionMetrics:
     Examples
     --------
     >>> from slickml.metrics import RegressionMetrics
-    >>> rm = RegressionMetrics(
-    ...     y_true=[3, -0.5, 2, 7],
-    ...     y_pred=[2.5, 0.0, 2, 8]
-    ... )
+    >>> rm = RegressionMetrics(y_true=[3, -0.5, 2, 7], y_pred=[2.5, 0.0, 2, 8])
     >>> m = rm.get_metrics()
     >>> rm.plot()
     """

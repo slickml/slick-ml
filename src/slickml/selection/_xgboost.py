@@ -334,22 +334,28 @@ class XGBoostFeatureSelector(BaseXGBoostEstimator):
             # set a counter for nfolds cv
             ijk = 1
             for train_index, test_index in cv.split(_X_permuted_values, self.y):
-                _X_train, _X_test = pd.DataFrame(
-                    data=_X_permuted_values[train_index],
-                    columns=_columns,
-                ), pd.DataFrame(
-                    data=_X_permuted_values[test_index],
-                    columns=_columns,
+                _X_train, _X_test = (
+                    pd.DataFrame(
+                        data=_X_permuted_values[train_index],
+                        columns=_columns,
+                    ),
+                    pd.DataFrame(
+                        data=_X_permuted_values[test_index],
+                        columns=_columns,
+                    ),
                 )
                 _y_train, _y_test = self.y[train_index], self.y[test_index]
 
                 # _dtrain / _dtest goes here
-                self.dtrain_, self.dtest_ = self._dtrain(
-                    X_train=_X_train,
-                    y_train=_y_train,
-                ), self._dtest(
-                    X_test=_X_test,
-                    y_test=_y_test,
+                self.dtrain_, self.dtest_ = (
+                    self._dtrain(
+                        X_train=_X_train,
+                        y_train=_y_train,
+                    ),
+                    self._dtest(
+                        X_test=_X_test,
+                        y_test=_y_test,
+                    ),
                 )
 
                 # watchlist during final training
@@ -377,7 +383,7 @@ class XGBoostFeatureSelector(BaseXGBoostEstimator):
 
                 # store feature gain
                 _feature_gain = self._xgb_imp_to_df()
-                self.feature_importance_[f"model_iter{iteration+1}_fold{ijk}"] = _feature_gain
+                self.feature_importance_[f"model_iter{iteration + 1}_fold{ijk}"] = _feature_gain
 
                 # check wheather noisy feature is being selected
                 if _feature_gain["feature"].str.contains("noisy").sum() != 0:
@@ -953,9 +959,14 @@ class XGBoostFeatureSelector(BaseXGBoostEstimator):
                 (feature_frequency["Frequency"] / float(self.n_splits * self.n_iter) * 100),
                 ndigits=2,
             )
+        sort_by = ["Frequency"]
+        ascending = [False]
+        if "Frequency (%)" in feature_frequency.columns:
+            sort_by.append("Frequency (%)")
+            ascending.append(False)
         return feature_frequency.sort_values(
-            by=["Frequency", "Frequency (%)"],
-            ascending=[False, False],
+            by=sort_by,
+            ascending=ascending,
         ).reset_index(drop=True)
 
     # TODO(amir): investigate more for other callback options ?

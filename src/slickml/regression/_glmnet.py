@@ -274,7 +274,7 @@ class GLMNetCVRegressor(BaseEstimator, RegressorMixin):
                 var_name="max_features",
                 dtypes=int,
             )
-        if self.lambda_path:
+        if self.lambda_path is not None:
             check_var(
                 self.lambda_path,
                 var_name="lambda_path",

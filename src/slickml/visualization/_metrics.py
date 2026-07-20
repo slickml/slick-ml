@@ -598,7 +598,7 @@ def plot_regression_metrics(
     ax5.text(
         0.65,
         ax5_ylim,
-        rf"""$\mu$ = {kwargs['mean_y_ratio']:.3f}""",
+        rf"""$\mu$ = {kwargs["mean_y_ratio"]:.3f}""",
         fontsize=12,
     )
     ax5.text(
