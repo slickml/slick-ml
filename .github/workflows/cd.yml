@@ -63,7 +63,7 @@ jobs:
 
       #----------------------------------------------
       #  ---  Deploy landing + API docs via FTP  ---
-      #  docs.slickml.com/           → landing/index.html
+      #  docs.slickml.com/           → docs/landing/index.html
       #  docs.slickml.com/slick-ml/  → docs/_build/
       #----------------------------------------------
       - name: Deploy Landing Page
@@ -75,7 +75,7 @@ jobs:
           protocol: ftps
           port: 21
           timeout: 360000
-          local-dir: ./landing/
+          local-dir: ./docs/landing/
           server-dir: ./
           state-name: .ftp-deploy-sync-state-landing.json
           dangerous-clean-slate: false
